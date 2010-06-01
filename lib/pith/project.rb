@@ -36,6 +36,8 @@ module Pith
         output_file.open("w") do |out|
           out.puts(output)
         end
+      else
+        FileUtils.copy(input_file, output_file)
       end
     end
     

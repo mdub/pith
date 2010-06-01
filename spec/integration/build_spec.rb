@@ -20,6 +20,13 @@ describe "pith build" do
       index_html_file = @output_dir + "index.html"
       index_html_file.should exist
     end
+
+    it "copies other files across, intact" do
+      @input_file = @project.input_dir + "verbatim.txt"
+      @output_file = @project.output_dir + "verbatim.txt"
+      @output_file.should exist
+      @output_file.read.should == @input_file.read
+    end
     
   end
   
