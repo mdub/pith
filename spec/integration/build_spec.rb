@@ -1,7 +1,8 @@
 require 'spec_helper'
 require 'pith'
+require 'nokogiri'
 
-describe "pith build" do
+describe Pith::Project do
 
   before :all do
     $tmp_dir.mkpath
@@ -19,6 +20,8 @@ describe "pith build" do
     it "converts HAML files to HTML" do
       index_html_file = @output_dir + "index.html"
       index_html_file.should exist
+      html_doc = Nokogiri::HTML.parse(index_html_file.open)
+      html_doc.search("//h1").first.text.should == "Sample index"
     end
 
     it "copies other files across, intact" do
