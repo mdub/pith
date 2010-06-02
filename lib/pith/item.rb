@@ -7,14 +7,19 @@ module Pith
     def initialize(project, input_file)
       @project = project
       @input_file = input_file
-      @relative_path = input_file.relative_path_from(project.input_dir)
     end
 
-    attr_accessor :project, :input_file, :relative_path, :extension
+    attr_reader :project, :input_file
+
+    def relative_path
+      @relative_path ||= input_file.relative_path_from(project.input_dir)
+    end
     
     def build
       evaluate_as_tilt_template || copy_verbatim
     end
+    
+    private
     
     def evaluate_as_tilt_template
       if relative_path.to_s =~ /^(.*)\.(.*)$/ && Tilt.registered?($2)
