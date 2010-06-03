@@ -1,9 +1,8 @@
-task :default => :spec
+task :default => :cucumber
 
-require "spec/rake/spectask"
+require 'cucumber/rake/task'
 
-Spec::Rake::SpecTask.new(:spec) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.spec_files = FileList['spec/**/*_spec.rb']
-  spec.spec_opts << "-fnested" << "--color"
+Cucumber::Rake::Task.new(:cucumber) do |t|
+  t.fork = false
+  t.profile = 'default'
 end
