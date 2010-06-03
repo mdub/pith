@@ -16,3 +16,17 @@ Scenario: text file
     """
     Blah de blah
     """
+
+Scenario: file in subdirectory
+
+  Given input file "blah/verbatim.txt" contains
+    """
+    Blah de blah
+    """
+    
+  When I build the site
+  
+  Then output file "blah/verbatim.txt" should contain
+    """
+    Blah de blah
+    """

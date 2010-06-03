@@ -16,8 +16,8 @@ module Pith
     
     def items
       @items ||= Pathname.glob(input_dir + "**/*").map do |input_file|
-        Item.new(self, input_file)
-      end
+        Item.new(self, input_file) unless input_file.directory?
+      end.compact
     end
     
     def build

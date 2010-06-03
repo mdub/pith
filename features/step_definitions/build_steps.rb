@@ -9,3 +9,7 @@ end
 Then /^output file "([^\"]*)" should contain$/ do |file_name, content|
   @outputs[file_name].strip.should == content.strip
 end
+
+Then /^output file "([^\"]*)" should not exist$/ do |file_name|
+  @outputs[file_name].should == nil
+end
