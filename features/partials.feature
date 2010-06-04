@@ -48,3 +48,29 @@ Scenario: pass local variable to a template
       <li>3</li>
     </ul>
     """
+
+Scenario: use instance variable in a partial
+
+  Given input file "index.html.haml" contains
+    """
+    - @items = [1,2,3]
+    = partial("_list.haml")
+    """
+
+  And input file "_list.haml" contains
+    """
+    %ul
+      - @items.each do |i|
+        %li= i
+    """
+   
+  When I build the site
+  
+  Then output file "index.html" should contain
+    """
+    <ul>
+      <li>1</li>
+      <li>2</li>
+      <li>3</li>
+    </ul>
+    """
