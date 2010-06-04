@@ -48,6 +48,8 @@ module Pith
   
   class ItemContext
     
+    include Tilt::CompileSite
+    
     def initialize(item)
       @item = item
     end
