@@ -1,6 +1,7 @@
 require "pathname"
 require "logger"
 require "pith/item"
+require "tilt"
 
 module Pith
   
@@ -26,6 +27,11 @@ module Pith
 
     def logger
       @logger ||= Logger.new(nil)
+    end
+    
+    def render(template_path, context)
+      template = Tilt.new(input_dir + template_path)
+      template.render(context)
     end
     
   end

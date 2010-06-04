@@ -28,10 +28,9 @@ module Pith
     def evaluate_as_tilt_template
       if relative_path.to_s =~ /^(.*)\.(.*)$/ && Tilt.registered?($2)
         output_file = project.output_dir + $1
-        template = Tilt.new(input_file)
-        output = template.render(ItemContext.new(self))
         output_file.parent.mkpath
         output_file.open("w") do |out|
+          output = project.render(relative_path, ItemContext.new(self))
           out.puts(output)
         end
         output_file
@@ -56,7 +55,7 @@ module Pith
     attr_reader :item
     
     def partial(name)
-      "PARTIAL"
+      item.project.render(name, self)
     end
     
   end
