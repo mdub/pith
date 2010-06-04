@@ -29,9 +29,9 @@ module Pith
       @logger ||= Logger.new(nil)
     end
     
-    def render(template_path, context)
+    def render(template_path, context, locals = {}, &block)
       template = Tilt.new(input_dir + template_path)
-      template.render(context)
+      template.render(context, locals, &block)
     end
     
   end

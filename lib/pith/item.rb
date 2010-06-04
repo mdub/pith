@@ -54,8 +54,10 @@ module Pith
     
     attr_reader :item
     
-    def partial(name)
-      item.project.render(name, self)
+    def partial(name, locals = {}, &block)
+      item.project.render(name, self, locals) do
+        capture_haml(&block)
+      end
     end
     
   end

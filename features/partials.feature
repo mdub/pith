@@ -1,6 +1,6 @@
-Feature: format Haml input
+Feature: partials
 
-  I want to be abl to include partials
+  I want to be able to include partials
   So that I can reuse template fragments
 
 Scenario: Haml template including a Haml partial
