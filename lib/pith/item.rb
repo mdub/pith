@@ -57,7 +57,7 @@ module Pith
     end
     
     attr_reader :item
-    
+
     def include(name, locals = {}, &block)
       content_block = if block_given?
         content = capture_haml(&block)
@@ -66,6 +66,10 @@ module Pith
       item.project.render(name, self, locals, &content_block)
     end
     
+    def link(href, label)
+      %{<a href="#{href}">#{label}</a>}
+    end
+        
   end
   
 end
