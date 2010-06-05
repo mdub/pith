@@ -1,6 +1,6 @@
 require "pathname"
 require "logger"
-require "pith/item"
+require "pith/input"
 require "tilt"
 
 module Pith
@@ -15,14 +15,14 @@ module Pith
     
     attr_accessor :input_dir, :output_dir
     
-    def items
-      @items ||= Pathname.glob(input_dir + "**/*").map do |input_file|
-        Item.new(self, input_file) unless input_file.directory?
+    def inputs
+      @inputs ||= Pathname.glob(input_dir + "**/*").map do |input_file|
+        Input.new(self, input_file) unless input_file.directory?
       end.compact
     end
     
     def build
-      items.each { |item| item.build }
+      inputs.each { |input| input.build }
     end
 
     def logger

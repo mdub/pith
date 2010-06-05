@@ -2,7 +2,7 @@ require "tilt"
 
 module Pith
   
-  class Item
+  class Input
     
     def initialize(project, input_file)
       @project = project
@@ -52,23 +52,23 @@ module Pith
     
     include Tilt::CompileSite
     
-    def initialize(item)
-      @item = item
+    def initialize(input)
+      @input = input
     end
     
-    attr_reader :item
+    attr_reader :input
 
     def include(name, locals = {}, &block)
       content_block = if block_given?
         content = capture_haml(&block)
         proc { content }
       end
-      item.project.render(name, self, locals, &content_block)
+      input.project.render(name, self, locals, &content_block)
     end
     
     def link(href, label)
       if href.to_s =~ %r{^/(.*)}
-        current_page = item.relative_path
+        current_page = input.relative_path
         target_page = Pathname($1)
         href = target_page.relative_path_from(current_page.parent)
       end
