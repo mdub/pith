@@ -10,10 +10,16 @@ Scenario: Haml template with a layout
     = include "layouts/_simple.haml" do
       blah blah
     """
-  And input file "layouts/_simple.haml" contains "%p= yield"
+  And input file "layouts/_simple.haml" contains 
+    """
+    %p= yield
+    """
    
   When I build the site
-  Then output file "index.html" should contain "<p>blah blah</p>"
+  Then output file "index.html" should contain 
+    """
+    <p>blah blah</p>
+    """
 
 Scenario: instance variable assigned within the layed-out block
 
@@ -23,7 +29,6 @@ Scenario: instance variable assigned within the layed-out block
       - @title = "XXX"
       %p blah blah
     """
-
   And input file "layouts/_with_header.haml" contains
     """
     %h1= @title
@@ -31,7 +36,6 @@ Scenario: instance variable assigned within the layed-out block
     """
    
   When I build the site
-  
   Then output file "index.html" should contain
     """
     <h1>XXX</h1>
