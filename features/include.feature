@@ -17,6 +17,14 @@ Scenario: include a partial in the same sub-directory
   When I build the site
   Then output file "subdir/page.html" should contain "<p>blah blah</p>"
 
+Scenario: nested includes, differing directories
+
+  Given input file "page.html.haml" contains "= include('_partials/foo.haml')"
+  And input file "_partials/foo.haml" contains "= include('bar.haml')"
+  And input file "_partials/bar.haml" contains "bananas"
+  When I build the site
+  Then output file "page.html" should contain "bananas"
+
 Scenario: pass local variable to a partial
 
   Given input file "index.html.haml" contains
