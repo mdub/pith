@@ -22,7 +22,9 @@ module Pith
     private
 
     def ignore
-      relative_path.basename.to_s[0,1] == "_"
+      relative_path.each_filename do |component|
+        return true if component.to_s[0,1] == "_"
+      end
     end
     
     def evaluate_as_tilt_template
