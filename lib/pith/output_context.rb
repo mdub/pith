@@ -3,39 +3,34 @@ require "tilt"
 
 module Pith
   
-  class Page
+  class OutputContext
     
     include Tilt::CompileSite
     
     def initialize(input)
       @input = input
-      @current_template = input.relative_path
     end
     
     attr_reader :input
 
-    def resolve_template(name)
-      @current_template.parent + name
-    end
-    
     def include(name, locals = {}, &block)
-      original_template = @current_template
-      included_template = resolve_template(name)
+      original_input = @input
+      included_input = @input.resolve(name)
       begin
         content_block = if block_given?
           content = capture_haml(&block)
           proc { content }
         end
-        @current_template = included_template
-        input.project.render(included_template, self, locals, &content_block)
+        @input = included_input
+        @input.render(self, locals, &content_block)
       ensure
-        @current_template = original_template
+        @input = original_input
       end
     end
     
     def link(href, label)
       if href.to_s =~ %r{^/(.*)}
-        current_page = input.relative_path
+        current_page = input.path
         target_page = Pathname($1)
         href = target_page.relative_path_from(current_page.parent)
       end

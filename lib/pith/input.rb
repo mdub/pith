@@ -1,40 +1,49 @@
 require "tilt"
-require "pith/page"
+require "pith/output_context"
 
 module Pith
   
   class Input
     
-    def initialize(project, input_file)
+    def initialize(project, path)
       @project = project
-      @input_file = input_file
+      @path = path
     end
 
-    attr_reader :project, :input_file
-
-    def relative_path
-      @relative_path ||= input_file.relative_path_from(project.input_dir)
-    end
+    attr_reader :project, :path
     
     def build
       ignore || evaluate_as_tilt_template || copy_verbatim
     end
+
+    def resolve(name)
+      resolved_path = path.parent + name
+      project.inputs.find do |input|
+        input.path == resolved_path
+      end
+    end
     
+    def render(context, locals = {}, &block)
+      Tilt.new(full_path).render(context, locals, &block)
+    end
+
     private
 
+    def full_path
+      project.input_dir + path
+    end
+    
     def ignore
-      relative_path.each_filename do |component|
-        return true if component.to_s[0,1] == "_"
-      end
+      path.to_s.split("/").any? { |component| component.to_s[0,1] == "_" }
     end
     alias :ignorable? :ignore
     
     def evaluate_as_tilt_template
-      if relative_path.to_s =~ /^(.*)\.(.*)$/ && Tilt.registered?($2)
+      if path.to_s =~ /^(.*)\.(.*)$/ && Tilt.registered?($2)
         output_file = project.output_dir + $1
         output_file.parent.mkpath
         output_file.open("w") do |out|
-          output = project.render(relative_path, Page.new(self))
+          output = render(OutputContext.new(self))
           out.puts(output)
         end
         output_file
@@ -42,10 +51,10 @@ module Pith
     end
 
     def copy_verbatim
-      output_file = project.output_dir + relative_path
-      output_file.parent.mkpath
-      FileUtils.copy(input_file, output_file)
-      output_file
+      output_path = project.output_dir + path
+      output_path.parent.mkpath
+      FileUtils.copy(full_path, output_path)
+      output_path
     end
 
   end

@@ -17,8 +17,15 @@ module Pith
     
     def inputs
       @inputs ||= Pathname.glob(input_dir + "**/*").map do |input_file|
-        Input.new(self, input_file) unless input_file.directory?
+        unless input_file.directory?
+          path = input_file.relative_path_from(input_dir)
+          Input.new(self, path)
+        end 
       end.compact
+    end
+    
+    def input(name)
+      input_dir + name
     end
     
     def build
@@ -27,11 +34,6 @@ module Pith
 
     def logger
       @logger ||= Logger.new(nil)
-    end
-    
-    def render(template_path, context, locals = {}, &block)
-      template = Tilt.new(input_dir + template_path)
-      template.render(context, locals, &block)
     end
     
   end
