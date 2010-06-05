@@ -67,6 +67,11 @@ module Pith
     end
     
     def link(href, label)
+      if href.to_s =~ %r{^/(.*)}
+        current_page = item.relative_path
+        target_page = Pathname($1)
+        href = target_page.relative_path_from(current_page.parent)
+      end
       %{<a href="#{href}">#{label}</a>}
     end
         
