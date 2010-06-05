@@ -1,4 +1,5 @@
 require "tilt"
+require "pith/page"
 
 module Pith
   
@@ -32,7 +33,7 @@ module Pith
         output_file = project.output_dir + $1
         output_file.parent.mkpath
         output_file.open("w") do |out|
-          output = project.render(relative_path, ItemContext.new(self))
+          output = project.render(relative_path, Page.new(self))
           out.puts(output)
         end
         output_file
@@ -46,35 +47,6 @@ module Pith
       output_file
     end
 
-  end
-  
-  class ItemContext
-    
-    include Tilt::CompileSite
-    
-    def initialize(input)
-      @input = input
-    end
-    
-    attr_reader :input
-
-    def include(name, locals = {}, &block)
-      content_block = if block_given?
-        content = capture_haml(&block)
-        proc { content }
-      end
-      input.project.render(name, self, locals, &content_block)
-    end
-    
-    def link(href, label)
-      if href.to_s =~ %r{^/(.*)}
-        current_page = input.relative_path
-        target_page = Pathname($1)
-        href = target_page.relative_path_from(current_page.parent)
-      end
-      %{<a href="#{href}">#{label}</a>}
-    end
-        
   end
   
 end
