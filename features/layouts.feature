@@ -5,52 +5,35 @@ Feature: layouts
 
 Scenario: Haml template with a layout
 
-  Given input file "layouts/_default.haml" contains
+  Given input file "layouts/_simple.haml" contains
     """
-    %html
-      %head
-        %title= title
-      %body
-        %h1= title
-        = yield
+    %p= yield
     """
 
   And input file "index.html.haml" contains
     """
-    = partial "layouts/_default.haml", :title => "XXX" do
-      %p blah blah
+    = partial "layouts/_simple.haml" do
+      blah blah
     """
    
   When I build the site
   
   Then output file "index.html" should contain
     """
-    <html>
-      <head>
-        <title>XXX</title>
-      </head>
-      <body>
-        <h1>XXX</h1>
-        <p>blah blah</p>
-      </body>
-    </html>
+    <p>blah blah</p>
     """
 
 Scenario: refer to a instance variable
 
-  Given input file "layouts/_default.haml" contains
+  Given input file "layouts/_with_header.haml" contains
     """
-    %html
-      %head
-        %title= @title
-      %body
-        %h1= @title
-        = yield
+    %h1= @title
+    = yield
     """
 
   And input file "index.html.haml" contains
     """
-    = partial "layouts/_default.haml" do
+    = partial "layouts/_with_header.haml" do
       - @title = "XXX"
       %p blah blah
     """
@@ -59,13 +42,6 @@ Scenario: refer to a instance variable
   
   Then output file "index.html" should contain
     """
-    <html>
-      <head>
-        <title>XXX</title>
-      </head>
-      <body>
-        <h1>XXX</h1>
-        <p>blah blah</p>
-      </body>
-    </html>
+    <h1>XXX</h1>
+    <p>blah blah</p>
     """
