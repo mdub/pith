@@ -3,26 +3,21 @@ Feature: templates can include other templates
   I want to be able to include partials
   So that I can reuse template fragments
 
-Scenario: Haml template including a Haml partial
+Scenario: include a partial
 
-  Given input file "index.html.haml" contains
-    """
-    = include("_fragment.haml")
-    """
-
-  And input file "_fragment.haml" contains
-    """
-    %p blah blah
-    """
-   
+  Given input file "index.html.haml" contains "= include('_fragment.haml')"
+  And input file "_fragment.haml" contains "%p blah blah"
   When I build the site
-  
-  Then output file "index.html" should contain
-    """
-    <p>blah blah</p>
-    """
+  Then output file "index.html" should contain "<p>blah blah</p>"
 
-Scenario: pass local variable to a template
+Scenario: include a partial in the same sub-directory
+
+  Given input file "subdir/page.html.haml" contains "= include('_fragment.haml')"
+  And input file "subdir/_fragment.haml" contains "%p blah blah"
+  When I build the site
+  Then output file "subdir/page.html" should contain "<p>blah blah</p>"
+
+Scenario: pass local variable to a partial
 
   Given input file "index.html.haml" contains
     """

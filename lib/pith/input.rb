@@ -27,6 +27,7 @@ module Pith
         return true if component.to_s[0,1] == "_"
       end
     end
+    alias :ignorable? :ignore
     
     def evaluate_as_tilt_template
       if relative_path.to_s =~ /^(.*)\.(.*)$/ && Tilt.registered?($2)

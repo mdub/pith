@@ -13,12 +13,16 @@ module Pith
     
     attr_reader :input
 
+    def resolve_template(template_name)
+      input.relative_path.parent + template_name
+    end
+    
     def include(name, locals = {}, &block)
       content_block = if block_given?
         content = capture_haml(&block)
         proc { content }
       end
-      input.project.render(name, self, locals, &content_block)
+      input.project.render(resolve_template(name), self, locals, &content_block)
     end
     
     def link(href, label)
