@@ -12,7 +12,7 @@ Scenario: Haml template with a layout
 
   And input file "index.html.haml" contains
     """
-    = partial "layouts/_simple.haml" do
+    = include "layouts/_simple.haml" do
       blah blah
     """
    
@@ -33,7 +33,7 @@ Scenario: refer to a instance variable
 
   And input file "index.html.haml" contains
     """
-    = partial "layouts/_with_header.haml" do
+    = include "layouts/_with_header.haml" do
       - @title = "XXX"
       %p blah blah
     """

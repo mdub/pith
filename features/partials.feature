@@ -8,7 +8,7 @@ Scenario: Haml template including a Haml partial
   Given input file "index.html.haml" contains
     """
     %h1 With a partial
-    = partial("_fragment.haml")
+    = include("_fragment.haml")
     """
 
   And input file "_fragment.haml" contains
@@ -28,7 +28,7 @@ Scenario: pass local variable to a template
 
   Given input file "index.html.haml" contains
     """
-    = partial("_list.haml", :items => [1,2,3])
+    = include("_list.haml", :items => [1,2,3])
     """
 
   And input file "_list.haml" contains
@@ -54,7 +54,7 @@ Scenario: use instance variable in a partial
   Given input file "index.html.haml" contains
     """
     - @items = [1,2,3]
-    = partial("_list.haml")
+    = include("_list.haml")
     """
 
   And input file "_list.haml" contains

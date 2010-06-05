@@ -56,7 +56,7 @@ module Pith
     
     attr_reader :item
     
-    def partial(name, locals = {}, &block)
+    def include(name, locals = {}, &block)
       content_block = if block_given?
         content = capture_haml(&block)
         proc { content }
