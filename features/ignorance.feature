@@ -1,4 +1,4 @@
-Feature: ignore supporting files
+Feature: ignorable files are ignored
 
   I want any file beginning with "_" to be ignored
   So that I can place supporting files anywhere within the input directory

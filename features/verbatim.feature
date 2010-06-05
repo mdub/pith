@@ -1,4 +1,4 @@
-Feature: copy unrecognised files intact
+Feature: unrecognised input files are copied into output intact
 
   I want any unrecognised file to be copied into the site verbatim
   So that I can mix dynamic and static content

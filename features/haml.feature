@@ -1,8 +1,9 @@
-Feature: format Haml input
+Feature: support for Haml templates
 
-  I want file with a .html extension to be formatted using Haml
+  I want files with a .haml extension to be formatted using Haml
+  So that I can express markup succintly
   
-Scenario: Haml template with no layout
+Scenario: simple Haml template
 
   Given input file "index.html.haml" contains
     """
