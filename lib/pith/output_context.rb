@@ -28,6 +28,10 @@ module Pith
       end
     end
     
+    def content_for
+      @content_for_hash ||= Hash.new { "" }
+    end
+    
     def link(href, label)
       if href.to_s =~ %r{^/(.*)}
         current_page = input.path
