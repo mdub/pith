@@ -10,12 +10,18 @@ When /^I build the site$/ do
   @project.build
 end
 
+class String
+  def clean
+    strip.gsub(/\s+/, ' ')
+  end
+end
+
 Then /^output file "([^\"]*)" should contain "([^\"]*)"$/ do |file_name, content|
-  @outputs[file_name].strip.should == content.strip
+  @outputs[file_name].clean.should == content.clean
 end
 
 Then /^output file "([^\"]*)" should contain$/ do |file_name, content|
-  @outputs[file_name].strip.should == content.strip
+  @outputs[file_name].clean.should == content.clean
 end
 
 Then /^output file "([^\"]*)" should not exist$/ do |file_name|

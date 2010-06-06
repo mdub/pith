@@ -1,9 +1,9 @@
-Feature: support for Haml templates
+Feature: support for Haml
 
-  I want files with a .haml extension to be formatted using Haml
+  I want to build pages using Haml
   So that I can express markup succintly
   
-Scenario: simple Haml template
+Scenario: simple Haml page
 
   Given input file "index.html.haml" contains
     """
