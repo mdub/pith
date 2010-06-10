@@ -25,6 +25,13 @@ Scenario: nested includes, differing directories
   When I build the site
   Then output file "page.html" should contain "bananas"
 
+Scenario: include a partial located relative to site root
+
+  Given input file "subdir/page.html.haml" contains "= include('/_partials/fragment.haml')"
+  And input file "_partials/fragment.haml" contains "%p blah blah"
+  When I build the site
+  Then output file "subdir/page.html" should contain "<p>blah blah</p>"
+
 Scenario: pass local variable to a partial
 
   Given input file "index.html.haml" contains

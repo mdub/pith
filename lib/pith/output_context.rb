@@ -15,7 +15,7 @@ module Pith
 
     def include(name, locals = {}, &block)
       original_input = @input
-      included_input = @input.resolve(name)
+      included_input = @input.relative_input(name)
       begin
         content_block = if block_given?
           content = capture_haml(&block)

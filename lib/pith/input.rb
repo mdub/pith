@@ -16,10 +16,21 @@ module Pith
       ignore || evaluate_as_tilt_template || copy_verbatim
     end
 
-    def resolve(name)
-      resolved_path = path.parent + name
-      project.inputs.find do |input|
+    def relative_input(name)
+      resolved_path = relative_path(name)
+      input = project.inputs.find do |input|
         input.path == resolved_path
+      end
+      raise %{can't locate "#{resolved_path}"} if input.nil?
+      input
+    end
+    
+    def relative_path(name)
+      name = name.to_str
+      if name[0,1] == "/"
+        Pathname(name[1..-1])
+      else
+        path.parent + name
       end
     end
     
