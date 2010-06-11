@@ -46,7 +46,7 @@ module Pith
 
     def trace(strategy, output_path = nil)
       output_path ||= "X"
-      logger.info("%s\n  %-14s%s" % [path, "--(#{strategy})-->", output_path])
+      logger.info("%-36s%-14s%s" % [path, "--(#{strategy})-->", output_path])
     end
     
     def full_path
