@@ -40,6 +40,15 @@ module Pith
 
     private
 
+    def logger
+      project.logger
+    end
+
+    def trace(strategy, output_path = nil)
+      output_path ||= "X"
+      logger.info("%s\n  %-14s%s" % [path, "--(#{strategy})-->", output_path])
+    end
+    
     def full_path
       project.input_dir + path
     end
@@ -51,7 +60,9 @@ module Pith
     
     def evaluate_as_tilt_template
       if path.to_s =~ /^(.*)\.(.*)$/ && Tilt.registered?($2)
-        output_file = project.output_dir + $1
+        output_path = Pathname($1); ext = $2
+        trace(ext, output_path)
+        output_file = project.output_dir + output_path
         output_file.parent.mkpath
         output_file.open("w") do |out|
           output = render(OutputContext.new(self))
@@ -62,6 +73,7 @@ module Pith
     end
 
     def copy_verbatim
+      trace("copy", path)
       output_path = project.output_dir + path
       output_path.parent.mkpath
       FileUtils.copy(full_path, output_path)

@@ -36,6 +36,8 @@ module Pith
       @logger ||= Logger.new(nil)
     end
     
+    attr_writer :logger
+    
   end
   
 end
