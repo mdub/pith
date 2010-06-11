@@ -1,0 +1,32 @@
+#! /usr/bin/env ruby
+
+require "rubygems"
+require "optparse"
+require "pathname"
+
+$input_dir = Pathname(".")
+
+OptionParser.new do |opts|
+  opts.banner = "usage: pith COMMAND [OPTIONS]"
+  opts.separator ""
+  opts.separator "  Options:"
+  opts.on("-i", "--input DIR", 'Input directory  (default: ".")') do |dir|
+    $input_dir = Pathname(dir)
+  end
+  opts.on("-o", "--output DIR", 'Output directory (default: "INPUT/_out")') do |dir|
+    $output_dir = Pathname(dir)
+  end
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+end.parse!
+
+$output_dir ||= $input_dir + "_out"
+
+$: << File.expand_path("../../lib", __FILE__)
+require "pith"
+
+@project = Pith::Project.new(:input_dir => $input_dir, :output_dir => $output_dir)
+@project.logger = Pith::ConsoleLogger.new
+@project.build
