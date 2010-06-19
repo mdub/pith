@@ -32,6 +32,10 @@ module Pith
       @content_for_hash ||= Hash.new { "" }
     end
     
+    def meta
+      input.meta || {}
+    end
+    
     def link(href, label)
       if href.to_s =~ %r{^/(.*)}
         current_page = input.path

@@ -1,5 +1,6 @@
 require "tilt"
 require "pith/output_context"
+require "pith/metadata"
 
 module Pith
   
@@ -38,6 +39,15 @@ module Pith
       Tilt.new(full_path).render(context, locals, &block)
     end
 
+    def meta
+      if @metadata.nil?
+        full_path.open do |io|
+          @metadata = Pith::Metadata.extract_from(io).freeze
+        end
+      end
+      @metadata
+    end
+    
     private
 
     def logger
