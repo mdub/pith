@@ -28,6 +28,8 @@ describe Pith::Metadata do
       -# ---
       -# x: 1
       -# y: "2"
+      -# ...
+      -# other stuff
       HAML
     end
     
