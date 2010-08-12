@@ -1,0 +1,44 @@
+.sidebar
+  width: 19%
+  float: right
+
+.main
+  width: 79%
+  
+.box
+  -moz-border-radius: 0.5em
+  -webkit-border-radius: 0.5em
+  border: 2px solid grey
+  padding: 0.5em
+
+  .heading
+    font-size: 120%
+    border-bottom: 1px solid #aaa
+    font-weight: bold
+    margin-bottom: 0.5em
+
+ol.tabs
+
+  position: relative
+  padding: 0
+  margin: 0 0 -2px 1em
+  
+  list-style-type: none
+      
+  li
+    display: inline-block
+    border: 2px solid grey
+    -moz-border-radius-topleft: 0.5em
+    -webkit-border-top-left-radius: 0.5em
+    -moz-border-radius-topright: 0.5em
+    -webkit-border-top-right-radius: 0.5em
+    background: #ccc
+    padding: 0.5em
+
+    &.current
+      border-bottom: 2px solid white
+      background: white
+
+    a
+      color: inherit
+      text-decoration: none
