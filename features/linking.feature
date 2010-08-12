@@ -27,3 +27,16 @@ Scenario: link from a sub-directory to a root-level page
     """
     <a href="../help.html">Help</a>
     """
+
+Scenario: link to a stylesheet
+
+  Given input file "subdir/page.html.haml" contains
+    """
+    %img{:src => href("/logo.png")}
+    """
+
+  When I build the site
+  Then output file "subdir/page.html" should contain
+    """
+    <img src='../logo.png' />
+    """

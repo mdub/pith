@@ -36,13 +36,17 @@ module Pith
       input.meta || {}
     end
     
-    def link(href, label)
-      if href.to_s =~ %r{^/(.*)}
+    def href(target)
+      if target.to_s =~ %r{^/(.*)}
         current_page = input.path
-        target_page = Pathname($1)
-        href = target_page.relative_path_from(current_page.parent)
+        Pathname($1).relative_path_from(current_page.parent)
+      else
+        target
       end
-      %{<a href="#{href}">#{label}</a>}
+    end
+
+    def link(target, label)
+      %{<a href="#{href(target)}">#{label}</a>}
     end
         
   end
