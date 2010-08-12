@@ -8,12 +8,9 @@ module Pith
     include Tilt::CompileSite
     
     def initialize(input)
-      @input = input
       @input_stack = [input]
     end
     
-    attr_reader :input
-
     def initial_input
       @input_stack.first
     end
@@ -40,12 +37,12 @@ module Pith
     end
     
     def meta
-      input.meta || {}
+      initial_input.meta || {}
     end
     
     def href(name)
       target_path = current_input.relative_path(name)
-      target_path.relative_path_from(input.path.parent)
+      target_path.relative_path_from(initial_input.path.parent)
     end
 
     def link(target, label)
