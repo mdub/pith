@@ -20,15 +20,16 @@ module Pith
     end
     
     def include(name, locals = {}, &block)
-      @input_stack.push(current_input.relative_input(name))
-      begin
+      including_input = current_input
+      included_input = including_input.relative_input(name)
+      with_input(included_input) do
         content_block = if block_given?
-          content = capture_haml(&block)
+          content = with_input(including_input) do
+            capture_haml(&block)
+          end
           proc { content }
         end
         current_input.render(self, locals, &content_block)
-      ensure
-        @input_stack.pop
       end
     end
     
@@ -48,7 +49,18 @@ module Pith
     def link(target, label)
       %{<a href="#{href(target)}">#{label}</a>}
     end
-        
+    
+    private
+    
+    def with_input(input)
+      @input_stack.push(input)
+      begin
+        yield
+      ensure
+        @input_stack.pop
+      end
+    end
+
   end
   
 end

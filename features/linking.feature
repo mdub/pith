@@ -41,34 +41,39 @@ Scenario: link to an image
     <img src='../logo.png' />
     """
 
-Scenario: links included from a layout
+Scenario: links within a layout block
 
   Given input file "subdir/page.html.haml" contains
     """
     = include "/common/_layout.haml" do
-      %p Stuff
+      = link "other.html", "Other page"
     """
 
   And input file "common/_layout.haml" contains
     """
-    %html
-      %head
-        %link{ :href=>href("/stylesheets/app.css"), :rel=>"stylesheet", :type=>"text/css" }
-      %body
-        %img{:src => href("logo.png")}
-        = yield
+    = yield
     """
 
   When I build the site
   Then output file "subdir/page.html" should contain
     """
-    <html>
-      <head>
-        <link href='../stylesheets/app.css' rel='stylesheet' type='text/css' />
-      </head>
-      <body>
-        <img src='../common/logo.png' />
-        <p>Stuff</p>
-      </body>
-    </html>
+    <a href="other.html">Other page</a>
+    """
+
+Scenario: links included from a partial
+
+  Given input file "subdir/page.html.haml" contains
+    """
+    = include "/common/_partial.haml"
+    """
+
+  And input file "common/_partial.haml" contains
+    """
+    %link{ :href=>href("/stylesheets/app.css"), :rel=>"stylesheet", :type=>"text/css" }
+    """
+
+  When I build the site
+  Then output file "subdir/page.html" should contain
+    """
+    <link href='../stylesheets/app.css' rel='stylesheet' type='text/css' />
     """
