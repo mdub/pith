@@ -4,4 +4,9 @@
     %link{ :href=>href("/stylesheets/app.css"), :rel=>"stylesheet", :type=>"text/css" }
   %body
     %h1= title
-    = yield
+
+    .main
+      = yield
+
+    .sidebar
+      = content_for[:sidebar]
