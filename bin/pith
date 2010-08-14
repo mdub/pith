@@ -29,4 +29,6 @@ require "pith"
 
 @project = Pith::Project.new(:input_dir => $input_dir, :output_dir => $output_dir)
 @project.logger = Pith::ConsoleLogger.new
-@project.build
+
+action = ARGV.shift || "build"
+@project.send(action)

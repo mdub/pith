@@ -11,6 +11,10 @@ module Pith
       @io.puts(message)
     end
     
+    def write(message)
+      @io.puts(message)
+    end
+    
   end
   
 end
