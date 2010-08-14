@@ -3,7 +3,7 @@ require "tilt"
 
 module Pith
   
-  class OutputContext
+  class RenderContext
     
     include Tilt::CompileSite
     

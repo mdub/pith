@@ -1,5 +1,5 @@
 require "tilt"
-require "pith/output_context"
+require "pith/render_context"
 require "pith/metadata"
 
 module Pith
@@ -75,7 +75,7 @@ module Pith
         output_file = project.output_dir + output_path
         output_file.parent.mkpath
         output_file.open("w") do |out|
-          output = render(OutputContext.new(self))
+          output = render(RenderContext.new(self))
           out.puts(output)
         end
         output_file
