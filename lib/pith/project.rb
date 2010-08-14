@@ -16,7 +16,7 @@ module Pith
     attr_accessor :input_dir, :output_dir
     
     def inputs
-      @inputs ||= Pathname.glob(input_dir + "**/*").map do |input_file|
+      Pathname.glob(input_dir + "**/*").map do |input_file|
         unless input_file.directory?
           path = input_file.relative_path_from(input_dir)
           Input.new(self, path)
@@ -29,7 +29,9 @@ module Pith
     end
     
     def build
-      inputs.each { |input| input.build }
+      inputs.each do |input| 
+        input.build
+      end
     end
 
     def serve
