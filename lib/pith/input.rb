@@ -1,4 +1,3 @@
-require "tilt"
 require "pith/render_context"
 require "pith/metadata"
 
@@ -66,7 +65,7 @@ module Pith
     alias :ignorable? :ignore
     
     def evaluate_as_tilt_template
-      if path.to_s =~ /^(.*)\.(.*)$/ && Tilt.registered?($2)
+      if path.to_s =~ /^(.*)\.(.*)$/ && RenderContext.can_render?($2)
         output_path = Pathname($1); ext = $2
         trace(ext, output_path)
         output_file = project.output_dir + output_path

@@ -7,6 +7,10 @@ module Pith
     
     include Tilt::CompileSite
     
+    def self.can_render?(extension)
+      Tilt.registered?(extension)
+    end
+    
     def initialize(project)
       @input_stack = []
       self.extend(project.helper_module)
