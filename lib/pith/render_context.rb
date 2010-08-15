@@ -7,9 +7,9 @@ module Pith
     
     include Tilt::CompileSite
     
-    def initialize(input)
-      @input_stack = [input]
-      self.extend(input.project.helper_module)
+    def initialize(project)
+      @input_stack = []
+      self.extend(project.helper_module)
     end
     
     def initial_input
@@ -20,18 +20,19 @@ module Pith
       @input_stack.last
     end
     
-    def include(name, locals = {}, &block)
-      including_input = current_input
-      included_input = including_input.relative_input(name)
-      with_input(included_input) do
-        content_block = if block_given?
-          content = with_input(including_input) do
-            capture_haml(&block)
-          end
-          proc { content }
-        end
-        current_input.render(self, locals, &content_block)
+    def render(input, locals = {}, &block)
+      with_input(input) do
+        Tilt.new(input.full_path).render(self, locals, &block)
       end
+    end
+
+    def include(name, locals = {}, &block)
+      included_input = current_input.relative_input(name)
+      content_block = if block_given?
+        content = capture_haml(&block)
+        proc { content }
+      end
+      render(included_input, locals, &content_block)
     end
     
     def content_for

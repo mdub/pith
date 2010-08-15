@@ -24,10 +24,6 @@ module Pith
       end.compact
     end
     
-    def input(name)
-      input_dir + name
-    end
-    
     def build
       load_config
       inputs.each do |input| 

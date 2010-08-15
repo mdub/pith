@@ -13,17 +13,21 @@ module Pith
 
     attr_reader :project, :path
     
+    def full_path
+      project.input_dir + path
+    end
+    
+    def meta
+      if @metadata.nil?
+        full_path.open do |io|
+          @metadata = Pith::Metadata.extract_from(io).freeze
+        end
+      end
+      @metadata
+    end
+    
     def build
       ignore || evaluate_as_tilt_template || copy_verbatim
-    end
-
-    def relative_input(name)
-      resolved_path = relative_path(name)
-      input = project.inputs.find do |input|
-        input.path == resolved_path
-      end
-      raise %{can't locate "#{resolved_path}"} if input.nil?
-      input
     end
     
     def relative_path(name)
@@ -34,18 +38,14 @@ module Pith
         path.parent + name
       end
     end
-    
-    def render(context, locals = {}, &block)
-      Tilt.new(full_path).render(context, locals, &block)
-    end
 
-    def meta
-      if @metadata.nil?
-        full_path.open do |io|
-          @metadata = Pith::Metadata.extract_from(io).freeze
-        end
+    def relative_input(name)
+      resolved_path = relative_path(name)
+      input = project.inputs.find do |input|
+        input.path == resolved_path
       end
-      @metadata
+      raise %{can't locate "#{resolved_path}"} if input.nil?
+      input
     end
     
     private
@@ -59,13 +59,10 @@ module Pith
       logger.info("%-36s%-14s%s" % [path, "--(#{strategy})-->", output_path])
     end
     
-    def full_path
-      project.input_dir + path
-    end
-    
     def ignore
       path.to_s.split("/").any? { |component| component.to_s[0,1] == "_" }
     end
+
     alias :ignorable? :ignore
     
     def evaluate_as_tilt_template
@@ -75,7 +72,7 @@ module Pith
         output_file = project.output_dir + output_path
         output_file.parent.mkpath
         output_file.open("w") do |out|
-          output = render(RenderContext.new(self))
+          output = RenderContext.new(project).render(self)
           out.puts(output)
         end
         output_file
@@ -91,5 +88,5 @@ module Pith
     end
 
   end
-  
+    
 end
