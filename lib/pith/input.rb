@@ -3,6 +3,8 @@ require "pith/metadata"
 
 module Pith
   
+  # Represents a file in the input directory.
+  #
   class Input
     
     def initialize(project, path)
@@ -20,6 +22,26 @@ module Pith
       project.input_dir + path
     end
     
+    # Public: Get YAML metadata declared in the header of of a template.
+    # 
+    # The first line of the template must end with "---".  Any preceding characters
+    # are considered to be a comment prefix, and are stripped from the following
+    # lines.  The metadata block ends when the comment block ends, or a line ending
+    # with "..." is encountered.
+    #
+    # Examples
+    #
+    #   Given input starting with:
+    #
+    #     -# ---
+    #     -# published: 2008-09-15
+    #     -# ...
+    #
+    #   input.meta
+    #   #=> { "published" => "2008-09-15" }
+    #  
+    # Returns a Hash.
+    #
     def meta
       if @metadata.nil?
         full_path.open do |io|
