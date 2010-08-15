@@ -64,11 +64,10 @@ module Pith
     #
     def relative_input(href)
       resolved_path = relative_path(href)
-      input = project.inputs.find do |input|
-        input.path == resolved_path
+      project.inputs.each do |input|
+        return input if input.path == resolved_path
       end
       raise %{can't locate "#{resolved_path}"} if input.nil?
-      input
     end
     
     private
