@@ -29,6 +29,7 @@ module Pith
     end
     
     def build
+      load_config
       inputs.each do |input| 
         input.build
       end
@@ -44,7 +45,25 @@ module Pith
     end
     
     attr_writer :logger
+
+    def helpers(&block)
+      helper_module.module_eval(&block)
+    end
     
+    def helper_module
+      @helper_module ||= Module.new
+    end
+    
+    private
+    
+    def load_config
+      config_file = input_dir + "_pith/config.rb"
+      project = self
+      if config_file.exist?
+        eval(config_file.read, binding, config_file)
+      end
+    end
+  
   end
   
 end

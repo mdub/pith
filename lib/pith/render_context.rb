@@ -9,6 +9,7 @@ module Pith
     
     def initialize(input)
       @input_stack = [input]
+      self.extend(input.project.helper_module)
     end
     
     def initial_input
