@@ -21,6 +21,29 @@ class DirHash
   
 end
 
+class InternalLogger
+
+  def initialize
+    @messages = []
+  end
+  
+  attr_reader :messages
+  
+  def clear
+    @messages.clear
+  end
+  
+  def info(message, &block)
+    message ||= block.call
+    write(message)
+  end
+
+  def write(message)
+    @messages << message
+  end
+    
+end
+
 $project_dir = Pathname(__FILE__).expand_path.parent.parent.parent
 $tmp_dir = $project_dir + "tmp"
 
@@ -38,6 +61,7 @@ Before do
     dir.mkpath
   end
   @project = Pith::Project.new(:input_dir => $input_dir, :output_dir => $output_dir)
+  @project.logger = InternalLogger.new
   @inputs = DirHash.new($input_dir)
   @outputs = DirHash.new($output_dir)
 end
