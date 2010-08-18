@@ -12,10 +12,18 @@ class DirHash
   end
 
   def []=(file_name, content)
+    write(file_name, content)
+  end
+
+  def write(file_name, content, options = {})
     file_path = @dir + file_name
     file_path.parent.mkpath
     file_path.open("w") do |io|
       io << content
+    end
+    if options[:mtime]
+      timestamp = options[:mtime]
+      file_path.utime(timestamp, timestamp)
     end
   end
   
