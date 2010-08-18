@@ -10,16 +10,16 @@ describe Pith::Project do
 
   describe "#input" do
 
-    describe "(with a valid input path)" do
+    describe "(with a non-template input path)" do
 
       before do
         @input_path = $input_dir + "input.txt"
         @input_path.touch
       end
 
-      it "constructs an Input object" do
+      it "constructs an Verbatim object" do
         @input = @project.input("input.txt")
-        @input.should be_kind_of(Pith::Input)
+        @input.should be_kind_of(Pith::Input::Verbatim)
         @input.full_path.should == @input_path
       end
 
@@ -27,6 +27,21 @@ describe Pith::Project do
         first_time = @project.input("input.txt")
         second_time = @project.input("input.txt")
         second_time.should equal(first_time)
+      end
+      
+    end
+
+    describe "(with a template input path)" do
+
+      before do
+        @input_path = $input_dir + "input.haml"
+        @input_path.touch
+      end
+
+      it "constructs an Template object" do
+        @input = @project.input("input.haml")
+        @input.should be_kind_of(Pith::Input::Template)
+        @input.full_path.should == @input_path
       end
       
     end
