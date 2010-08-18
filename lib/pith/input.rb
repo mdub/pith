@@ -138,9 +138,8 @@ module Pith
       end
       
       def uptodate?
-        return false unless @dependencies
-        full_input_paths = @dependencies.map { |input| input.full_path }
-        FileUtils.uptodate?(full_output_path, full_input_paths)
+        return false if all_input_paths.nil?
+        FileUtils.uptodate?(full_output_path, all_input_paths)
       end
       
       # Render this input using Tilt
@@ -152,9 +151,19 @@ module Pith
         full_output_path.open("w") do |out|
           out.puts(render_context.render(self))
         end
-        @dependencies = render_context.rendered_inputs
+        remember_dependencies(render_context.rendered_inputs)
       end
 
+      private
+
+      def remember_dependencies(rendered_inputs)
+        @all_input_paths = rendered_inputs.map { |input| input.full_path }
+      end
+
+      def all_input_paths
+        @all_input_paths
+      end
+      
     end
 
     class Verbatim < Abstract
