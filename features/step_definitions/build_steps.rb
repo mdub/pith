@@ -20,6 +20,7 @@ When /^I (?:re)?build the site$/ do
 end
 
 Given "the site is up-to-date" do
+  sleep(1) # TODO: stop sleeping
   When "I build the site"
 end
 

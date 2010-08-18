@@ -14,7 +14,6 @@ Scenario: alter an input, and the output changes
   Then output file "page.html" should be re-generated
   And output file "page.html" should contain "New content"
 
-@wip
 Scenario: don't alter an input, and the output is untouched
 
   Given input file "page.html.haml" contains "Content"
