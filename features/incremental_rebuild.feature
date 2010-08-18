@@ -11,7 +11,8 @@ Scenario: alter an input, and the output changes
   When I change input file "page.html.haml" to contain "New content"
   And I rebuild the site
   
-  Then output file "page.html" should contain "New content"
+  Then output file "page.html" should be re-generated
+  And output file "page.html" should contain "New content"
 
 @wip
 Scenario: don't alter an input, and the output is untouched
@@ -21,4 +22,4 @@ Scenario: don't alter an input, and the output is untouched
 
   When I rebuild the site
 
-  Then no outputs should be re-generated
+  Then output file "page.html" should not be re-generated

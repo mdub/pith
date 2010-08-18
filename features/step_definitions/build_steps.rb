@@ -41,6 +41,10 @@ Then /^output file "([^\"]*)" should not exist$/ do |file_name|
   @outputs[file_name].should == nil
 end
 
+Then /^output file "([^"]*)" should be re\-generated$/ do |file_name|
+  @project.logger.messages.should contain(/--> +#{file_name}/)
+end
+
 Then /^no outputs should be re\-generated$/ do
   @project.logger.messages.should be_empty
 end
