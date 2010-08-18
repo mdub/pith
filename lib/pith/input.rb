@@ -86,10 +86,7 @@ module Pith
     #
     def relative_input(href)
       resolved_path = relative_path(href)
-      project.inputs.each do |input|
-        return input if input.path == resolved_path
-      end
-      raise %{can't locate "#{resolved_path}"} if input.nil?
+      project.input(resolved_path)
     end
     
     private

@@ -17,11 +17,19 @@ module Pith
     
     def inputs
       Pathname.glob(input_dir + "**/*").map do |input_file|
-        unless input_file.directory?
-          path = input_file.relative_path_from(input_dir)
-          Input.new(self, path)
-        end 
+        next if input_file.directory?
+        path = input_file.relative_path_from(input_dir)
+        input(path)
       end.compact
+    end
+    
+    def input(path)
+      @input_cache ||= Hash.new do |h, path|
+        h[path] = Input.new(self, path)
+      end
+      input = @input_cache[path]
+      raise %{can't locate "#{path}"} unless input.full_path.file?
+      input
     end
     
     def build

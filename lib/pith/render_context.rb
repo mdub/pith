@@ -1,3 +1,4 @@
+require "set"
 require "pathname"
 require "tilt"
 
@@ -13,6 +14,7 @@ module Pith
     
     def initialize(project)
       @input_stack = []
+      @rendered_inputs = Set.new
       self.extend(project.helper_module)
     end
     
@@ -25,11 +27,14 @@ module Pith
     end
     
     def render(input, locals = {}, &block)
+      @rendered_inputs << input
       with_input(input) do
         Tilt.new(input.full_path).render(self, locals, &block)
       end
     end
 
+    attr_reader :rendered_inputs
+    
     def include(name, locals = {}, &block)
       included_input = current_input.relative_input(name)
       content_block = if block_given?

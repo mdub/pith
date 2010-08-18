@@ -45,6 +45,6 @@ Then /^output file "([^"]*)" should be re\-generated$/ do |file_name|
   @project.logger.messages.should contain(/--> +#{file_name}/)
 end
 
-Then /^no outputs should be re\-generated$/ do
-  @project.logger.messages.should be_empty
+Then /^output file "([^"]*)" should not be re\-generated$/ do |file_name|
+  @project.logger.messages.should_not contain(/--> +#{file_name}/)
 end
