@@ -78,3 +78,25 @@ Scenario: links included from a partial
     """
     <link href='../stylesheets/app.css' rel='stylesheet' type='text/css' />
     """
+
+@wip
+Scenario: use "title" meta-data attribute in link
+
+  Given input file "index.html.haml" contains 
+    """
+    = link("page.html")
+    """
+
+  And input file "page.html.haml" contains
+    """
+    -# ---
+    -# title: Title from meta-data
+    -# ...
+    """
+
+  When I build the site
+
+  Then output file "index.html" should contain
+    """
+    <a href="page.html">Title from meta-data</a>
+    """
