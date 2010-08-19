@@ -17,6 +17,13 @@ Using Pith, you can:
 
 * __Define custom helper-methods__ to increase expressiveness.
 
+Install it
+----------
+
+Pith is packaged as a Ruby gem.  Assuming you have Ruby, install it thusly:
+
+    gem install pith
+
 [tilt]: http://github.com/rtomayko/tilt/
 [haml]: http://haml-lang.com
 [sass]: http://sass-lang.com
