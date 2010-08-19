@@ -1,3 +1,3 @@
 module Pith
-  VERSION = "0.0.2a".freeze
+  VERSION = "0.0.2".freeze
 end
