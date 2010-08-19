@@ -17,9 +17,8 @@ module Pith
       end
     end
 
-    def run(project)
-      app = new(project)
-      Rack::Handler.get("thin").run(app, :Port => 4321)
+    def run(project, options = {})
+      Rack::Handler.get("thin").run(new(project), options)
     end
 
     extend self

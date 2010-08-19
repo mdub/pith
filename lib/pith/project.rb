@@ -38,11 +38,6 @@ module Pith
         input.build
       end
     end
-
-    def serve
-      require "pith/server"
-      Pith::Server.run(self)
-    end
     
     def logger
       @logger ||= Logger.new(nil)

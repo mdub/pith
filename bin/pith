@@ -32,13 +32,29 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-$output_dir ||= $input_dir + "_out"
+unless $output_dir
+  $output_dir = $input_dir + "_out"
+  puts %{Generating to "#{$output_dir}"}
+end
 
 $: << File.expand_path("../../lib", __FILE__)
-require "pith"
+
+require "pith/project"
+require "pith/console_logger"
 
 @project = Pith::Project.new(:input_dir => $input_dir, :output_dir => $output_dir)
 @project.logger = Pith::ConsoleLogger.new
 
+def build
+  @project.build
+end
+
+def serve
+  require "pith/server"
+  port = 4321
+  puts %{Taking the Pith at "http://localhost:#{port}"}
+  Pith::Server.run(@project, :Port => port)
+end
+
 action = ARGV.shift || "build"
-@project.send(action)
+self.send(action)
