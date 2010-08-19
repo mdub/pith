@@ -20,7 +20,7 @@ describe Pith::Project do
       it "constructs an Verbatim object" do
         @input = @project.input("input.txt")
         @input.should be_kind_of(Pith::Input::Verbatim)
-        @input.full_path.should == @input_path
+        @input.file.should == @input_path
       end
 
       it "returns the same Input output every time" do
@@ -41,7 +41,7 @@ describe Pith::Project do
       it "constructs an Template object" do
         @input = @project.input("input.haml")
         @input.should be_kind_of(Pith::Input::Template)
-        @input.full_path.should == @input_path
+        @input.file.should == @input_path
       end
       
     end

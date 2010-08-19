@@ -6,17 +6,17 @@ class DirHash
     @dir = Pathname(dir)
   end
 
-  def [](file_name)
-    file_path = @dir + file_name
+  def [](file)
+    file_path = @dir + file
     file_path.read if file_path.exist?
   end
 
-  def []=(file_name, content)
-    write(file_name, content)
+  def []=(file, content)
+    write(file, content)
   end
 
-  def write(file_name, content, options = {})
-    file_path = @dir + file_name
+  def write(file, content, options = {})
+    file_path = @dir + file
     file_path.parent.mkpath
     file_path.open("w") do |io|
       io << content

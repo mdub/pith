@@ -30,7 +30,7 @@ module Pith
       #
       # Returns a fully-qualified Pathname.
       #
-      def full_path
+      def file
         project.input_dir + path
       end
 
@@ -56,7 +56,7 @@ module Pith
       #
       def meta
         if @metadata.nil?
-          full_path.open do |io|
+          file.open do |io|
             @metadata = Pith::Metadata.extract_from(io).freeze
           end
         end
@@ -132,22 +132,22 @@ module Pith
 
       attr_reader :output_path, :type
       
-      def full_output_path
+      def output_file
         project.output_dir + output_path
       end
       
       def uptodate?
-        return false if all_input_paths.nil?
-        FileUtils.uptodate?(full_output_path, all_input_paths)
+        return false if all_input_files.nil?
+        FileUtils.uptodate?(output_file, all_input_files)
       end
       
       # Render this input using Tilt
       #
       def generate_output
         trace(type, output_path)
-        full_output_path.parent.mkpath
+        output_file.parent.mkpath
         render_context = RenderContext.new(project)
-        full_output_path.open("w") do |out|
+        output_file.open("w") do |out|
           out.puts(render_context.render(self))
         end
         remember_dependencies(render_context.rendered_inputs)
@@ -156,31 +156,31 @@ module Pith
       private
 
       def remember_dependencies(rendered_inputs)
-        @all_input_paths = rendered_inputs.map { |input| input.full_path }
+        @all_input_files = rendered_inputs.map { |input| input.file }
       end
 
-      def all_input_paths
-        @all_input_paths
+      def all_input_files
+        @all_input_files
       end
       
     end
 
     class Verbatim < Abstract
 
-      def full_output_path
+      def output_file
         project.output_dir + path
       end
       
       def uptodate?
-        FileUtils.uptodate?(full_output_path, [full_path])
+        FileUtils.uptodate?(output_file, [file])
       end
       
       # Copy this input verbatim into the output directory
       #
       def generate_output
         trace("copy", path)
-        full_output_path.parent.mkpath
-        FileUtils.copy(full_path, full_output_path)
+        output_file.parent.mkpath
+        FileUtils.copy(file, output_file)
       end
       
     end

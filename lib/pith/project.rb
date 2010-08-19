@@ -28,7 +28,7 @@ module Pith
         h[path] = Input.new(self, path)
       end
       input = @input_cache[path]
-      raise %{can't locate "#{path}"} unless input.full_path.file?
+      raise %{can't locate "#{path}"} unless input.file.file?
       input
     end
     

@@ -29,7 +29,7 @@ module Pith
     def render(input, locals = {}, &block)
       @rendered_inputs << input
       with_input(input) do
-        Tilt.new(input.full_path).render(self, locals, &block)
+        Tilt.new(input.file).render(self, locals, &block)
       end
     end
 
