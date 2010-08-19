@@ -19,7 +19,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency("cucumber", ">= 0.8.3")
 
   gem.require_path = "lib"
-  gem.files = Dir["lib/**/*", "samples/**/*", "README.markdown", "LICENSE"]
+  gem.files = Dir["lib/**/*", "sample/**/*", "README.markdown", "LICENSE"]
   gem.test_files = Dir["Rakefile", "spec/**/*", "features/**/*", "cucumber.yml"]
   gem.executables = ["pith"]
   gem.default_executable = "pith"
