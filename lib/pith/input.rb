@@ -33,6 +33,10 @@ module Pith
       def file
         project.input_dir + path
       end
+      
+      def output_file
+        project.output_dir + output_path
+      end
 
       # Public: Get YAML metadata declared in the header of of a template.
       # 
@@ -65,11 +69,10 @@ module Pith
 
       # Public: Generate a corresponding output file.
       #
-      # Returns the output Pathname.
-      # Returns nil if no output was generated.
-      #
       def build
-        generate_output unless ignorable? || uptodate?
+        return false if ignorable? || uptodate?
+        logger.info("%-36s%-14s%s" % [path, "--(#{type})-->", output_path])
+        generate_output 
       end
 
       # Public: Resolve a reference relative to this input.
@@ -114,11 +117,6 @@ module Pith
         project.logger
       end
 
-      def trace(strategy, output_path = nil)
-        output_path ||= "X"
-        logger.info("%-36s%-14s%s" % [path, "--(#{strategy})-->", output_path])
-      end
-
     end
 
     class Template < Abstract
@@ -132,10 +130,6 @@ module Pith
 
       attr_reader :output_path, :type
       
-      def output_file
-        project.output_dir + output_path
-      end
-      
       def uptodate?
         return false if all_input_files.nil?
         FileUtils.uptodate?(output_file, all_input_files)
@@ -144,7 +138,6 @@ module Pith
       # Render this input using Tilt
       #
       def generate_output
-        trace(type, output_path)
         output_file.parent.mkpath
         render_context = RenderContext.new(project)
         output_file.open("w") do |out|
@@ -167,8 +160,12 @@ module Pith
 
     class Verbatim < Abstract
 
-      def output_file
-        project.output_dir + path
+      def output_path
+        path
+      end
+      
+      def type
+        "copy"
       end
       
       def uptodate?
@@ -178,7 +175,6 @@ module Pith
       # Copy this input verbatim into the output directory
       #
       def generate_output
-        trace("copy", path)
         output_file.parent.mkpath
         FileUtils.copy(file, output_file)
       end

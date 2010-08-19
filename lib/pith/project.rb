@@ -19,17 +19,16 @@ module Pith
       Pathname.glob(input_dir + "**/*").map do |input_file|
         next if input_file.directory?
         path = input_file.relative_path_from(input_dir)
-        input(path)
+        input_cache[path]
       end.compact
     end
     
     def input(path)
-      @input_cache ||= Hash.new do |h, path|
-        h[path] = Input.new(self, path)
+      path = Pathname(path)
+      inputs.each do |input|
+        return input if input.path == path || input.output_path == path
       end
-      input = @input_cache[path]
-      raise %{can't locate "#{path}"} unless input.file.file?
-      input
+      raise "Can't find #{path.inspect}"
     end
     
     def build
@@ -62,7 +61,13 @@ module Pith
         eval(config_file.read, binding, config_file)
       end
     end
-  
+
+    def input_cache
+      @input_cache ||= Hash.new do |h, path|
+        h[path] = Input.new(self, path)
+      end
+    end
+
   end
   
 end
