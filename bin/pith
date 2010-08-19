@@ -6,14 +6,24 @@ require "pathname"
 
 $input_dir = Pathname(".")
 
+BANNER = <<EOF
+usage: pith [OPTIONS] [COMMAND]
+
+  Commands: (default: "build")
+
+    build       Generate the website into OUTPUT_DIR.
+
+    serve       Serve the website via HTTP, re-generating as required.
+
+EOF
+
 OptionParser.new do |opts|
-  opts.banner = "usage: pith COMMAND [OPTIONS]"
-  opts.separator ""
+  opts.banner = BANNER
   opts.separator "  Options:"
-  opts.on("-i", "--input DIR", 'Input directory  (default: ".")') do |dir|
+  opts.on("-i", "--input INPUT_DIR", 'Input directory', '  (default: ".")') do |dir|
     $input_dir = Pathname(dir)
   end
-  opts.on("-o", "--output DIR", 'Output directory (default: "INPUT/_out")') do |dir|
+  opts.on("-o", "--output OUTPUT_DIR", 'Output directory', '  (default: "INPUT_DIR/_out")') do |dir|
     $output_dir = Pathname(dir)
   end
   opts.on_tail("-h", "--help", "Show this message") do
