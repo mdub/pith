@@ -94,11 +94,10 @@ module Pith
       #
       # href - a String referencing another asset
       #
-      # Returns a fully-qualified Pathname of the asset.
+      # Returns the referenced Input.
       #
       def relative_input(href)
-        resolved_path = relative_path(href)
-        project.input(resolved_path)
+        project.input(relative_path(href))
       end
 
       # Consider whether this input can be ignored.
