@@ -1,6 +1,7 @@
 Feature: linking between files
 
-  I want to be able to link pages easily
+  I want to be able to generate relative reference to other pages
+  So that the generated site is re-locateable
 
 Scenario: link from one top-level page to another
 
