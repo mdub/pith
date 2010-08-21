@@ -17,8 +17,7 @@ module Pith
       attr_reader :output_path, :type
 
       def uptodate?
-        return false if all_input_files.nil?
-        FileUtils.uptodate?(output_file, all_input_files)
+        all_input_files && FileUtils.uptodate?(output_file, all_input_files)
       end
 
       # Render this input using Tilt
@@ -38,9 +37,7 @@ module Pith
         @all_input_files = rendered_inputs.map { |input| input.file }
       end
 
-      def all_input_files
-        @all_input_files
-      end
+      attr_accessor :all_input_files
 
     end
 
