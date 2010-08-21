@@ -28,7 +28,7 @@ module Pith
       inputs.each do |input|
         return input if input.path == path || input.output_path == path
       end
-      raise "Can't find #{path.inspect}"
+      raise ReferenceError, "Can't find #{path.inspect}"
     end
     
     def build
@@ -69,5 +69,7 @@ module Pith
     end
 
   end
+  
+  class ReferenceError < StandardError; end
   
 end

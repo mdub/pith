@@ -13,10 +13,13 @@ module Pith
     end
     
     def initialize(project)
+      @project = project
       @input_stack = []
       @rendered_inputs = Set.new
       self.extend(project.helper_module)
     end
+
+    attr_reader :project
     
     def initial_input
       @input_stack.first
@@ -35,13 +38,12 @@ module Pith
 
     attr_reader :rendered_inputs
     
-    def include(name, locals = {}, &block)
-      included_input = current_input.relative_input(name)
+    def include(template_ref, locals = {}, &block)
       content_block = if block_given?
         content = capture_haml(&block)
         proc { content }
       end
-      render(included_input, locals, &content_block)
+      render(resolve_input(template_ref), locals, &content_block)
     end
     
     def content_for
@@ -52,16 +54,28 @@ module Pith
       initial_input.meta || {}
     end
     
-    def href(name)
-      target_path = current_input.relative_path(name)
-      target_path.relative_path_from(initial_input.path.parent)
+    def href(target_ref)
+      target_path = current_input.resolve_path(target_ref)
+      relative_path_to(target_path)
     end
 
-    def link(target, label)
-      %{<a href="#{href(target)}">#{label}</a>}
+    def link(target_ref, label = nil)
+      target_path = current_input.resolve_path(target_ref)
+      relative_path_to(target_path)
+      label ||= "NOT FOUND"
+      href = relative_path_to(target_path)
+      %{<a href="#{href}">#{label}</a>}
     end
     
     private
+
+    def relative_path_to(target_path)
+      target_path.relative_path_from(initial_input.path.parent)
+    end
+    
+    def resolve_input(ref)
+      current_input.resolve_input(ref)
+    end
     
     def with_input(input)
       @input_stack.push(input)

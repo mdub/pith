@@ -54,6 +54,22 @@ module Pith
         @metadata
       end
 
+      # Public: Get page title.
+      #
+      # The default title is based on the input file-name, sans-extension, capitalised,
+      # but can be overridden by providing a "title" in the metadata block.
+      #
+      # Examples
+      #
+      #  input.path.to_s
+      #  #=> "some_page.html.haml"
+      #  input.title
+      #  #=> "Some page"
+      # 
+      def title
+        meta["title"] || default_title
+      end
+      
       # Public: Generate a corresponding output file.
       #
       def build
@@ -71,7 +87,7 @@ module Pith
       #
       # Returns a fully-qualified Pathname of the asset.
       #
-      def relative_path(href)
+      def resolve_path(href)
         href = href.to_str
         if href[0,1] == "/"
           Pathname(href[1..-1])
@@ -86,8 +102,8 @@ module Pith
       #
       # Returns the referenced Input.
       #
-      def relative_input(href)
-        project.input(relative_path(href))
+      def resolve_input(href)
+        project.input(resolve_path(href))
       end
 
       # Consider whether this input can be ignored.
@@ -99,6 +115,10 @@ module Pith
       end
 
       protected
+        
+      def default_title
+        path.to_s.sub(/\..*/, '').tr('_-', ' ').capitalize
+      end
 
       def logger
         project.logger

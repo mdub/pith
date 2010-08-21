@@ -34,14 +34,27 @@ describe Pith::Project do
     describe "(with a template input path)" do
 
       before do
-        @input_file = $input_dir + "input.haml"
+        @input_file = $input_dir + "input.html.haml"
         @input_file.touch
       end
 
       it "constructs an Template object" do
-        @input = @project.input("input.haml")
+        @input = @project.input("input.html.haml")
         @input.should be_kind_of(Pith::Input::Template)
         @input.file.should == @input_file
+      end
+      
+    end
+
+    describe "(with a template ouput path)" do
+      
+      before do
+        @input_file = $input_dir + "input.html.haml"
+        @input_file.touch
+      end
+
+      it "can also be used to locate the Template" do
+        @project.input("input.html").should == @project.input("input.html.haml")
       end
       
     end
@@ -51,7 +64,7 @@ describe Pith::Project do
       it "complains" do
         lambda do
           @project.input("bogus.path")
-        end.should raise_error
+        end.should raise_error(Pith::ReferenceError)
       end
       
     end

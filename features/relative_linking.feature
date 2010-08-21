@@ -9,7 +9,8 @@ Scenario: link from one top-level page to another
     """
     = link("page.html", "Page")
     """
-
+  And input file "page.html" exists
+   
   When I build the site
   Then output file "index.html" should contain
     """
@@ -22,6 +23,7 @@ Scenario: link from a sub-directory to a root-level page
     """
     = link("/help.html", "Help")
     """
+  And input file "help.html" exists
 
   When I build the site
   Then output file "subdir/page.html" should contain
@@ -35,6 +37,7 @@ Scenario: link to an image
     """
     %img{:src => href("/logo.png")}
     """
+  And input file "logo.png" exists
 
   When I build the site
   Then output file "subdir/page.html" should contain
@@ -55,6 +58,8 @@ Scenario: links within a layout block
     = yield
     """
 
+  And input file "subdir/other.html" exists
+
   When I build the site
   Then output file "subdir/page.html" should contain
     """
@@ -73,6 +78,8 @@ Scenario: links included from a partial
     %link{ :href=>href("/stylesheets/app.css"), :rel=>"stylesheet", :type=>"text/css" }
     """
 
+  And input file "stylesheets/app.css" exists
+
   When I build the site
   Then output file "subdir/page.html" should contain
     """
@@ -90,7 +97,7 @@ Scenario: use "title" meta-data attribute in link
   And input file "page.html.haml" contains
     """
     -# ---
-    -# title: Title from meta-data
+    -# title: "Title from meta-data"
     -# ...
     """
 

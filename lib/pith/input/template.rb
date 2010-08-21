@@ -1,4 +1,5 @@
 require "fileutils"
+require "pathname"
 require "pith/input/abstract"
 require "pith/render_context"
 
@@ -10,7 +11,7 @@ module Pith
       def initialize(project, path)
         super(project, path)
         path.to_s =~ /^(.*)\.(.*)$/
-        @output_path = $1
+        @output_path = Pathname($1)
         @type = $2
       end
 
