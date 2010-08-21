@@ -13,14 +13,14 @@ describe Pith::Project do
     describe "(with a non-template input path)" do
 
       before do
-        @input_path = $input_dir + "input.txt"
-        @input_path.touch
+        @input_file = $input_dir + "input.txt"
+        @input_file.touch
       end
 
       it "constructs an Verbatim object" do
         @input = @project.input("input.txt")
         @input.should be_kind_of(Pith::Input::Verbatim)
-        @input.file.should == @input_path
+        @input.file.should == @input_file
       end
 
       it "returns the same Input output every time" do
@@ -34,14 +34,14 @@ describe Pith::Project do
     describe "(with a template input path)" do
 
       before do
-        @input_path = $input_dir + "input.haml"
-        @input_path.touch
+        @input_file = $input_dir + "input.haml"
+        @input_file.touch
       end
 
       it "constructs an Template object" do
         @input = @project.input("input.haml")
         @input.should be_kind_of(Pith::Input::Template)
-        @input.file.should == @input_path
+        @input.file.should == @input_file
       end
       
     end
