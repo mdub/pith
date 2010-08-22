@@ -62,10 +62,12 @@ module Pith
 
     def link(target_ref, label = nil)
       target_path = resolve_path(target_ref)
-      relative_path_to(target_path)
-      label ||= "NOT FOUND"
-      href = relative_path_to(target_path)
-      %{<a href="#{href}">#{label}</a>}
+      label ||= begin
+        project.input(target_path).title
+      rescue Pith::ReferenceError
+        "???"
+      end
+      %{<a href="#{relative_path_to(target_path)}">#{label}</a>}
     end
     
     private

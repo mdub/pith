@@ -86,7 +86,6 @@ Scenario: links included from a partial
     <link href='../stylesheets/app.css' rel='stylesheet' type='text/css' />
     """
 
-@wip
 Scenario: use "title" meta-data attribute in link
 
   Given input file "index.html.haml" contains 
@@ -99,6 +98,7 @@ Scenario: use "title" meta-data attribute in link
     -# ---
     -# title: "Title from meta-data"
     -# ...
+    Target content
     """
 
   When I build the site
