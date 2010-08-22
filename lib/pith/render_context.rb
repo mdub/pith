@@ -43,7 +43,9 @@ module Pith
         content = capture_haml(&block)
         proc { content }
       end
-      render(resolve_input(template_ref), locals, &content_block)
+      template_path = resolve_path(template_ref)
+      template = project.input(template_path)
+      render(template, locals, &content_block)
     end
     
     def content_for
@@ -55,12 +57,11 @@ module Pith
     end
     
     def href(target_ref)
-      target_path = current_input.resolve_path(target_ref)
-      relative_path_to(target_path)
+      relative_path_to(resolve_path(target_ref))
     end
 
     def link(target_ref, label = nil)
-      target_path = current_input.resolve_path(target_ref)
+      target_path = resolve_path(target_ref)
       relative_path_to(target_path)
       label ||= "NOT FOUND"
       href = relative_path_to(target_path)
@@ -73,8 +74,8 @@ module Pith
       target_path.relative_path_from(initial_input.path.parent)
     end
     
-    def resolve_input(ref)
-      current_input.resolve_input(ref)
+    def resolve_path(ref)
+      current_input.resolve_path(ref)
     end
     
     def with_input(input)

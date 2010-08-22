@@ -80,30 +80,20 @@ module Pith
 
       # Public: Resolve a reference relative to this input.
       #
-      # href - a String referencing another asset
+      # ref - a String referencing another asset
       #
-      # An href starting with "/" is resolved relative to the project root;
+      # A ref starting with "/" is resolved relative to the project root;
       # anything else is resolved relative to this input.
       #
       # Returns a fully-qualified Pathname of the asset.
       #
-      def resolve_path(href)
-        href = href.to_str
-        if href[0,1] == "/"
-          Pathname(href[1..-1])
+      def resolve_path(ref)
+        ref = ref.to_str
+        if ref[0,1] == "/"
+          Pathname(ref[1..-1])
         else
-          path.parent + href
+          path.parent + ref
         end
-      end
-
-      # Resolve a reference relative to this input.
-      #
-      # href - a String referencing another asset
-      #
-      # Returns the referenced Input.
-      #
-      def resolve_input(href)
-        project.input(resolve_path(href))
       end
 
       # Consider whether this input can be ignored.
