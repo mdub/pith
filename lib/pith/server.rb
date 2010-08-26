@@ -1,6 +1,5 @@
 require "rack"
 require "adsf/rack"
-require "logger"
 
 module Pith
 
