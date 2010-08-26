@@ -29,16 +29,13 @@ module Pith
       @input_stack.last
     end
     
-    def render_input(input, locals = {}, &block)
+    def render(input, locals = {}, &block)
       @rendered_inputs << input
       with_input(input) do
-        rendered = Tilt.new(input.file).render(self, locals, &block)
+        result = Tilt.new(input.file).render(self, locals, &block)
         layout_ref = current_input.meta["layout"]
-        if layout_ref
-          render_ref(layout_ref) { rendered }
-        else
-          rendered
-        end
+        result = render_ref(layout_ref) { result } if layout_ref
+        result
       end
     end
 
@@ -95,7 +92,7 @@ module Pith
     
     def render_ref(template_ref, locals = {}, &block)
       template = project.input(resolve_path(template_ref))
-      render_input(template, locals, &block)
+      render(template, locals, &block)
     end
 
   end
