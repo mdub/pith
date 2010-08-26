@@ -14,7 +14,7 @@ Scenario: a layout template at the input root
   
   Then output file "_layout" should not exist
 
-Scenario: a partial in a subdirectory
+Scenario: a partial in an ignored subdirectory
 
   Given input file "_partials/foo.html.haml" contains
     """
@@ -24,3 +24,14 @@ Scenario: a partial in a subdirectory
   When I build the site
   
   Then output file "_partials/foo.html" should not exist
+
+Scenario: an ignored partial in a subdirectory
+
+  Given input file "partials/_foo.html.haml" contains
+    """
+    Blah de blah
+    """
+    
+  When I build the site
+  
+  Then output file "partials/_foo.html" should not exist
