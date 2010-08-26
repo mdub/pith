@@ -35,8 +35,7 @@ module Pith
         rendered = Tilt.new(input.file).render(self, locals, &block)
         layout_ref = current_input.meta["layout"]
         if layout_ref
-          layout = project.input(resolve_path(layout_ref))
-          render_input(layout) { rendered }
+          render_ref(layout_ref) { rendered }
         else
           rendered
         end
@@ -50,8 +49,7 @@ module Pith
         content = capture_haml(&block)
         proc { content }
       end
-      template = project.input(resolve_path(template_ref))
-      render_input(template, locals, &content_block)
+      render_ref(template_ref, locals, &content_block)
     end
     
     def content_for
@@ -93,6 +91,11 @@ module Pith
       ensure
         @input_stack.pop
       end
+    end
+    
+    def render_ref(template_ref, locals = {}, &block)
+      template = project.input(resolve_path(template_ref))
+      render_input(template, locals, &block)
     end
 
   end
