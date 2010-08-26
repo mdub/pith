@@ -29,10 +29,17 @@ module Pith
       @input_stack.last
     end
     
-    def render(input, locals = {}, &block)
+    def render_input(input, locals = {}, &block)
       @rendered_inputs << input
       with_input(input) do
-        Tilt.new(input.file).render(self, locals, &block)
+        rendered = Tilt.new(input.file).render(self, locals, &block)
+        layout_ref = current_input.meta["layout"]
+        if layout_ref
+          layout = project.input(resolve_path(layout_ref))
+          render_input(layout) { rendered }
+        else
+          rendered
+        end
       end
     end
 
@@ -43,9 +50,8 @@ module Pith
         content = capture_haml(&block)
         proc { content }
       end
-      template_path = resolve_path(template_ref)
-      template = project.input(template_path)
-      render(template, locals, &content_block)
+      template = project.input(resolve_path(template_ref))
+      render_input(template, locals, &content_block)
     end
     
     def content_for

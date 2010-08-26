@@ -41,3 +41,23 @@ Scenario: instance variable assigned within the layed-out block
     <h1>XXX</h1>
     <p>blah blah</p>
     """
+
+Scenario: Layout specified in meta-data
+
+  Given input file "index.html.haml" contains
+    """
+    -# ---
+    -# layout: layouts/_simple.haml
+    -#...
+    blah blah
+    """
+  And input file "layouts/_simple.haml" contains 
+    """
+    %p= yield
+    """
+   
+  When I build the site
+  Then output file "index.html" should contain 
+    """
+    <p>blah blah</p>
+    """

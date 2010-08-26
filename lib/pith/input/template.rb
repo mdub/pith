@@ -27,7 +27,7 @@ module Pith
         output_file.parent.mkpath
         render_context = RenderContext.new(project)
         output_file.open("w") do |out|
-          out.puts(render_context.render(self))
+          out.puts(render_context.render_input(self))
         end
         remember_dependencies(render_context.rendered_inputs)
       end
