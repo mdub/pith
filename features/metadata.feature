@@ -3,7 +3,7 @@ Feature: metadata
   I want extract metadata from page source
   So that I can use it elsewhere
   
-Scenario: link from one top-level page to another
+Scenario: use meta-data from YAML comment
 
   Given input file "page.html.haml" contains
     """

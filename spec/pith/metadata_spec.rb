@@ -9,7 +9,7 @@ describe Pith::Metadata do
     Pith::Metadata.extract_from(StringIO.new(@input))
   end
   
-  describe "with input containing no YAML metadata" do
+  describe "when input contains no YAML metadata" do
     
     before do
       @input = "%p Blah blah"
@@ -21,7 +21,7 @@ describe Pith::Metadata do
     
   end
 
-  describe "with input containing YAML metadata" do
+  describe "when input contains YAML metadata" do
     
     before do
       @input = <<-HAML.gsub(/^ +/, '')
