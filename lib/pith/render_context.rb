@@ -8,10 +8,6 @@ module Pith
     
     include Tilt::CompileSite
     
-    def self.can_render?(extension)
-      Tilt.registered?(extension)
-    end
-    
     def initialize(project)
       @project = project
       @input_stack = []
@@ -32,7 +28,7 @@ module Pith
     def render(input, locals = {}, &block)
       @rendered_inputs << input
       with_input(input) do
-        result = Tilt.new(input.file).render(self, locals, &block)
+        result = input.render(self, locals, &block)
         layout_ref = current_input.meta["layout"]
         result = render_ref(layout_ref) { result } if layout_ref
         result

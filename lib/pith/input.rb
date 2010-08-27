@@ -7,11 +7,9 @@ module Pith
     class << self
 
       def new(project, path)
-        if path.to_s =~ /^(.*)\.(.*)$/ && RenderContext.can_render?($2)
-          Template.new(project, path)
-        else
-          Verbatim.new(project, path)
-        end
+        Template.new(project, path)
+      rescue Template::UnrecognisedType
+        Verbatim.new(project, path)
       end
 
     end

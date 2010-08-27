@@ -2,17 +2,21 @@ require "fileutils"
 require "pathname"
 require "pith/input/abstract"
 require "pith/render_context"
+require "tilt"
 
 module Pith
   module Input
 
     class Template < Abstract
 
+      class UnrecognisedType < StandardError; end
+      
       def initialize(project, path)
         super(project, path)
         path.to_s =~ /^(.*)\.(.*)$/
         @output_path = Pathname($1)
         @type = $2
+        raise(UnrecognisedType, @type) unless Tilt.registered?(@type)
       end
 
       attr_reader :output_path, :type
@@ -21,7 +25,7 @@ module Pith
         all_input_files && FileUtils.uptodate?(output_file, all_input_files)
       end
 
-      # Render this input using Tilt
+      # Generate output for this template
       #
       def generate_output
         output_file.parent.mkpath
@@ -30,6 +34,12 @@ module Pith
           out.puts(render_context.render(self))
         end
         remember_dependencies(render_context.rendered_inputs)
+      end
+
+      # Render this input using Tilt
+      #
+      def render(context, locals = {}, &block)
+        Tilt.new(file).render(context, locals, &block)
       end
 
       private
