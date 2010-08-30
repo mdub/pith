@@ -12,7 +12,7 @@ module Pith
         use Rack::Lint
         use Pith::Server::AutoBuild, project
         use Adsf::Rack::IndexFileFinder, :root => project.output_dir
-        run Rack::File.new(project.output_dir)
+        run Rack::Directory.new(project.output_dir)
       end
     end
 
