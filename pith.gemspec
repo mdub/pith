@@ -1,10 +1,15 @@
 $: << File.expand_path("../lib", __FILE__)
 require "pith/version"
 
+description = <<TEXT
+Pith builds static websites, using markup/template languages including Haml, Sass, ERb, Liquid, Markdown and Textile.
+TEXT
+
 Gem::Specification.new do |gem|
 
   gem.name = "pith"
   gem.summary = "A static website generator"
+  gem.description = description
   gem.homepage = "http://github.com/mdub/pith"
   gem.authors = ["Mike Williams"]
   gem.email = "mdub@dogbiscuit.org"
