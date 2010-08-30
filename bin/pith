@@ -1,8 +1,11 @@
 #! /usr/bin/env ruby
 
+$: << File.expand_path("../../lib", __FILE__)
+
 require "rubygems"
 require "optparse"
 require "pathname"
+require "pith/version"
 
 $input_dir = Pathname(".")
 
@@ -19,6 +22,7 @@ EOF
 
 OptionParser.new do |opts|
   opts.banner = BANNER
+  opts.version = Pith::VERSION
   opts.separator "  Options:"
   opts.on("-i", "--input INPUT_DIR", 'Input directory', '  (default: ".")') do |dir|
     $input_dir = Pathname(dir)
@@ -36,8 +40,6 @@ unless $output_dir
   $output_dir = $input_dir + "_out"
   puts %{Generating to "#{$output_dir}"}
 end
-
-$: << File.expand_path("../../lib", __FILE__)
 
 require "pith/project"
 require "pith/console_logger"
