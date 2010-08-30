@@ -10,7 +10,17 @@ task :default => :cucumber
 
 require 'cucumber/rake/task'
 
-Cucumber::Rake::Task.new(:cucumber) do |t|
-  t.fork = true
-  t.profile = 'default'
+namespace :cucumber do
+  
+  [:wip, :default].each do |profile|
+
+    Cucumber::Rake::Task.new(profile) do |t|
+      t.fork = true
+      t.profile = profile
+    end
+
+  end
+
 end
+
+task :cucumber => ["cucumber:wip", "cucumber:default"]
