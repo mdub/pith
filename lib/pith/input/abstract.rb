@@ -48,7 +48,8 @@ module Pith
       def meta
         if @metadata.nil?
           file.open do |io|
-            @metadata = Pith::Metadata.extract_from(io).freeze
+            @metadata = Pith::Metadata.extract_from(io) || {}
+            @metadata.freeze
           end
         end
         @metadata

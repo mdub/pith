@@ -15,8 +15,8 @@ describe Pith::Metadata do
       @input = "%p Blah blah"
     end
     
-    it "returns an empty Hash" do
-      metadata.should == {}
+    it "returns nil" do
+      metadata.should == nil
     end
     
   end
@@ -38,6 +38,23 @@ describe Pith::Metadata do
         "x" => 1,
         "y" => "2"
       }
+    end
+    
+  end
+
+  describe "when input contains badly-formed YAML" do
+    
+    before do
+      @input = <<-HAML.gsub(/^ +/, '')
+      -# ---
+      -# title: "No quotes", she said 
+      -# ...
+      -# other stuff
+      HAML
+    end
+    
+    it "returns nil" do
+      metadata.should == nil
     end
     
   end
