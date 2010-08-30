@@ -45,6 +45,8 @@ module Pith
       render_ref(template_ref, locals, &content_block)
     end
     
+    alias :inside :include
+    
     def content_for
       @content_for_hash ||= Hash.new { "" }
     end

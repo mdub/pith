@@ -1,9 +1,7 @@
--# ---
--# layout: _layouts/standard.haml
--# ...
--#
-%ol.tabs
-  %li= link "index.html", "Introduction"
+= inside "_layouts/standard.haml" do
 
-.box 
-  %p This is my site.  Do you like it?
+  %ol.tabs
+    %li= link "index.html", "Introduction"
+
+  .box 
+    %p This is my site.  Do you like it?

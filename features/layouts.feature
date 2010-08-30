@@ -7,7 +7,7 @@ Scenario: Haml template with a layout
 
   Given input file "index.html.haml" contains
     """
-    = include "layouts/_simple.haml" do
+    = inside "layouts/_simple.haml" do
       blah blah
     """
   And input file "layouts/_simple.haml" contains 
@@ -25,7 +25,7 @@ Scenario: instance variable assigned within the layed-out block
 
   Given input file "index.html.haml" contains
     """
-    = include "layouts/_with_header.haml" do
+    = inside "layouts/_with_header.haml" do
       - @title = "XXX"
       %p blah blah
     """
