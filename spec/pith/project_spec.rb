@@ -22,12 +22,6 @@ describe Pith::Project do
         @input.should be_kind_of(Pith::Input::Verbatim)
         @input.file.should == @input_file
       end
-
-      it "returns the same Input output every time" do
-        first_time = @project.input("input.txt")
-        second_time = @project.input("input.txt")
-        second_time.should equal(first_time)
-      end
       
     end
 
@@ -71,4 +65,49 @@ describe Pith::Project do
     
   end
   
+  describe "when an input file is unchanged" do
+
+    before do
+      @input_file = $input_dir + "input.html.haml"
+      @input_file.touch
+    end
+
+    describe "a second call to #input" do
+      it "returns the same Input object" do
+
+        first_time = @project.input("input.html.haml")
+        first_time.should_not be_nil
+
+        second_time = @project.input("input.html.haml")
+        second_time.should equal(first_time)
+
+      end
+    end
+
+  end
+
+  describe "when an input file is changed" do
+
+    before do
+      @input_file = $input_dir + "input.html.haml"
+      @input_file.touch(Time.now - 10)
+    end
+
+    describe "a second call to #input" do 
+      it "returns a different Input object" do
+
+        first_time = @project.input("input.html.haml")
+        first_time.should_not be_nil
+
+        @input_file.touch(Time.now)
+
+        second_time = @project.input("input.html.haml")
+        second_time.should_not be_nil
+        second_time.should_not equal(first_time)
+
+      end
+    end
+
+  end
+
 end

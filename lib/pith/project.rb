@@ -19,7 +19,7 @@ module Pith
       Pathname.glob(input_dir + "**/*").map do |input_file|
         next if input_file.directory?
         path = input_file.relative_path_from(input_dir)
-        input_cache[path]
+        find_or_create_input(path)
       end.compact
     end
     
@@ -63,13 +63,19 @@ module Pith
     end
 
     def input_cache
-      @input_cache ||= Hash.new do |h, path|
-        h[path] = Input.new(self, path)
+      @input_cache ||= Hash.new do |h, cache_key|
+        h[cache_key] = Input.new(self, cache_key.first)
       end
     end
 
+    def find_or_create_input(path)
+      file = input_dir + path
+      cache_key = [path, file.mtime]
+      input_cache[cache_key]
+    end
+    
   end
-  
+    
   class ReferenceError < StandardError; end
   
 end
