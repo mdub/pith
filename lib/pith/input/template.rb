@@ -22,6 +22,10 @@ module Pith
 
       attr_reader :output_path, :type
 
+      # Check whether output is up-to-date.
+      #
+      # Return true unless output needs to be re-generated.
+      #
       def uptodate?
         all_input_files && FileUtils.uptodate?(output_file, all_input_files)
       end
@@ -84,6 +88,8 @@ module Pith
 
       private
 
+      # Read input file, extracting YAML meta-data header, and template content.
+      #
       def load
         @meta = {}
         file.open do |input|
@@ -101,8 +107,7 @@ module Pith
           else
             input.rewind
           end
-          content = input.read
-          @tilt_template = Tilt.new(file, input.lineno + 1) { content }
+          @tilt_template = Tilt.new(file, input.lineno + 1) { input.read }
         end
       end
       
