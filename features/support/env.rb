@@ -46,6 +46,9 @@ class InternalLogger
     write(message)
   end
 
+  alias :warn :info
+  alias :debug :info
+  
   def write(message)
     @messages << message
   end
