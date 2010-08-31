@@ -25,52 +25,6 @@ module Pith
         project.output_dir + output_path
       end
 
-      # Public: Get YAML metadata declared in the header of of a template.
-      # 
-      # The first line of the template must end with "---".  Any preceding characters
-      # are considered to be a comment prefix, and are stripped from the following
-      # lines.  The metadata block ends when the comment block ends, or a line ending
-      # with "..." is encountered.
-      #
-      # Examples
-      #
-      #   Given input starting with:
-      #
-      #     -# ---
-      #     -# published: 2008-09-15
-      #     -# ...
-      #
-      #   input.meta
-      #   #=> { "published" => "2008-09-15" }
-      #  
-      # Returns a Hash.
-      #
-      def meta
-        if @metadata.nil?
-          file.open do |io|
-            @metadata = Pith::Metadata.extract_from(io) || {}
-            @metadata.freeze
-          end
-        end
-        @metadata
-      end
-
-      # Public: Get page title.
-      #
-      # The default title is based on the input file-name, sans-extension, capitalised,
-      # but can be overridden by providing a "title" in the metadata block.
-      #
-      # Examples
-      #
-      #  input.path.to_s
-      #  #=> "some_page.html.haml"
-      #  input.title
-      #  #=> "Some page"
-      # 
-      def title
-        meta["title"] || default_title
-      end
-      
       # Public: Generate a corresponding output file.
       #
       def build

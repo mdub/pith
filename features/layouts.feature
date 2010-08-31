@@ -46,9 +46,9 @@ Scenario: Layout specified in meta-data
 
   Given input file "index.html.haml" contains
     """
-    -# ---
-    -# layout: layouts/_simple.haml
-    -#...
+    ---
+    layout: layouts/_simple.haml
+    ...
     blah blah
     """
   And input file "layouts/_simple.haml" contains 

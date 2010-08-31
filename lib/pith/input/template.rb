@@ -17,6 +17,7 @@ module Pith
         @output_path = Pathname($1)
         @type = $2
         raise(UnrecognisedType, @type) unless Tilt.registered?(@type)
+        load
       end
 
       attr_reader :output_path, :type
@@ -39,11 +40,72 @@ module Pith
       # Render this input using Tilt
       #
       def render(context, locals = {}, &block)
-        Tilt.new(file).render(context, locals, &block)
+        @tilt_template.render(context, locals, &block)
+      end
+      
+      # Public: Get YAML metadata declared in the header of of a template.
+      # 
+      # If the first line of the template starts with "---" it is considered to be
+      # the start of a YAML 'document', which is loaded and returned.
+      #
+      # Examples
+      #
+      #   Given input starting with:
+      #
+      #     ---
+      #     published: 2008-09-15
+      #     ...
+      #     OTHER STUFF
+      #
+      #   input.meta
+      #   #=> { "published" => "2008-09-15" }
+      #  
+      # Returns a Hash.
+      #
+      def meta
+        @meta
+      end
+
+      # Public: Get page title.
+      #
+      # The default title is based on the input file-name, sans-extension, capitalised,
+      # but can be overridden by providing a "title" in the metadata block.
+      #
+      # Examples
+      #
+      #  input.path.to_s
+      #  #=> "some_page.html.haml"
+      #  input.title
+      #  #=> "Some page"
+      # 
+      def title
+        meta["title"] || default_title
       end
 
       private
 
+      def load
+        @meta = {}
+        file.open do |input|
+          header = input.gets
+          if header =~ /^---/
+            while line = input.gets
+              break if line =~ /^(---|\.\.\.)/
+              header << line
+            end
+            begin
+              @meta = YAML.load(header)
+            rescue
+              logger.warn "#{file}:1: badly-formed YAML header"
+            end
+          else
+            input.rewind
+          end
+          content = input.read
+          @tilt_template = Tilt.new(file, input.lineno + 1) { content }
+        end
+      end
+      
       def remember_dependencies(rendered_inputs)
         @all_input_files = rendered_inputs.map { |input| input.file }
       end

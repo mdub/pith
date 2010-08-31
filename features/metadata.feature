@@ -7,9 +7,9 @@ Scenario: use meta-data from YAML comment
 
   Given input file "page.html.haml" contains
     """
-    -# ---
-    -# title: PAGE TITLE
-    -# ...
+    ---
+    title: PAGE TITLE
+    ---
     %h1= meta["title"]
     """
 
@@ -23,9 +23,9 @@ Scenario: corrupt meta-data
 
   Given input file "page.html.haml" contains
     """
-    -# ---
-    -# title: "This" is no well-formed YAML
-    -# ...
+    ---
+    title: "This" is no well-formed YAML
+    ...
     %p PAGE BODY
     """
 

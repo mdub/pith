@@ -19,9 +19,9 @@ describe Pith::Input::Abstract do
 
     it "can be over-ridden in metadata" do
       @input_file.open("w") do |i|
-        i.puts "-# ---"
-        i.puts "-# title: Blah blah"
-        i.puts "-# ..."
+        i.puts "---"
+        i.puts "title: Blah blah"
+        i.puts "..."
       end
       @project.input("some_page.html").title.should == "Blah blah"
     end

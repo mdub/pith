@@ -95,9 +95,9 @@ Scenario: use "title" meta-data attribute in link
 
   And input file "page.html.haml" contains
     """
-    -# ---
-    -# title: "Title from meta-data"
-    -# ...
+    ---
+    title: "Title from meta-data"
+    ...
     Target content
     """
 
