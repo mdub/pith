@@ -89,6 +89,21 @@ Use "`yield`" to embed the block's content within the layout:
         .main
           = yield
 
+Relative links
+--------------
+
+It's sensible to use relative URIs when linking to other pages (and resources) in your static site, making the site easier to relocate.  But generating relative-links from partials and layouts is tricky.  Pith makes it easy with the "`href`" function:
+
+    %a{:href => href("other.html")} Other page
+
+    %img{:src => href("/images/logo.png")}
+
+Any path beginning with a slash ("/") is resolved relative to the root of the site; anything else is resolve relative to the current input-file (even if that happens to be a layout or partial).  Either way, "`href`" always returns a relative link.
+
+There's also a "`link`" function, for even easier hyper-linking:
+
+    link("other.html", "Other page")
+    
 Built-in web-server
 -------------------
 
