@@ -3,6 +3,7 @@ require "pathname"
 require "pith/input/abstract"
 require "pith/render_context"
 require "tilt"
+require "yaml"
 
 module Pith
   module Input

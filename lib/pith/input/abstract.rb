@@ -1,5 +1,4 @@
 require "pathname"
-require "pith/metadata"
 
 module Pith
   module Input
