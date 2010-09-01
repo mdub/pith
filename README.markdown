@@ -41,7 +41,53 @@ Use the `pith build` command to convert your inputs into a functioning website.
     --(copy)-->   images/logo.png
     --(haml)-->   index.html
 
-Any input file with an extension recognised by [Tilt][tilt] is considered to be a template, and will be dynamically evaluated.  Anything else is just copied verbatim into the generated site.
+Any input file with an extension recognised by [Tilt][tilt] is considered to be a template, and will be dynamically evaluated.  Formats supported by Tilt include:
+
+- [Markdown](http://daringfireball.net/projects/markdown/) (`markdown`, `md`)
+- [Textile](http://redcloth.org/hobix.com/textile/) (`textile`)
+- [Haml][haml] (`haml`)
+- [Erb](http://ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html) (`erb`)
+- [Sass][sass] (`sass`)
+- [CoffeeScript](http://jashkenas.github.com/coffee-script/) (`coffee`)
+
+Anything else is just copied verbatim into the generated site.
+
+Partials
+--------
+
+Templates can include other templates, e.g.
+
+     = include("_header.haml")
+
+Note the leading underscore ("_").  Any input file (or directory) beginning with an underscore is ignored when generating outputs.
+
+When including, you can pass local variables, e.g.
+
+    = include("_list.haml", :items => [1,2,3])
+
+which can be accessed in the included template:
+
+    %ul
+      - items.each do |i|
+        %li= i
+
+Layouts
+-------
+
+Layout templates are a bit like partials, except that they take a block, e.g.
+
+    = inside "_mylayout.haml" do
+      %p Some content
+
+Use "`yield`" to embed the block's content within the layout:
+
+    !!!
+    %html
+      %body
+        .header
+          ... blah blah ...
+        .main
+          = yield
 
 Built-in web-server
 -------------------
