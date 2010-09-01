@@ -11,7 +11,7 @@ module Pith
     def initialize(project)
       @project = project
       @input_stack = []
-      @rendered_inputs = Set.new
+      @referenced_inputs = Set.new
       self.extend(project.helper_module)
     end
 
@@ -26,7 +26,6 @@ module Pith
     end
     
     def render(input, locals = {}, &block)
-      @rendered_inputs << input
       with_input(input) do
         result = input.render(self, locals, &block)
         layout_ref = current_input.meta["layout"]
@@ -35,7 +34,7 @@ module Pith
       end
     end
 
-    attr_reader :rendered_inputs
+    attr_reader :referenced_inputs
     
     def include(template_ref, locals = {}, &block)
       content_block = if block_given?
@@ -62,7 +61,7 @@ module Pith
     def link(target_ref, label = nil)
       target_path = resolve_path(target_ref)
       label ||= begin
-        project.input(target_path).title
+        find_input(target_path).title
       rescue Pith::ReferenceError
         "???"
       end
@@ -79,7 +78,14 @@ module Pith
       current_input.resolve_path(ref)
     end
     
+    def find_input(path)
+      input = project.input(path)
+      @referenced_inputs << input if input
+      input
+    end
+    
     def with_input(input)
+      @referenced_inputs << input
       @input_stack.push(input)
       begin
         yield
@@ -89,7 +95,8 @@ module Pith
     end
     
     def render_ref(template_ref, locals = {}, &block)
-      template = project.input(resolve_path(template_ref))
+      template_path = resolve_path(template_ref)
+      template = find_input(template_path)
       render(template, locals, &block)
     end
 
