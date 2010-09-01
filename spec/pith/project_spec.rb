@@ -78,6 +78,7 @@ describe Pith::Project do
         first_time = @project.input("input.html.haml")
         first_time.should_not be_nil
 
+        @project.refresh
         second_time = @project.input("input.html.haml")
         second_time.should equal(first_time)
 
@@ -101,6 +102,7 @@ describe Pith::Project do
 
         @input_file.touch(Time.now)
 
+        @project.refresh
         second_time = @project.input("input.html.haml")
         second_time.should_not be_nil
         second_time.should_not equal(first_time)

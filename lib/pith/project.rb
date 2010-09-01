@@ -14,15 +14,29 @@ module Pith
     end
     
     attr_accessor :input_dir, :output_dir
-    
+
+    # Public: get inputs
+    #
+    # Returns Pith::Input objects representing the files in the input_dir.
+    #
+    # The list of inputs is cached after first load; 
+    #   call #refresh to discard the cached data.
+    #
     def inputs
-      Pathname.glob(input_dir + "**/*").map do |input_file|
+      @inputs ||= Pathname.glob(input_dir + "**/*").map do |input_file|
         next if input_file.directory?
         path = input_file.relative_path_from(input_dir)
         find_or_create_input(path)
       end.compact
     end
-    
+
+    # Public: find an input.
+    #
+    # path - an path relative to either input_dir or output_dir
+    #
+    # Returns the first input whose input_path or output_path matches.
+    # Returns nil if no match is found.
+    #
     def input(path)
       path = Pathname(path)
       inputs.each do |input|
@@ -30,14 +44,23 @@ module Pith
       end
       raise ReferenceError, "Can't find #{path.inspect}"
     end
-    
+
+    # Public: build the project, generating output files.
+    #
     def build
+      refresh
       load_config
       inputs.each do |input| 
         input.build
       end
     end
     
+    # Public: discard cached data that is out-of-sync with the file-system.
+    #
+    def refresh
+      @inputs = nil
+    end
+
     def logger
       @logger ||= Logger.new(nil)
     end
