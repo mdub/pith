@@ -36,6 +36,12 @@ OptionParser.new do |opts|
   end
 end.parse!
 
+pith_dir = $input_dir + "_pith"
+unless pith_dir.directory?
+  $stderr.puts %(ERROR: No "#{pith_dir}" directory ... this doesn't look right!)
+  exit(1)
+end
+
 unless $output_dir
   $output_dir = $input_dir + "_out"
 end

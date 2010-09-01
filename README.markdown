@@ -1,7 +1,7 @@
 Pith
 ====
 
-Pith is a static web-site generator, written in Ruby.
+Pith is a static website generator, written in Ruby.
 
 Using Pith, you can:
 
@@ -30,11 +30,14 @@ Quickstart
 Create an input directory for your site (wherever you want), and pop some files into it:
 
     SITE/
+      _pith/
       images/
         logo.png
       index.html.haml
 
-Use the `pith build` command to convert your inputs into a functioning website.
+The only requirement is the existance of a sub-directory called "`_pith`".  Pith checks that it's present, to prevent you accidently treating you entire home-directory as website input.
+
+Next, use the `pith build` command to convert your inputs into a functioning website.
 
     $ pith -i SITE build
     Generating to "SITE/_out"
