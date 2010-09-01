@@ -17,11 +17,6 @@ Using Pith, you can:
 
 * Test changes quickly using the built-in web-server.
 
-Why Pith?
----------
-
-Why another static web-site generator, when there are other good options out there?  Pith's main differentiating factor is that structure of the output slavishly mirrors the structure of the input; there are no magic input directories for layouts, or dynamic content, or anything else.
-
 Install it
 ----------
 
