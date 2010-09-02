@@ -11,7 +11,7 @@ module Pith
     def initialize(project)
       @project = project
       @input_stack = []
-      @referenced_inputs = Set.new
+      @dependencies = project.config_files.dup
       self.extend(project.helper_module)
     end
 
@@ -34,7 +34,7 @@ module Pith
       end
     end
 
-    attr_reader :referenced_inputs
+    attr_reader :dependencies
     
     def include(template_ref, locals = {}, &block)
       content_block = if block_given?
@@ -80,12 +80,12 @@ module Pith
     
     def find_input(path)
       input = project.input(path)
-      @referenced_inputs << input if input
+      @dependencies << input.file if input
       input
     end
     
     def with_input(input)
-      @referenced_inputs << input
+      @dependencies << input.file
       @input_stack.push(input)
       begin
         yield

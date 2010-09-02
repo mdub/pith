@@ -28,7 +28,7 @@ module Pith
       # Return true unless output needs to be re-generated.
       #
       def uptodate?
-        all_input_files && FileUtils.uptodate?(output_file, all_input_files)
+        dependencies && FileUtils.uptodate?(output_file, dependencies)
       end
 
       # Generate output for this template
@@ -39,7 +39,7 @@ module Pith
         output_file.open("w") do |out|
           out.puts(render_context.render(self))
         end
-        remember_dependencies(render_context.referenced_inputs)
+        @dependencies = render_context.dependencies
       end
 
       # Render this input using Tilt
@@ -112,11 +112,7 @@ module Pith
         end
       end
       
-      def remember_dependencies(referenced_inputs)
-        @all_input_files = referenced_inputs.map { |input| input.file }
-      end
-
-      attr_accessor :all_input_files
+      attr_accessor :dependencies
 
     end
 

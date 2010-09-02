@@ -59,6 +59,7 @@ module Pith
     #
     def refresh
       @inputs = nil
+      @config_files = nil
     end
 
     def logger
@@ -74,6 +75,12 @@ module Pith
     def helper_module
       @helper_module ||= Module.new
     end
+
+    def config_files
+      @config_files ||= begin 
+        Pathname.glob("#{input_dir}/_pith/**")
+      end.to_set
+    end
     
     private
     
@@ -84,7 +91,7 @@ module Pith
         eval(config_file.read, binding, config_file)
       end
     end
-
+    
     def input_cache
       @input_cache ||= Hash.new do |h, cache_key|
         h[cache_key] = Input.new(self, cache_key.first)
