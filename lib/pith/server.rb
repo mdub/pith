@@ -12,6 +12,7 @@ module Pith
         use Rack::Lint
         use Pith::Server::AutoBuild, project
         use Adsf::Rack::IndexFileFinder, :root => project.output_dir
+        use Pith::Server::DefaultToHtml, project.output_dir
         run Rack::Directory.new(project.output_dir)
       end
     end
@@ -21,7 +22,7 @@ module Pith
     end
 
     extend self
-    
+
     class AutoBuild
 
       def initialize(app, project)
@@ -32,6 +33,29 @@ module Pith
       def call(env)
         @project.build
         @app.call(env)
+      end
+
+    end
+
+    class DefaultToHtml
+
+      def initialize(app, root)
+        @app  = app
+        @root = root
+      end
+
+      def call(env)
+
+        path_info = ::Rack::Utils.unescape(env["PATH_INFO"])
+        file = "#{@root}#{path_info}"
+        unless File.exist?(file)
+          if File.exist?("#{file}.html")
+            env["PATH_INFO"] += ".html"
+          end
+        end
+
+        @app.call(env)
+
       end
 
     end
