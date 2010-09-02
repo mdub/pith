@@ -6,15 +6,10 @@ Pith is a static website generator, written in Ruby.
 Using Pith, you can:
 
 * Lay-out your page designs in [Haml][haml], ERb, or Liquid.
-
 * Style things up using [Sass][sass].
-
 * Succintly add content using Markdown or Textile.
-
 * Encapsulate common markup in "layout" and "partial" templates.
-
 * Easily link pages (and resources) using relative links.
-
 * Test changes quickly using the built-in web-server.
 
 Install it
@@ -35,7 +30,7 @@ Create an input directory for your site (wherever you want), and pop some files 
         logo.png
       index.html.haml
 
-The only requirement is the existance of a sub-directory called "`_pith`".  Pith checks that it's present, to prevent you accidently treating you entire home-directory as website input.
+The only requirement is the existance of a sub-directory called "`_pith`".  Pith checks that it's present, to prevent you accidently treating your entire home-directory as website input.
 
 Next, use the `pith build` command to convert your inputs into a functioning website.
 
