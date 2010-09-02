@@ -17,9 +17,9 @@ describe Pith::Project do
         @input_file.touch
       end
 
-      it "constructs an Verbatim object" do
+      it "constructs an Resource object" do
         @input = @project.input("input.txt")
-        @input.should be_kind_of(Pith::Input::Verbatim)
+        @input.should be_kind_of(Pith::Input::Resource)
         @input.file.should == @input_file
       end
       

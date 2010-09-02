@@ -1,5 +1,5 @@
 require "pith/input/template"
-require "pith/input/verbatim"
+require "pith/input/resource"
 
 module Pith
   module Input
@@ -9,7 +9,7 @@ module Pith
       def new(project, path)
         Template.new(project, path)
       rescue Template::UnrecognisedType
-        Verbatim.new(project, path)
+        Resource.new(project, path)
       end
 
     end

@@ -5,28 +5,28 @@ Feature: unrecognised input files are copied into output intact
   
 Scenario: text file
 
-  Given input file "verbatim.txt" contains
+  Given input file "resource.txt" contains
     """
     Blah de blah
     """
     
   When I build the site
   
-  Then output file "verbatim.txt" should contain
+  Then output file "resource.txt" should contain
     """
     Blah de blah
     """
 
 Scenario: file in subdirectory
 
-  Given input file "blah/verbatim.txt" contains
+  Given input file "blah/resource.txt" contains
     """
     Blah de blah
     """
     
   When I build the site
   
-  Then output file "blah/verbatim.txt" should contain
+  Then output file "blah/resource.txt" should contain
     """
     Blah de blah
     """

@@ -4,7 +4,7 @@ require "pith/input/abstract"
 module Pith
   module Input
 
-    class Verbatim < Abstract
+    class Resource < Abstract
 
       def output_path
         path
