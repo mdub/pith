@@ -1,5 +1,6 @@
 require "set"
 require "pathname"
+require "ostruct"
 require "tilt"
 
 module Pith
@@ -50,8 +51,8 @@ module Pith
       @content_for_hash ||= Hash.new { "" }
     end
     
-    def meta
-      initial_input.meta || {}
+    def page
+      @page ||= OpenStruct.new(initial_input.meta)
     end
     
     def href(target_ref)

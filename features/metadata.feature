@@ -10,7 +10,7 @@ Scenario: use meta-data from YAML comment
     ---
     title: PAGE TITLE
     ---
-    %h1= meta["title"]
+    %h1= page.title
     """
 
   When I build the site
