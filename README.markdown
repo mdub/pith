@@ -50,6 +50,25 @@ Any input file with an extension recognised by [Tilt][tilt] is considered to be 
 
 Anything else is just copied verbatim into the generated site.
 
+Page metadata
+-------------
+
+A YAML header can be provided at the top of any template, defining page metadata.  The header is introduced by a first line containing three dashes, and terminated by a line containing three dots.
+
+    ---
+    title: "All about fish"
+    ...
+
+Metadata provided in the header can be referenced by template content, via the "`page`" object:
+
+    %html
+      %head
+        %title= page.title
+      %body
+        %h1= page.title
+
+This is especially useful in "layout" templates (see below).
+    
 Partials
 --------
 
@@ -87,6 +106,14 @@ Use "`yield`" to embed the block's content within the layout:
         .main
           = yield
 
+Layouts can also be specified using a "`layout`" entry in the page header, e.g.
+
+    ---
+    layout: "/_mylayout.haml"
+    ...
+
+    Some content
+    
 Relative links
 --------------
 
