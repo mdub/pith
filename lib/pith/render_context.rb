@@ -57,37 +57,34 @@ module Pith
     end
     
     def href(target_ref)
-      relative_path_to(resolve_path(target_ref))
+      relative_url_of(input_referenced_by(target_ref))
     end
 
     def link(target_ref, label = nil)
-      target_path = resolve_path(target_ref)
-      label ||= input(target_path).title
-      %{<a href="#{relative_path_to(target_path)}">#{label}</a>}
+      target_input = input_referenced_by(target_ref)
+      label ||= target_input.title
+      url = relative_url_of(target_input)
+      %{<a href="#{url}">#{label}</a>}
     end
     
     private
 
-    def relative_path_to(target_path)
-      target_path.relative_path_from(initial_input.path.parent)
+    def relative_url_of(target_input)
+      target_input.output_path.relative_path_from(initial_input.path.parent)
     end
-    
-    def resolve_path(ref)
-      if ref.respond_to?(:output_path)
-        ref.output_path
+
+    def input_referenced_by(ref)
+      if ref.kind_of?(Pith::Input::Abstract)
+        ref
       else
-        current_input.resolve_path(ref)
+        input(current_input.resolve_path(ref))
+      end.tap do |input|
+        @dependencies << input.file
       end
     end
     
     def input(path)
-      project.input(path).tap do |input|
-        @dependencies << input.file if input
-      end
-    end
-    
-    def input!(path)
-      input(path) || raise(ReferenceError, %{Can't find "#{path}"})
+      project.input(path) || raise(ReferenceError, %{Can't find "#{path}"})
     end
     
     def with_input(input)
@@ -101,8 +98,7 @@ module Pith
     end
     
     def render_ref(template_ref, locals = {}, &block)
-      template = input!(resolve_path(template_ref))
-      render(template, locals, &block)
+      render(input_referenced_by(template_ref), locals, &block)
     end
 
   end
