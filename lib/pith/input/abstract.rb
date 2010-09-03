@@ -59,10 +59,6 @@ module Pith
       end
 
       protected
-        
-      def default_title
-        path.to_s.sub(/\..*/, '').tr('_-', ' ').capitalize
-      end
 
       def logger
         project.logger

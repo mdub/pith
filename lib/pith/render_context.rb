@@ -1,6 +1,7 @@
-require "set"
-require "pathname"
 require "ostruct"
+require "pathname"
+require "pith/reference_error"
+require "set"
 require "tilt"
 
 module Pith

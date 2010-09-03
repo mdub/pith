@@ -1,6 +1,7 @@
-require "pathname"
 require "logger"
+require "pathname"
 require "pith/input"
+require "pith/reference_error"
 require "tilt"
 
 module Pith
@@ -105,7 +106,5 @@ module Pith
     end
     
   end
-    
-  class ReferenceError < StandardError; end
   
 end
