@@ -55,10 +55,8 @@ describe Pith::Project do
 
     describe "(with an invalid input path)" do
       
-      it "complains" do
-        lambda do
-          @project.input("bogus.path")
-        end.should raise_error(Pith::ReferenceError)
+      it "returns nil" do
+        @project.input("bogus.path").should be_nil
       end
       
     end
@@ -106,6 +104,30 @@ describe Pith::Project do
         second_time = @project.input("input.html.haml")
         second_time.should_not be_nil
         second_time.should_not equal(first_time)
+
+      end
+    end
+
+  end
+
+  describe "when an input file is removed" do
+
+    before do
+      @input_file = $input_dir + "input.html.haml"
+      @input_file.touch(Time.now - 10)
+    end
+
+    describe "a second call to #input" do 
+      it "returns nil" do
+
+        first_time = @project.input("input.html.haml")
+        first_time.should_not be_nil
+
+        FileUtils.rm(@input_file)
+
+        @project.refresh
+        second_time = @project.input("input.html.haml")
+        second_time.should be_nil
 
       end
     end

@@ -108,7 +108,6 @@ Scenario: use "title" meta-data attribute in link
     <a href="page.html">Title from meta-data</a>
     """
 
-@wip
 Scenario: link to an Input object
 
   Given input file "subdir/page.html.haml" contains
@@ -116,7 +115,7 @@ Scenario: link to an Input object
     = link(project.input("help.html"))
     """
 
-  And input file "help.html" contains
+  And input file "help.html.haml" contains
     """
     ---
     title: "Help!"
@@ -126,5 +125,5 @@ Scenario: link to an Input object
   When I build the site
   Then output file "subdir/page.html" should contain
     """
-    <a href="../help.html">Help</a>
+    <a href="../help.html">Help!</a>
     """

@@ -62,11 +62,7 @@ module Pith
 
     def link(target_ref, label = nil)
       target_path = resolve_path(target_ref)
-      label ||= begin
-        find_input(target_path).title
-      rescue Pith::ReferenceError
-        "???"
-      end
+      label ||= input(target_path).title
       %{<a href="#{relative_path_to(target_path)}">#{label}</a>}
     end
     
@@ -77,13 +73,21 @@ module Pith
     end
     
     def resolve_path(ref)
-      current_input.resolve_path(ref)
+      if ref.respond_to?(:output_path)
+        ref.output_path
+      else
+        current_input.resolve_path(ref)
+      end
     end
     
-    def find_input(path)
-      input = project.input(path)
-      @dependencies << input.file if input
-      input
+    def input(path)
+      project.input(path).tap do |input|
+        @dependencies << input.file if input
+      end
+    end
+    
+    def input!(path)
+      input(path) || raise(ReferenceError, %{Can't find "#{path}"})
     end
     
     def with_input(input)
@@ -97,8 +101,7 @@ module Pith
     end
     
     def render_ref(template_ref, locals = {}, &block)
-      template_path = resolve_path(template_ref)
-      template = find_input(template_path)
+      template = input!(resolve_path(template_ref))
       render(template, locals, &block)
     end
 

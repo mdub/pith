@@ -43,7 +43,7 @@ module Pith
       inputs.each do |input|
         return input if input.path == path || input.output_path == path
       end
-      raise ReferenceError, "Can't find #{path.inspect}"
+      nil
     end
 
     # Public: build the project, generating output files.
