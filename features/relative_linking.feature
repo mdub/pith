@@ -107,3 +107,24 @@ Scenario: use "title" meta-data attribute in link
     """
     <a href="page.html">Title from meta-data</a>
     """
+
+@wip
+Scenario: link to an Input object
+
+  Given input file "subdir/page.html.haml" contains
+    """
+    = link(project.input("help.html"))
+    """
+
+  And input file "help.html" contains
+    """
+    ---
+    title: "Help!"
+    ...
+    """
+
+  When I build the site
+  Then output file "subdir/page.html" should contain
+    """
+    <a href="../help.html">Help</a>
+    """
