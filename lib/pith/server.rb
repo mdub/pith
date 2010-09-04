@@ -7,7 +7,7 @@ module Pith
 
     def new(project)
       Rack::Builder.new do
-        use Rack::CommonLogger, project.logger
+        use Rack::CommonLogger
         use Rack::ShowExceptions
         use Rack::Lint
         use Pith::Server::AutoBuild, project
