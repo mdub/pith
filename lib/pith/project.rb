@@ -14,8 +14,16 @@ module Pith
       end
     end
     
-    attr_accessor :input_dir, :output_dir
+    attr_reader :input_dir, :output_dir
 
+    def input_dir=(dir)
+      @input_dir = Pathname(dir)
+    end
+
+    def output_dir=(dir)
+      @output_dir = Pathname(dir)
+    end
+    
     # Public: get inputs
     #
     # Returns Pith::Input objects representing the files in the input_dir.
