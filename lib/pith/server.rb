@@ -28,11 +28,16 @@ module Pith
       def initialize(app, project)
         @app = app
         @project = project
+        @rebuild_every = 2
       end
 
       def call(env)
-        @project.build
+        @project.build unless build_recently?
         @app.call(env)
+      end
+
+      def build_recently?
+        (Time.now - @project.last_built_at) < @rebuild_every
       end
 
     end

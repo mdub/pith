@@ -1,6 +1,6 @@
 require "logger"
-require "pathname"
 require "pith/input"
+require "pith/pathname_ext"
 require "pith/reference_error"
 require "tilt"
 
@@ -62,6 +62,7 @@ module Pith
       inputs.each do |input| 
         input.build
       end
+      output_dir.touch
     end
     
     # Public: discard cached data that is out-of-sync with the file-system.
@@ -71,6 +72,10 @@ module Pith
       @config_files = nil
     end
 
+    def last_built_at
+      output_dir.mtime
+    end
+    
     def logger
       @logger ||= Logger.new(nil)
     end

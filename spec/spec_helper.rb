@@ -1,16 +1,6 @@
 require "rubygems"
 
 require "fileutils"
-require "pathname"
-
-class Pathname
-  
-  def touch(mtime = nil)
-    FileUtils.touch(self.to_s)
-    utime(mtime, mtime) if mtime
-  end
-  
-end
   
 $project_dir = Pathname(__FILE__).expand_path.parent.parent
 $tmp_dir = $project_dir + "tmp"
