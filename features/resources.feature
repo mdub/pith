@@ -30,3 +30,17 @@ Scenario: file in subdirectory
     """
     Blah de blah
     """
+
+Scenario: dot-file
+
+  Given input file ".htaccess" contains
+    """
+    DirectoryIndex index.html
+    """
+    
+  When I build the site
+  
+  Then output file ".htaccess" should contain
+    """
+    DirectoryIndex index.html
+    """

@@ -32,7 +32,7 @@ module Pith
     #   call #refresh to discard the cached data.
     #
     def inputs
-      @inputs ||= Pathname.glob(input_dir + "**/*").map do |input_file|
+      @inputs ||= input_dir.glob_all("**/*").map do |input_file|
         next if input_file.directory?
         path = input_file.relative_path_from(input_dir)
         find_or_create_input(path)
@@ -92,7 +92,7 @@ module Pith
 
     def config_files
       @config_files ||= begin 
-        Pathname.glob("#{input_dir}/_pith/**")
+        input_dir.glob_all("_pith/**")
       end.to_set
     end
     
