@@ -8,15 +8,17 @@ require "pathname"
 require "pith/version"
 
 $input_dir = Pathname(".")
+$interval = 2
+$port = 4321
 
 BANNER = <<EOF
 usage: pith [OPTIONS] [COMMAND]
 
   Commands: (default: "build")
 
-    build       Generate the website into OUTPUT_DIR.
-
-    serve       Serve the website via HTTP, re-generating as required.
+    build       Generate the website (into OUTPUT_DIR)
+    watch       Monitor INPUT_DIR, and incrementally rebuild OUTPUT_DIR
+    serve       Serve the generated website at "http://localhost:#{$port}"
 
 EOF
 
@@ -24,11 +26,17 @@ OptionParser.new do |opts|
   opts.banner = BANNER
   opts.version = Pith::VERSION
   opts.separator "  Options:"
-  opts.on("-i", "--input INPUT_DIR", 'Input directory', '  (default: ".")') do |dir|
+  opts.on("-i", "--input INPUT_DIR",      %[Input directory   (default: ".")]) do |dir|
     $input_dir = Pathname(dir)
   end
-  opts.on("-o", "--output OUTPUT_DIR", 'Output directory', '  (default: "INPUT_DIR/_out")') do |dir|
+  opts.on("-o", "--output OUTPUT_DIR",    %[Output directory  (default: "INPUT_DIR/_out")]) do |dir|
     $output_dir = Pathname(dir)
+  end
+  opts.on("-n", "--interval N", Integer,  %[Rebuild interval  (default: #{$interval})]) do |n|
+    $interval = n
+  end
+  opts.on("-p", "--port N", Integer,      %[Web-server port   (default: #{$port})]) do |port|
+    $port = port
   end
   opts.on_tail("-h", "--help", "Show this message") do
     puts opts
@@ -46,6 +54,8 @@ unless $output_dir
   $output_dir = $input_dir + "_out"
 end
 
+puts %{Generating to "#{$output_dir}"}
+
 require "pith/project"
 require "pith/console_logger"
 
@@ -53,16 +63,27 @@ require "pith/console_logger"
 @project.logger = Pith::ConsoleLogger.new
 
 def build
-  puts %{Generating to "#{$output_dir}"}
   @project.build
 end
 
+def watch
+  loop do
+    build
+    sleep($interval)
+  end
+end
+
 def serve
+
   require "pith/server"
-  port = 4321
+  server = Pith::Server.new(@project)
+  
   build
-  puts %{Taking the Pith at "http://localhost:#{port}"}
-  Pith::Server.run(@project, :Port => port)
+  Thread.new { watch }
+
+  puts %{>>> Now taking the Pith at "http://localhost:#{$port}"}
+  Rack::Handler.default.run(server, :Port => $port)
+
 end
 
 action = ARGV.shift || "build"

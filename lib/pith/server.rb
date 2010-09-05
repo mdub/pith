@@ -10,37 +10,13 @@ module Pith
         use Rack::CommonLogger
         use Rack::ShowExceptions
         use Rack::Lint
-        use Pith::Server::AutoBuild, project
         use Adsf::Rack::IndexFileFinder, :root => project.output_dir
         use Pith::Server::DefaultToHtml, project.output_dir
         run Rack::Directory.new(project.output_dir)
       end
     end
 
-    def run(project, options = {})
-      Rack::Handler.get("thin").run(new(project), options)
-    end
-
     extend self
-
-    class AutoBuild
-
-      def initialize(app, project)
-        @app = app
-        @project = project
-        @rebuild_every = 2
-      end
-
-      def call(env)
-        @project.build unless build_recently?
-        @app.call(env)
-      end
-
-      def build_recently?
-        (Time.now - @project.last_built_at) < @rebuild_every
-      end
-
-    end
 
     class DefaultToHtml
 
