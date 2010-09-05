@@ -127,3 +127,16 @@ Scenario: link to an Input object
     """
     <a href="../help.html">Help!</a>
     """
+
+Scenario: link to a missing resource
+
+  Given input file "index.html.haml" contains 
+    """
+    = link("missing_page.html")
+    """
+   
+  When I build the site
+  Then output file "index.html" should contain
+    """
+    <a href="missing_page.html">???</a>
+    """

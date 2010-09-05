@@ -55,36 +55,41 @@ module Pith
     def page
       @page ||= OpenStruct.new(initial_input.meta)
     end
+
+    def relative_url_to(target_path)
+      target_path.relative_path_from(initial_input.path.parent)
+    end
     
     def href(target_ref)
-      relative_url_of(input_referenced_by(target_ref))
+      relative_url_to(resolve_reference(target_ref))
     end
 
     def link(target_ref, label = nil)
-      target_input = input_referenced_by(target_ref)
-      label ||= target_input.title
-      url = relative_url_of(target_input)
+      target_path = resolve_reference(target_ref)
+      label ||= begin 
+        input(target_path).title
+      rescue ReferenceError
+        "???" 
+      end
+      url = relative_url_to(target_path)
       %{<a href="#{url}">#{label}</a>}
     end
     
     private
 
-    def relative_url_of(target_input)
-      target_input.output_path.relative_path_from(initial_input.path.parent)
-    end
-
-    def input_referenced_by(ref)
-      if ref.kind_of?(Pith::Input::Abstract)
-        ref
+    def resolve_reference(ref)
+      if ref.respond_to?(:output_path)
+        ref.output_path
       else
-        input(current_input.resolve_path(ref))
-      end.tap do |input|
-        @dependencies << input.file
+        current_input.resolve_path(ref)
       end
     end
     
     def input(path)
-      project.input(path) || raise(ReferenceError, %{Can't find "#{path}"})
+      input = project.input(path)
+      raise(ReferenceError, %{Can't find "#{path}"}) if input.nil?
+      @dependencies << input.file
+      input
     end
     
     def with_input(input)
@@ -98,7 +103,8 @@ module Pith
     end
     
     def render_ref(template_ref, locals = {}, &block)
-      render(input_referenced_by(template_ref), locals, &block)
+      template_input = input(resolve_reference(template_ref))
+      render(template_input, locals, &block)
     end
 
   end
