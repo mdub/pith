@@ -10,7 +10,7 @@ Scenario: use meta-data from YAML comment
     ---
     title: PAGE TITLE
     ---
-    %h1= page.title
+    %h1= page.meta["title"]
     """
 
   When I build the site
@@ -24,7 +24,7 @@ Scenario: corrupt meta-data
   Given input file "page.html.haml" contains
     """
     ---
-    title: "This" is no well-formed YAML
+    title: "This" is not well-formed YAML
     ...
     %p PAGE BODY
     """

@@ -19,7 +19,7 @@ module Pith
 
     attr_reader :project
     
-    def initial_input
+    def page
       @input_stack.first
     end
 
@@ -52,12 +52,8 @@ module Pith
       @content_for_hash ||= Hash.new { "" }
     end
     
-    def page
-      @page ||= OpenStruct.new(initial_input.meta)
-    end
-
     def relative_url_to(target_path)
-      target_path.relative_path_from(initial_input.path.parent)
+      target_path.relative_path_from(page.path.parent)
     end
     
     def href(target_ref)
