@@ -30,7 +30,7 @@ module Pith
     def render(input, locals = {}, &block)
       with_input(input) do
         result = input.render(self, locals, &block)
-        layout_ref = current_input.meta["layout"]
+        layout_ref = input.meta["layout"]
         result = render_ref(layout_ref) { result } if layout_ref
         result
       end
