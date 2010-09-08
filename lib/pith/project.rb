@@ -14,8 +14,12 @@ module Pith
       end
     end
     
-    attr_reader :input_dir, :output_dir
+    attr_reader :input_dir
 
+    attr_accessor :output_dir
+    attr_accessor :assume_content_negotiation
+    attr_accessor :assume_directory_index
+    
     def input_dir=(dir)
       @input_dir = Pathname(dir)
     end
