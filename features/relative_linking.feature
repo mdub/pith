@@ -14,7 +14,7 @@ Scenario: link from one top-level page to another
   When I build the site
   Then output file "index.html" should contain
     """
-    <a href="page.html">Page</a>
+    <a href="page">Page</a>
     """
 
 Scenario: link from a sub-directory to a root-level page
@@ -28,7 +28,7 @@ Scenario: link from a sub-directory to a root-level page
   When I build the site
   Then output file "subdir/page.html" should contain
     """
-    <a href="../help.html">Help</a>
+    <a href="../help">Help</a>
     """
 
 Scenario: link to an image
@@ -63,7 +63,7 @@ Scenario: links within a layout block
   When I build the site
   Then output file "subdir/page.html" should contain
     """
-    <a href="other.html">Other page</a>
+    <a href="other">Other page</a>
     """
 
 Scenario: links included from a partial
@@ -105,7 +105,7 @@ Scenario: use "title" meta-data attribute in link
 
   Then output file "index.html" should contain
     """
-    <a href="page.html">Title from meta-data</a>
+    <a href="page">Title from meta-data</a>
     """
 
 Scenario: link to an Input object
@@ -125,7 +125,7 @@ Scenario: link to an Input object
   When I build the site
   Then output file "subdir/page.html" should contain
     """
-    <a href="../help.html">Help!</a>
+    <a href="../help">Help!</a>
     """
 
 Scenario: link to a missing resource
@@ -138,5 +138,18 @@ Scenario: link to a missing resource
   When I build the site
   Then output file "index.html" should contain
     """
-    <a href="missing_page.html">???</a>
+    <a href="missing_page">???</a>
+    """
+
+Scenario: link to an index.html
+
+  Given input file "page.html.haml" contains 
+    """
+    = link("stuff/index.html", "Stuff")
+    """
+   
+  When I build the site
+  Then output file "page.html" should contain
+    """
+    <a href="stuff/">Stuff</a>
     """

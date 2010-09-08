@@ -44,5 +44,5 @@ describe Pith::Input::Template do
     end
     
   end
-  
+
 end

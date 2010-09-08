@@ -53,7 +53,7 @@ module Pith
     end
     
     def relative_url_to(target_path)
-      target_path.relative_path_from(page.path.parent)
+      target_path.relative_path_from(page.path.parent).sub(%r{(?:index)?.html$}, '')
     end
     
     def href(target_ref)

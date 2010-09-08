@@ -20,11 +20,15 @@ module Pith
         project.input_dir + path
       end
 
+      # Public: Get the file-system location of the corresponding output file.
+      #
+      # Returns a fully-qualified Pathname.
+      #
       def output_file
         project.output_dir + output_path
       end
 
-      # Public: Generate a corresponding output file.
+      # Public: Generate an output file.
       #
       def build
         return false if ignorable? || uptodate?
