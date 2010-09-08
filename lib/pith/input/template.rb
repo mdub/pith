@@ -90,7 +90,7 @@ module Pith
       private
         
       def default_title
-        path.to_s.sub(/\..*/, '').tr('_-', ' ').capitalize
+        path.basename.to_s.sub(/\..*/, '').tr('_-', ' ').capitalize
       end
 
       # Read input file, extracting YAML meta-data header, and template content.
