@@ -15,18 +15,19 @@ module Pith
     end
     
     attr_reader :input_dir
-
-    attr_accessor :output_dir
-    attr_accessor :assume_content_negotiation
-    attr_accessor :assume_directory_index
     
     def input_dir=(dir)
       @input_dir = Pathname(dir)
     end
 
+    attr_reader :output_dir
+
     def output_dir=(dir)
       @output_dir = Pathname(dir)
     end
+
+    attr_accessor :assume_content_negotiation
+    attr_accessor :assume_directory_index
     
     # Public: get inputs
     #

@@ -56,8 +56,8 @@ end
 
 puts %{Generating to "#{$output_dir}"}
 
-require "pith/project"
 require "pith/console_logger"
+require "pith/project"
 
 @project = Pith::Project.new(:input_dir => $input_dir, :output_dir => $output_dir)
 @project.logger = Pith::ConsoleLogger.new
@@ -67,15 +67,8 @@ def build
 end
 
 def watch
-  loop do
-    begin
-      build
-    rescue Exception => e
-      $stderr.puts "ERROR: #{e}"
-      e.backtrace.each { |line| $stderr.puts line }
-    end
-    sleep($interval)
-  end
+  require "pith/watcher"
+  Pith::Watcher.new(project, :interval => $interval).call
 end
 
 def serve
