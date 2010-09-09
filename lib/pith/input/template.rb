@@ -10,14 +10,16 @@ module Pith
 
     class Template < Abstract
 
-      class UnrecognisedType < StandardError; end
+      def self.can_handle?(path)
+        path.to_str =~ /\.([^.]+)$/ && Tilt.registered?($1)
+      end
       
       def initialize(project, path)
+        raise(ArgumentError, "#{path} is not a template") unless Template.can_handle?(path)
         super(project, path)
-        path.to_s =~ /^(.*)\.(.*)$/
+        path.to_str =~ /^(.+)\.(.+)$/ || raise("huh?")
         @output_path = Pathname($1)
         @type = $2
-        raise(UnrecognisedType, @type) unless Tilt.registered?(@type)
         load
       end
 

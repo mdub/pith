@@ -7,9 +7,11 @@ module Pith
     class << self
 
       def new(project, path)
-        Template.new(project, path)
-      rescue Template::UnrecognisedType
-        Resource.new(project, path)
+        if Template.can_handle?(path)
+          Template.new(project, path)
+        else
+          Resource.new(project, path)
+        end
       end
 
     end

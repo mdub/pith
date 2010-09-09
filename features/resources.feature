@@ -44,3 +44,9 @@ Scenario: dot-file
     """
     DirectoryIndex index.html
     """
+
+Scenario: extension-less filename
+
+  Given input file "foo" contains "bar"
+  When I build the site
+  Then output file "foo" should contain "bar"

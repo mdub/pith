@@ -18,6 +18,28 @@ describe Pith::Input::Template do
     @project.input(path)
   end
   
+  describe ".can_handle?" do
+    
+    it "returns true for template paths" do
+      Pith::Input::Template.can_handle?("xyz.html.haml").should be_true
+      Pith::Input::Template.can_handle?("xyz.html.md").should be_true
+    end
+
+    it "handles directories" do
+      Pith::Input::Template.can_handle?("dir/xyz.haml").should be_true
+    end
+
+    it "accepts Pathname objects" do
+      Pith::Input::Template.can_handle?(Pathname("xyz.html.haml")).should be_true
+    end
+
+    it "returns false for non-template paths" do
+      Pith::Input::Template.can_handle?("foo.html").should be_false
+      Pith::Input::Template.can_handle?("foo").should be_false
+    end
+    
+  end
+  
   describe "#title" do
     
     it "is based on last component of filename" do
