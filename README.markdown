@@ -59,13 +59,13 @@ A YAML header can be provided at the top of any template, defining page metadata
     title: "All about fish"
     ...
 
-Metadata provided in the header can be referenced by template content, via the "`page`" object:
+Metadata provided in the header can be referenced by template content, via the "`page.meta`" Hash:
 
     %html
       %head
-        %title= page.title
+        %title= page.meta["title"]
       %body
-        %h1= page.title
+        %h1= page.meta["title"]
 
 This is especially useful in "layout" templates (see below).
     
