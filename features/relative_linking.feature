@@ -174,3 +174,18 @@ Scenario: link to an index page
     """
     <a href="stuff/">Stuff</a>
     """
+
+Scenario: link to an index page in the same directory
+
+  Given the "assume_directory_index" flag is enabled
+
+  And input file "page.html.haml" contains 
+    """
+    = link("index.html", "Index")
+    """
+   
+  When I build the site
+  Then output file "page.html" should contain
+    """
+    <a href="./">Index</a>
+    """
