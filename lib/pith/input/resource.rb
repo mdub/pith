@@ -24,6 +24,16 @@ module Pith
         output_file.parent.mkpath
         FileUtils.copy(file, output_file)
       end
+
+      # Render this input, for inclusion within templates
+      #
+      def render(context, locals = {})
+        file.read
+      end
+
+      def meta
+        {}
+      end
       
     end
 

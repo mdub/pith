@@ -10,6 +10,13 @@ Scenario: include a partial
   When I build the site
   Then output file "index.html" should contain "<p>blah blah</p>"
 
+Scenario: include a static resource
+
+  Given input file "index.html.haml" contains "= include('_fragment.html')"
+  And input file "_fragment.html" contains "<p>blah blah</p>"
+  When I build the site
+  Then output file "index.html" should contain "<p>blah blah</p>"
+
 Scenario: include a partial in the same sub-directory
 
   Given input file "subdir/page.html.haml" contains "= include('_fragment.haml')"
