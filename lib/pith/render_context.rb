@@ -67,7 +67,9 @@ module Pith
     def link(target_ref, label = nil)
       target_path = resolve_reference(target_ref)
       label ||= begin 
-        input(target_path).title
+        target_input = input(target_path)
+        record_dependency_on(target_input)
+        target_input.title
       rescue ReferenceError
         "???" 
       end
@@ -77,6 +79,11 @@ module Pith
     
     private
 
+    def record_dependency_on(input)
+      @dependencies << input.file
+      input
+    end
+    
     def resolve_reference(ref)
       if ref.respond_to?(:output_path)
         ref.output_path
@@ -88,12 +95,11 @@ module Pith
     def input(path)
       input = project.input(path)
       raise(ReferenceError, %{Can't find "#{path}"}) if input.nil?
-      @dependencies << input.file
       input
     end
     
     def with_input(input)
-      @dependencies << input.file
+      record_dependency_on(input)
       @input_stack.push(input)
       begin
         yield
