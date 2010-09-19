@@ -68,7 +68,7 @@ end
 
 def watch
   require "pith/watcher"
-  Pith::Watcher.new(project, :interval => $interval).call
+  Pith::Watcher.new(@project, :interval => $interval).call
 end
 
 def serve
