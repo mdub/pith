@@ -68,7 +68,7 @@ module Pith
       target_path = resolve_reference(target_ref)
       label ||= begin 
         target_input = input(target_path)
-        record_dependency_on(target_input)
+        record_dependency_on(target_input.file)
         target_input.title
       rescue ReferenceError
         "???" 
@@ -76,13 +76,12 @@ module Pith
       url = relative_url_to(target_path)
       %{<a href="#{url}">#{label}</a>}
     end
+
+    def record_dependency_on(file)
+      @dependencies << file
+    end
     
     private
-
-    def record_dependency_on(input)
-      @dependencies << input.file
-      input
-    end
     
     def resolve_reference(ref)
       if ref.respond_to?(:output_path)
@@ -99,7 +98,7 @@ module Pith
     end
     
     def with_input(input)
-      record_dependency_on(input)
+      record_dependency_on(input.file)
       @input_stack.push(input)
       begin
         yield
