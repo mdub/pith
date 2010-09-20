@@ -30,7 +30,7 @@ Create an input directory for your site (wherever you want), and pop some files 
         logo.png
       index.html.haml
 
-The only requirement is the existance of a sub-directory called "`_pith`".  Pith checks that it's present, to prevent you accidently treating your entire home-directory as website input.
+The only requirement is the existance of a subdirectory called "`_pith`".  Pith checks that it's present, to prevent you accidently treating your entire home directory as website input.
 
 Next, use the `pith build` command to convert your inputs into a functioning website.
 
@@ -39,7 +39,16 @@ Next, use the `pith build` command to convert your inputs into a functioning web
     --(copy)-->   images/logo.png
     --(haml)-->   index.html
 
-Any input file with an extension recognised by [Tilt][tilt] is considered to be a template, and will be dynamically evaluated.  Formats supported by Tilt include:
+By default, output is generated into an subdirectory called "`_out`", inside the input directory ... but the default can be easily overridden, e.g.
+
+    $ pith -i SITE -o OUTPUT build
+
+Templates
+---------
+
+Files in the input directory are considered to be "templates" if the file name ends with a template format extension recognised as such by [Tilt][tilt], e.g. "`.haml`", or "`.textile`".  These will be evaluated dynamically.  Pith strips the format extension off the file name when generating output.
+
+Formats supported by Tilt include:
 
 - [Markdown](http://daringfireball.net/projects/markdown/) (`markdown`, `md`)
 - [Textile](http://redcloth.org/hobix.com/textile/) (`textile`)
@@ -48,7 +57,12 @@ Any input file with an extension recognised by [Tilt][tilt] is considered to be 
 - [Sass][sass] (`sass`)
 - [CoffeeScript](http://jashkenas.github.com/coffee-script/) (`coffee`)
 
-Anything else is just copied verbatim into the generated site.
+Any non-template input files (we call them "resources") are just copied verbatim into the output directory.
+
+Ignored files
+-------------
+
+Files or directories beginning with an underscore are ignored; that is, we don't generate corresponding output files.  They can still be used as "layout" or "partial" templates though; see below.
 
 Page metadata
 -------------
@@ -69,18 +83,16 @@ Metadata provided in the header can be referenced by template content, via the "
 
 This is especially useful in "layout" templates (see below).
     
-Partials
---------
+Partials and Layouts
+--------------------
 
 Templates can include other templates, e.g.
 
-     = include("_header.haml")
-
-Note the leading underscore ("_").  Any input file (or directory) beginning with an underscore is ignored when generating outputs.
+     = include "_header.haml"
 
 When including, you can pass local variables, e.g.
 
-    = include("_list.haml", :items => [1,2,3])
+    = include "_list.haml", :items => [1,2,3]
 
 which can be accessed in the included template:
 
@@ -88,15 +100,12 @@ which can be accessed in the included template:
       - items.each do |i|
         %li= i
 
-Layouts
--------
+In Haml templates, you can also pass a block, e.g.
 
-Layout templates are a bit like partials, except that they take a block, e.g.
-
-    = inside "_mylayout.haml" do
+    = include "_mylayout.haml" do
       %p Some content
 
-Use "`yield`" to embed the block's content within the layout:
+and access it in the template using "`yield`":
 
     !!!
     %html
@@ -106,14 +115,16 @@ Use "`yield`" to embed the block's content within the layout:
         .main
           = yield
 
-Layouts can also be specified using a "`layout`" entry in the page header, e.g.
+This way, any template can be used as a "layout".
+
+Layouts can also be applied by using a "`layout`" entry in the page header, e.g.
 
     ---
     layout: "/_mylayout.haml"
     ...
 
     Some content
-    
+
 Relative links
 --------------
 
@@ -123,7 +134,7 @@ It's sensible to use relative URIs when linking to other pages (and resources) i
 
     %img{:src => href("/images/logo.png")}
 
-Any path beginning with a slash ("/") is resolved relative to the root of the site; anything else is resolve relative to the current input-file (even if that happens to be a layout or partial).  Either way, "`href`" always returns a relative link.
+Any path beginning with a slash ("/") is resolved relative to the root of the site; anything else is resolved relative to the current input-file (even if that happens to be a layout or partial).  Either way, "`href`" always returns a relative link.
 
 There's also a "`link`" function, for even easier hyper-linking:
 
