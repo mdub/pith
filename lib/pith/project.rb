@@ -37,8 +37,7 @@ module Pith
     #   call #refresh to discard the cached data.
     #
     def inputs
-      @inputs ||= input_dir.glob_all("**/*").map do |input_file|
-        next if input_file.directory?
+      @inputs ||= input_dir.all_files.map do |input_file|
         path = input_file.relative_path_from(input_dir)
         find_or_create_input(path)
       end.compact
@@ -64,9 +63,8 @@ module Pith
     def build
       refresh
       load_config
-      inputs.each do |input| 
-        input.build
-      end
+      remove_old_outputs
+      generate_outputs
       output_dir.touch
     end
     
@@ -97,7 +95,7 @@ module Pith
 
     def config_files
       @config_files ||= begin 
-        input_dir.glob_all("_pith/**")
+        input_dir.all_files("_pith/**")
       end.to_set
     end
     
@@ -111,6 +109,22 @@ module Pith
       end
     end
     
+    def remove_old_outputs
+      valid_output_files = inputs.map { |i| i.output_file }
+      actual_output_files = output_dir.all_files
+      files_to_remove = actual_output_files - valid_output_files
+      files_to_remove.each do |bogus_output_file|
+        logger.info("removing      #{bogus_output_file}")
+        FileUtils.rm(bogus_output_file)
+      end
+    end
+    
+    def generate_outputs
+      inputs.each do |input| 
+        input.build
+      end
+    end
+
     def input_cache
       @input_cache ||= Hash.new do |h, cache_key|
         h[cache_key] = Input.new(self, cache_key.first)

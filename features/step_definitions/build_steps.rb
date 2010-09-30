@@ -30,6 +30,10 @@ When /^I change input file "([^\"]*)" to contain$/ do |path, content|
   @inputs[path] = content
 end
 
+When /^I remove input file "([^\"]*)"$/ do |path|
+  @inputs[path] = nil
+end
+
 When /^I (?:re)?build the site$/ do
   @project.logger.clear
   @project.build

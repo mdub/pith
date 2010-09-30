@@ -12,7 +12,15 @@ class DirHash
   end
 
   def []=(file, content)
-    write(file, content)
+    if content.nil?
+      remove(file)
+    else
+      write(file, content)
+    end
+  end
+
+  def remove(file)
+    (@dir + file).unlink
   end
 
   def write(file, content, options = {})

@@ -7,8 +7,10 @@ class Pathname
     utime(mtime, mtime) if mtime
   end
 
-  def glob_all(pattern)
-    Pathname.glob(self + pattern, File::FNM_DOTMATCH)
+  def all_files(pattern = "**/*")
+    Pathname.glob(self + pattern, File::FNM_DOTMATCH).select do |path|
+      path.file?
+    end
   end
   
 end
