@@ -32,7 +32,7 @@ module Pith
       #
       def build
         return false if ignorable? || uptodate?
-        logger.info("%-14s%s" % ["--(#{type})-->", output_path])
+        logger.info("%-16s%s" % ["--(#{type})-->", output_path])
         generate_output 
       end
 

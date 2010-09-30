@@ -110,12 +110,13 @@ module Pith
     end
     
     def remove_old_outputs
-      valid_output_files = inputs.map { |i| i.output_file }
-      actual_output_files = output_dir.all_files
-      files_to_remove = actual_output_files - valid_output_files
-      files_to_remove.each do |bogus_output_file|
-        logger.info("removing      #{bogus_output_file}")
-        FileUtils.rm(bogus_output_file)
+      valid_output_paths = inputs.map { |i| i.output_path }
+      output_dir.all_files.each do |output_file|
+        output_path = output_file.relative_path_from(output_dir)
+        unless valid_output_paths.member?(output_path)
+          logger.info("removing        #{output_path}")
+          FileUtils.rm(output_file)
+        end
       end
     end
     
