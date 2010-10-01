@@ -8,6 +8,8 @@ require "yaml"
 module Pith
   module Input
 
+    # Represents an input that should be evaluated as a template.
+    #
     class Template < Abstract
 
       def self.can_handle?(path)

@@ -6,6 +6,8 @@ module Pith
 
     class << self
 
+      # Construct an object representing a project input file.
+      #
       def new(project, path)
         if Template.can_handle?(path)
           Template.new(project, path)

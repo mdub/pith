@@ -4,6 +4,8 @@ require "pith/input/abstract"
 module Pith
   module Input
 
+    # Represents a non-template input.
+    #
     class Resource < Abstract
 
       def output_path
