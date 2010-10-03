@@ -6,6 +6,7 @@ require "rubygems"
 require "optparse"
 require "pathname"
 require "pith/version"
+require "thin"
 
 $input_dir = Pathname(".")
 $interval = 2
@@ -80,7 +81,7 @@ def serve
   Thread.new { watch }
 
   puts %{>>> Now taking the Pith at "http://localhost:#{$port}"}
-  Rack::Handler.default.run(server, :Port => $port)
+  Rack::Handler.get("thin").run(server, :Port => $port)
 
 end
 

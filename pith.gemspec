@@ -20,6 +20,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency("tilt", "~> 0.9")
   gem.add_runtime_dependency("adsf", "~> 1.0.1")
   gem.add_runtime_dependency("rack", ">= 1.1.0")
+  gem.add_runtime_dependency("thin", ">= 1.2.6")
 
   gem.add_development_dependency("rspec", ">= 1.2.9")
   gem.add_development_dependency("cucumber", ">= 0.8.3")
