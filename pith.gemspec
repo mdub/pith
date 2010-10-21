@@ -22,8 +22,12 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency("rack", ">= 1.1.0")
   gem.add_runtime_dependency("thin", ">= 1.2.6")
 
-  gem.add_development_dependency("rspec", ">= 1.2.9")
-  gem.add_development_dependency("cucumber", ">= 0.8.3")
+  gem.add_development_dependency("rake")
+  gem.add_development_dependency("rspec", "~> 1.2.9")
+  gem.add_development_dependency("cucumber", "~> 0.8.3")
+  gem.add_development_dependency("haml")
+  gem.add_development_dependency("RedCloth")
+  gem.add_development_dependency("rdiscount")
 
   gem.require_path = "lib"
   gem.files = Dir["lib/**/*", "sample/**/*", "README.markdown", "LICENSE"]

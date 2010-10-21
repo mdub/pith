@@ -1,3 +1,4 @@
 rerun.txt
 tmp
 *.gem
+.bundle

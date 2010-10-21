@@ -34,8 +34,8 @@ describe Pith::Input::Template do
     end
 
     it "returns false for non-template paths" do
-      Pith::Input::Template.can_handle?("foo.html").should be_false
-      Pith::Input::Template.can_handle?("foo").should be_false
+      Pith::Input::Template.can_handle?("foo.html").should_not be_true
+      Pith::Input::Template.can_handle?("foo").should_not be_true
     end
     
   end
