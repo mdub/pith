@@ -3,9 +3,9 @@ PATH
   specs:
     pith (0.0.11)
       adsf (~> 1.0.1)
-      rack (>= 1.1.0)
-      thin (>= 1.2.6)
-      tilt (~> 0.9)
+      rack (~> 1.2.1)
+      thin (~> 1.2.7)
+      tilt (~> 1.1)
 
 GEM
   remote: http://rubygems.org/
@@ -36,7 +36,7 @@ GEM
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
       rack (>= 1.0.0)
-    tilt (0.10)
+    tilt (1.1)
     trollop (1.16.2)
 
 PLATFORMS
@@ -48,9 +48,9 @@ DEPENDENCIES
   cucumber (~> 0.8.3)
   haml
   pith!
-  rack (>= 1.1.0)
+  rack (~> 1.2.1)
   rake
   rdiscount
   rspec (~> 1.2.9)
-  thin (>= 1.2.6)
-  tilt (~> 0.9)
+  thin (~> 1.2.7)
+  tilt (~> 1.1)

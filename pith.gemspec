@@ -17,10 +17,10 @@ Gem::Specification.new do |gem|
   gem.version = Pith::VERSION
   gem.platform = Gem::Platform::RUBY
 
-  gem.add_runtime_dependency("tilt", "~> 0.9")
+  gem.add_runtime_dependency("tilt", "~> 1.1")
   gem.add_runtime_dependency("adsf", "~> 1.0.1")
-  gem.add_runtime_dependency("rack", ">= 1.1.0")
-  gem.add_runtime_dependency("thin", ">= 1.2.6")
+  gem.add_runtime_dependency("rack", "~> 1.2.1")
+  gem.add_runtime_dependency("thin", "~> 1.2.7")
 
   gem.add_development_dependency("rake")
   gem.add_development_dependency("rspec", "~> 1.2.9")
