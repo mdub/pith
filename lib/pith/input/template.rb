@@ -22,7 +22,6 @@ module Pith
         path.to_str =~ /^(.+)\.(.+)$/ || raise("huh?")
         @output_path = Pathname($1)
         @type = $2
-        load
       end
 
       attr_reader :output_path, :type
@@ -41,7 +40,13 @@ module Pith
         output_file.parent.mkpath
         render_context = RenderContext.new(project)
         output_file.open("w") do |out|
-          out.puts(render_context.render(self))
+          begin
+            out.puts(render_context.render(self))
+          rescue Exception => e
+            out.puts "<pre>"
+            out.puts "ERROR: #{e}"
+            e.backtrace.each { |line| out.puts line }
+          end
         end
         @dependencies = render_context.dependencies
       end
@@ -49,6 +54,7 @@ module Pith
       # Render this input using Tilt
       #
       def render(context, locals = {}, &block)
+        load
         @tilt_template.render(context, locals, &block)
       end
       
@@ -72,6 +78,7 @@ module Pith
       # Returns a Hash.
       #
       def meta
+        load
         @meta
       end
 
@@ -100,6 +107,7 @@ module Pith
       # Read input file, extracting YAML meta-data header, and template content.
       #
       def load
+        return false if @tilt_template
         @meta = {}
         file.open do |input|
           header = input.gets

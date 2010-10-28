@@ -49,6 +49,10 @@ Then /^output file "([^\"]*)" should contain "([^\"]*)"$/ do |path, content|
   @outputs[path].clean.should == content.clean
 end
 
+Then %r{^output file "([^\"]*)" should contain /([^\/]*)/$} do |path, regexp|
+  @outputs[path].clean.should =~ Regexp.compile(regexp)
+end
+
 Then /^output file "([^\"]*)" should contain$/ do |path, content|
   @outputs[path].clean.should == content.clean
 end
@@ -63,4 +67,8 @@ end
 
 Then /^output file "([^"]*)" should not be re\-generated$/ do |path|
   @project.logger.messages.should_not contain(/--> +#{path}/)
+end
+
+Then /^output file "([^\"]*)" should contain an error$/ do |path|
+  @outputs[path].clean.should == "foo"
 end

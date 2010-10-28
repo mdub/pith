@@ -19,9 +19,6 @@ module Pith
       loop do
         begin
           project.build
-        rescue Exception => e
-          $stderr.puts "ERROR: #{e}"
-          e.backtrace.each { |line| $stderr.puts line }
         end
         sleep(interval)
       end
