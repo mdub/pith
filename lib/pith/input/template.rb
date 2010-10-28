@@ -44,7 +44,7 @@ module Pith
           begin
             out.puts(render_context.render(self))
           rescue Exception => e
-            logger.warn "#{e.class}: #{e.message}"
+            logger.warn e.summary(:max_backtrace => 5)
             out.puts "<pre>"
             out.puts e.summary
           end
