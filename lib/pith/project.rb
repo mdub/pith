@@ -8,13 +8,17 @@ module Pith
   
   class Project
     
+    DEFAULT_IGNORE_PATTERNS = ["_*", ".git", ".svn"].freeze
+    
     def initialize(attributes = {})
+      @ignore_patterns = DEFAULT_IGNORE_PATTERNS.dup
       attributes.each do |k,v|
         send("#{k}=", v)
       end
     end
     
     attr_reader :input_dir
+    attr_reader :ignore_patterns
     
     def input_dir=(dir)
       @input_dir = Pathname(dir)

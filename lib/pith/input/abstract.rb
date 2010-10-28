@@ -59,7 +59,11 @@ module Pith
       # Returns true if it can.
       #
       def ignorable?
-        path.to_s.split("/").any? { |component| component.to_s[0,1] == "_" }
+        path.each_filename do |path_component|
+          project.ignore_patterns.each do |pattern|
+            return true if File.fnmatch(pattern, path_component)
+          end
+        end
       end
 
       protected
