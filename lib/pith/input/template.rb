@@ -1,5 +1,6 @@
 require "fileutils"
 require "pathname"
+require "pith/exception_ext"
 require "pith/input/abstract"
 require "pith/render_context"
 require "tilt"
@@ -43,9 +44,9 @@ module Pith
           begin
             out.puts(render_context.render(self))
           rescue Exception => e
+            logger.warn "#{e.class}: #{e.message}"
             out.puts "<pre>"
-            out.puts "ERROR: #{e}"
-            e.backtrace.each { |line| out.puts line }
+            out.puts e.summary
           end
         end
         @dependencies = render_context.dependencies
