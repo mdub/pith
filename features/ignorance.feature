@@ -1,37 +1,17 @@
 Feature: ignorable files are ignored
 
-  I want any file (or directory) beginning with "_" to be ignored
+  I want certain files (or directories) to be ignored
   So that I can place supporting files anywhere within the input directory
-  
-Scenario: a layout template at the input root
 
-  Given input file "_layout.haml" contains
-    """
-    Blah de blah
-    """
-    
+Scenario Outline: ignorable files
+
+  Given input file <input> exists
   When I build the site
-  
-  Then output file "_layout" should not exist
+  Then output file <output> should not exist
 
-Scenario: a partial in an ignored subdirectory
-
-  Given input file "_partials/foo.html.haml" contains
-    """
-    Blah de blah
-    """
-    
-  When I build the site
-  
-  Then output file "_partials/foo.html" should not exist
-
-Scenario: an ignored partial in a subdirectory
-
-  Given input file "partials/_foo.html.haml" contains
-    """
-    Blah de blah
-    """
-    
-  When I build the site
-  
-  Then output file "partials/_foo.html" should not exist
+  Examples: underscores
+    |  input                          | output                  |
+    | "_layout.haml"                  | "_layout"               |
+    | "_partials/foo.html.haml"       | "_partials/foo.html"    |
+    | "partials/_foo.html.haml"       | "partials/_foo.html"    |
+    | "_data/xyz.json"                | "_data/xyz.json"        |
