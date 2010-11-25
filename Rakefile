@@ -1,3 +1,7 @@
+require 'bundler'
+
+Bundler::GemHelper.install_tasks
+
 task :default => :spec
 
 require 'spec/rake/spectask'
