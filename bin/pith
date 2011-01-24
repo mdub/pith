@@ -3,87 +3,95 @@
 $: << File.expand_path("../../lib", __FILE__)
 
 require "rubygems"
-require "optparse"
+require "clamp"
 require "pathname"
 require "pith/version"
 require "thin"
 
-$input_dir = Pathname(".")
-$interval = 2
-$port = 4321
-
-BANNER = <<EOF
-usage: pith [OPTIONS] [COMMAND]
-
-  Commands: (default: "build")
-
-    build       Generate the website (into OUTPUT_DIR)
-    watch       Monitor INPUT_DIR, and incrementally rebuild OUTPUT_DIR
-    serve       Serve the generated website at "http://localhost:#{$port}"
-
-EOF
-
-OptionParser.new do |opts|
-  opts.banner = BANNER
-  opts.version = Pith::VERSION
-  opts.separator "  Options:"
-  opts.on("-i", "--input INPUT_DIR",      %[Input directory   (default: ".")]) do |dir|
-    $input_dir = Pathname(dir)
-  end
-  opts.on("-o", "--output OUTPUT_DIR",    %[Output directory  (default: "INPUT_DIR/_out")]) do |dir|
-    $output_dir = Pathname(dir)
-  end
-  opts.on("-n", "--interval N", Integer,  %[Rebuild interval  (default: #{$interval})]) do |n|
-    $interval = n
-  end
-  opts.on("-p", "--port N", Integer,      %[Web-server port   (default: #{$port})]) do |port|
-    $port = port
-  end
-  opts.on_tail("-h", "--help", "Show this message") do
-    puts opts
-    exit
-  end
-end.parse!
-
-pith_dir = $input_dir + "_pith"
-unless pith_dir.directory?
-  $stderr.puts %(ERROR: No "#{pith_dir}" directory ... this doesn't look right!)
-  exit(1)
-end
-
-unless $output_dir
-  $output_dir = $input_dir + "_out"
-end
-
-puts %{Generating to "#{$output_dir}"}
-
 require "pith/console_logger"
 require "pith/project"
 
-@project = Pith::Project.new(:input_dir => $input_dir, :output_dir => $output_dir)
-@project.logger = Pith::ConsoleLogger.new
+class PithCommand < Clamp::Command
 
-def build
-  @project.build
-end
+  option ["-i", "--input"], "INPUT_DIR", "Input directory", :default => "."
+  option ["-o", "--output"], "OUTPUT_DIR", "Output directory (default: \"INPUT_DIR/_out\")"
 
-def watch
-  require "pith/watcher"
-  Pith::Watcher.new(@project, :interval => $interval).call
-end
+  option ["-n", "--interval"], "INTERVAL", "Rebuild interval", :default => 2 do |n|
+    Integer(n)
+  end
 
-def serve
+  option ["-p", "--port"], "PORT", "Web-server port", :default => 4321 do |n|
+    Integer(n)
+  end
 
-  require "pith/server"
-  server = Pith::Server.new(@project)
+  option "--version", :flag, "Show version" do
+    puts Pith::VERSION
+    exit(0)
+  end
+
+  subcommand "build", "Generate the website (into OUTPUT_DIR)" do
+    def execute
+      build
+    end
+  end
+
+  subcommand "watch", "Monitor INPUT_DIR; re-generate as required" do
+    def execute
+      watch
+    end
+  end
   
-  build
-  Thread.new { watch }
+  subcommand "serve", "Serve the generated website" do
+    def execute
+      build
+      Thread.new { watch }
+      serve
+    end
+  end
 
-  puts %{>>> Now taking the Pith at "http://localhost:#{$port}"}
-  Rack::Handler.get("thin").run(server, :Port => $port)
+  protected
+  
+  def input_dir
+    Pathname(input || ".")
+  end
 
+  def output_dir
+    if output
+      Pathname(output)
+    else
+      input_dir + "_out"
+    end
+  end
+  
+  def project
+    unless @project
+      pith_dir = input_dir + "_pith"
+      unless pith_dir.directory?
+        signal_usage_error %(No "#{pith_dir}" directory ... this doesn't look right!)
+      end
+      puts %{Generating to "#{output_dir}"}
+      @project = Pith::Project.new(:input_dir => input_dir, :output_dir => output_dir)
+      @project.logger = Pith::ConsoleLogger.new
+    end
+    @project
+  end
+
+  def build
+    project.build
+  end
+
+  def watch
+    require "pith/watcher"
+    Pith::Watcher.new(project, :interval => interval).call
+  end
+
+  def serve
+    require "pith/server"
+    server = Pith::Server.new(project)
+    puts %{>>> Now taking the Pith at "http://localhost:#{port}"}
+    Rack::Handler.get("thin").run(server, :Port => port)
+  end
+  
 end
 
-action = ARGV.shift || "build"
-self.send(action)
+PithCommand.run
