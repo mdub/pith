@@ -2,3 +2,4 @@ rerun.txt
 tmp
 *.gem
 .bundle
+Gemfile.lock
