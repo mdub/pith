@@ -21,7 +21,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency("adsf", "~> 1.0.1")
   gem.add_runtime_dependency("rack", "~> 1.2.1")
   gem.add_runtime_dependency("thin", "~> 1.2.7")
-  gem.add_runtime_dependency("clamp", "~> 0.1.5")
+  gem.add_runtime_dependency("clamp", "~> 0.1.7")
 
   gem.add_development_dependency("rake")
   gem.add_development_dependency("rspec", "~> 1.2.9")

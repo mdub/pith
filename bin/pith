@@ -13,9 +13,14 @@ require "pith/project"
 
 class PithCommand < Clamp::Command
 
-  option ["-i", "--input"], "INPUT_DIR", "Input directory", :default => "."
-  option ["-o", "--output"], "OUTPUT_DIR", "Output directory (default: \"INPUT_DIR/_out\")"
-
+  option ["-i", "--input"], "INPUT_DIR", "Input directory", :attribute_name => :input_dir, :default => "." do |dir|
+    Pathname(dir)
+  end
+  
+  option ["-o", "--output"], "OUTPUT_DIR", "Output directory", :attribute_name => :output_dir, :default => "INPUT_DIR/_out" do |dir|
+    Pathname(dir)
+  end
+  
   option ["-n", "--interval"], "INTERVAL", "Rebuild interval", :default => 2 do |n|
     Integer(n)
   end
@@ -50,17 +55,13 @@ class PithCommand < Clamp::Command
   end
 
   protected
-  
-  def input_dir
-    Pathname(input || ".")
+
+  def default_input_dir
+    Pathname(".")
   end
 
-  def output_dir
-    if output
-      Pathname(output)
-    else
-      input_dir + "_out"
-    end
+  def default_output_dir
+    input_dir + "_out"
   end
   
   def project
