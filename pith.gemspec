@@ -14,7 +14,7 @@ Gem::Specification.new do |gem|
   gem.authors = ["Mike Williams"]
   gem.email = "mdub@dogbiscuit.org"
 
-  gem.version = Pith::VERSION
+  gem.version = Pith::VERSION.dup
   gem.platform = Gem::Platform::RUBY
 
   gem.add_runtime_dependency("tilt", "~> 1.1")
@@ -34,6 +34,5 @@ Gem::Specification.new do |gem|
   gem.files = Dir["lib/**/*", "sample/**/*", "README.markdown", "LICENSE"]
   gem.test_files = Dir["Rakefile", "spec/**/*", "features/**/*", "cucumber.yml"]
   gem.executables = ["pith"]
-  gem.default_executable = "pith"
 
 end

@@ -46,7 +46,7 @@ module Pith
       # Returns a fully-qualified Pathname of the asset.
       #
       def resolve_path(ref)
-        ref = ref.to_str
+        ref = ref.to_s
         if ref[0,1] == "/"
           Pathname(ref[1..-1])
         else

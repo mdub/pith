@@ -14,13 +14,13 @@ module Pith
     class Template < Abstract
 
       def self.can_handle?(path)
-        path.to_str =~ /\.([^.]+)$/ && Tilt.registered?($1)
+        path.to_s =~ /\.([^.]+)$/ && Tilt.registered?($1)
       end
       
       def initialize(project, path)
         raise(ArgumentError, "#{path} is not a template") unless Template.can_handle?(path)
         super(project, path)
-        path.to_str =~ /^(.+)\.(.+)$/ || raise("huh?")
+        path.to_s =~ /^(.+)\.(.+)$/ || raise("huh?")
         @output_path = Pathname($1)
         @type = $2
       end
@@ -125,7 +125,7 @@ module Pith
           else
             input.rewind
           end
-          @tilt_template = Tilt.new(file, input.lineno + 1) { input.read }
+          @tilt_template = Tilt.new(file.to_s, input.lineno + 1) { input.read }
         end
       end
       

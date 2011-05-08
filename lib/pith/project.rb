@@ -109,7 +109,7 @@ module Pith
       config_file = input_dir + "_pith/config.rb"
       project = self
       if config_file.exist?
-        eval(config_file.read, binding, config_file)
+        eval(config_file.read, binding, config_file.to_s, 1)
       end
     end
     

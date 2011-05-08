@@ -53,7 +53,7 @@ module Pith
     end
     
     def relative_url_to(target_path)
-      url = target_path.relative_path_from(page.path.parent).to_str
+      url = target_path.relative_path_from(page.path.parent).to_s
       url = url.sub(/index\.html$/, "") if project.assume_directory_index
       url = url.sub(/\.html$/, "") if project.assume_content_negotiation
       url = "./" if url.empty?
