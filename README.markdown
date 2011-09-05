@@ -140,10 +140,22 @@ There's also a "`link`" function, for even easier hyper-linking:
 
     link("other.html", "Other page")
     
+Incremental rebuild
+-------------------
+
+For quick prototyping, use the "`watch`" command, rather than "`build`".  After building your site, Pith will stay running, and regenerate output files (as necessary) as you edit the inputs.  We keep track of which input files are involved in the production of each output, so only the affected outputs are re-generated.
+
+    $ pith -i SITE watch
+    Generating to "SITE/_out"
+    --(copy)-->   images/logo.png
+    --(haml)-->   index.html
+    # ... edit "index.html.haml" ...
+    --(haml)-->   index.html
+
 Built-in web-server
 -------------------
 
-For quick prototyping, pith includes a simple HTTP server.  Start it by using the "`serve`" command, rather than "`build`"
+For even quicker prototyping, Pith includes a simple HTTP server.  Start it by using the "`serve`" command, rather than "`build`"
 
     $ pith -i SITE serve
     Generating to "SITE/_out"
