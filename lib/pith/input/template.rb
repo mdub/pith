@@ -16,7 +16,7 @@ module Pith
       def self.can_handle?(path)
         path.to_s =~ /\.([^.]+)$/ && Tilt.registered?($1)
       end
-      
+
       def initialize(project, path)
         raise(ArgumentError, "#{path} is not a template") unless Template.can_handle?(path)
         super(project, path)
@@ -58,9 +58,9 @@ module Pith
         load
         @tilt_template.render(context, locals, &block)
       end
-      
+
       # Public: Get YAML metadata declared in the header of of a template.
-      # 
+      #
       # If the first line of the template starts with "---" it is considered to be
       # the start of a YAML 'document', which is loaded and returned.
       #
@@ -75,7 +75,7 @@ module Pith
       #
       #   input.meta
       #   #=> { "published" => "2008-09-15" }
-      #  
+      #
       # Returns a Hash.
       #
       def meta
@@ -94,13 +94,13 @@ module Pith
       #  #=> "some_page.html.haml"
       #  input.title
       #  #=> "Some page"
-      # 
+      #
       def title
         meta["title"] || default_title
       end
 
       private
-        
+
       def default_title
         path.basename.to_s.sub(/\..*/, '').tr('_-', ' ').capitalize
       end
@@ -119,7 +119,7 @@ module Pith
             end
             begin
               @meta = YAML.load(header)
-            rescue
+            rescue ArgumentError, SyntaxError
               logger.warn "#{file}:1: badly-formed YAML header"
             end
           else
@@ -128,7 +128,7 @@ module Pith
           @tilt_template = Tilt.new(file.to_s, input.lineno + 1) { input.read }
         end
       end
-      
+
       attr_accessor :dependencies
 
     end
