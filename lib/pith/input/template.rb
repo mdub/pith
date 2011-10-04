@@ -42,7 +42,7 @@ module Pith
         output_file.open("w") do |out|
           begin
             out.puts(render_context.render(self))
-          rescue Exception => e
+          rescue => e
             logger.warn e.summary(:max_backtrace => 5)
             out.puts "<pre>"
             out.puts e.summary
