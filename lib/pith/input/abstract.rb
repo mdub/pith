@@ -32,8 +32,8 @@ module Pith
       #
       def build
         return false if ignorable? || uptodate?
-        logger.info("%-16s%s" % ["--(#{type})-->", output_path])
-        generate_output 
+        logger.info("--> #{output_path}")
+        generate_output
       end
 
       # Public: Resolve a reference relative to this input.

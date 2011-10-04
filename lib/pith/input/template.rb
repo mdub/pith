@@ -14,19 +14,17 @@ module Pith
     class Template < Abstract
 
       def self.can_handle?(path)
-        path.to_s =~ /\.([^.]+)$/ && Tilt.registered?($1)
+        !!Tilt[path.to_s]
       end
 
       def initialize(project, path)
         raise(ArgumentError, "#{path} is not a template") unless Template.can_handle?(path)
         super(project, path)
-        path.to_s =~ /^(.+)\.(.+)$/ || raise("huh?")
-        @output_path = Pathname($1)
-        @type = $2
+        determine_pipeline
         load
       end
 
-      attr_reader :output_path, :type
+      attr_reader :output_path
 
       # Check whether output is up-to-date.
       #
@@ -56,8 +54,10 @@ module Pith
       # Render this input using Tilt
       #
       def render(context, locals = {}, &block)
-        tilt_template = Tilt.new(file.to_s, @template_start_line) { @template_text }
-        tilt_template.render(context, locals, &block)
+        @pipeline.inject(@template_text) do |text, processor|
+          template = processor.new(file.to_s, @template_start_line) { text }
+          template.render(context, locals, &block)
+        end
       end
 
       # Public: Get YAML metadata declared in the header of of a template.
@@ -103,6 +103,20 @@ module Pith
 
       def default_title
         path.basename.to_s.sub(/\..*/, '').tr('_-', ' ').capitalize
+      end
+
+      def determine_pipeline
+        @pipeline = []
+        remaining_path = path.to_s
+        while remaining_path =~ /^(.+)\.(.+)$/
+          if Tilt[$2]
+            remaining_path = $1
+            @pipeline << Tilt[$2]
+          else
+            break
+          end
+        end
+        @output_path = Pathname(remaining_path)
       end
 
       # Read input file, extracting YAML meta-data header, and template content.

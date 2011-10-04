@@ -11,15 +11,11 @@ module Pith
       def output_path
         path
       end
-      
-      def type
-        "copy"
-      end
-      
+
       def uptodate?
         FileUtils.uptodate?(output_file, [file])
       end
-      
+
       # Copy this input verbatim into the output directory
       #
       def generate_output
@@ -36,7 +32,7 @@ module Pith
       def meta
         {}
       end
-      
+
     end
 
   end

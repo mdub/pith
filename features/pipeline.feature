@@ -1,4 +1,3 @@
-@wip
 Feature: apply multiple template processors
 
   I want to apply multiple template processors
