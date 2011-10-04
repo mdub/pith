@@ -23,6 +23,7 @@ module Pith
         path.to_s =~ /^(.+)\.(.+)$/ || raise("huh?")
         @output_path = Pathname($1)
         @type = $2
+        load
       end
 
       attr_reader :output_path, :type
@@ -55,8 +56,8 @@ module Pith
       # Render this input using Tilt
       #
       def render(context, locals = {}, &block)
-        load
-        @tilt_template.render(context, locals, &block)
+        tilt_template = Tilt.new(file.to_s, @template_start_line) { @template_text }
+        tilt_template.render(context, locals, &block)
       end
 
       # Public: Get YAML metadata declared in the header of of a template.
@@ -79,7 +80,6 @@ module Pith
       # Returns a Hash.
       #
       def meta
-        load
         @meta
       end
 
@@ -108,25 +108,33 @@ module Pith
       # Read input file, extracting YAML meta-data header, and template content.
       #
       def load
-        return false if @tilt_template
-        @meta = {}
         file.open do |input|
-          header = input.gets
-          if header =~ /^---/
-            while line = input.gets
-              break if line =~ /^(---|\.\.\.)/
-              header << line
-            end
-            begin
-              @meta = YAML.load(header)
-            rescue ArgumentError, SyntaxError
-              logger.warn "#{file}:1: badly-formed YAML header"
-            end
-          else
-            input.rewind
-          end
-          @tilt_template = Tilt.new(file.to_s, input.lineno + 1) { input.read }
+          load_meta(input)
+          load_template(input)
         end
+      end
+
+      def load_meta(input)
+        @meta = {}
+        header = input.gets
+        if header =~ /^---/
+          while line = input.gets
+            break if line =~ /^(---|\.\.\.)/
+            header << line
+          end
+          begin
+            @meta = YAML.load(header)
+          rescue ArgumentError, SyntaxError
+            logger.warn "#{file}:1: badly-formed YAML header"
+          end
+        else
+          input.rewind
+        end
+      end
+
+      def load_template(input)
+        @template_start_line = input.lineno + 1
+        @template_text = input.read
       end
 
       attr_accessor :dependencies
