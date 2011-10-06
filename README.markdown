@@ -140,6 +140,32 @@ There's also a "`link`" function, for even easier hyper-linking:
 
     link("other.html", "Other page")
     
+Configuring Pith
+----------------
+
+The behaviour of Pith can be customised somewhat, by dropping a "`config.rb`" file into the "`_pith`" directory.
+
+There are a couple of flags that can be set to modify generation of links using "`href`" and "`link`":
+
+    project.assume_content_negotiation = true
+    project.assume_directory_index = true
+
+Both flags default to false.  When `assume_content_negotiation` is enabled, Pith omits the ".html" suffix from links.  When `assume_directory_index` is enabled, Pith abbreviates links to "index.html" files.  Both of these assumptions work nicely when the generated files are served using a web-server such as Apache httpd, but aren't appropriate if you wish to navigate them as static files on the filesystem.
+
+It's also possible to mix behaviour into Pith, using the config file, e.g.
+
+    project.helpers do
+
+      def handy_method
+        # ...
+      end
+
+    end
+
+Any methods defined in a `project.helpers` block are available for use in templates.
+
+For a more extensive example of a config file, look [over here](https://github.com/mdub/dogbiscuit.org/blob/master/src/_pith/config.rb).
+
 Incremental rebuild
 -------------------
 
