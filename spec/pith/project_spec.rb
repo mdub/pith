@@ -2,28 +2,13 @@ require 'spec_helper'
 require 'pith/project'
 
 describe Pith::Project do
-  
+
   before do
     $input_dir.mkpath
     @project = Pith::Project.new(:input_dir => $input_dir)
   end
 
   describe "#input" do
-
-    describe "(with a non-template input path)" do
-
-      before do
-        @input_file = $input_dir + "input.txt"
-        @input_file.touch
-      end
-
-      it "constructs an Resource object" do
-        @input = @project.input("input.txt")
-        @input.should be_kind_of(Pith::Input::Resource)
-        @input.file.should == @input_file
-      end
-      
-    end
 
     describe "(with a template input path)" do
 
@@ -37,11 +22,11 @@ describe Pith::Project do
         @input.should be_kind_of(Pith::Input::Template)
         @input.file.should == @input_file
       end
-      
+
     end
 
-    describe "(with a template ouput path)" do
-      
+    describe "(with a template output path)" do
+
       before do
         @input_file = $input_dir + "input.html.haml"
         @input_file.touch
@@ -50,19 +35,19 @@ describe Pith::Project do
       it "can also be used to locate the Template" do
         @project.input("input.html").should == @project.input("input.html.haml")
       end
-      
+
     end
 
     describe "(with an invalid input path)" do
-      
+
       it "returns nil" do
         @project.input("bogus.path").should be_nil
       end
-      
+
     end
-    
+
   end
-  
+
   describe "when an input file is unchanged" do
 
     before do
@@ -92,7 +77,7 @@ describe Pith::Project do
       @input_file.touch(Time.now - 10)
     end
 
-    describe "a second call to #input" do 
+    describe "a second call to #input" do
       it "returns a different Input object" do
 
         first_time = @project.input("input.html.haml")
@@ -117,7 +102,7 @@ describe Pith::Project do
       @input_file.touch(Time.now - 10)
     end
 
-    describe "a second call to #input" do 
+    describe "a second call to #input" do
       it "returns nil" do
 
         first_time = @project.input("input.html.haml")

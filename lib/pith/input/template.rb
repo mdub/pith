@@ -12,18 +12,15 @@ module Pith
     #
     class Template < Abstract
 
-      def self.can_handle?(path)
-        !!Tilt[path.to_s]
-      end
-
       def initialize(project, path)
-        raise(ArgumentError, "#{path} is not a template") unless Template.can_handle?(path)
         super(project, path)
+        @meta = {}
         determine_pipeline
-        load
+        load unless resource?
       end
 
       attr_reader :output_path
+      attr_reader :pipeline
 
       # Check whether output is up-to-date.
       #
@@ -37,6 +34,7 @@ module Pith
       #
       def generate_output
         output_file.parent.mkpath
+        return FileUtils.copy(file, output_file) if resource?
         render_context = RenderContext.new(project)
         output_file.open("w") do |out|
           begin
@@ -53,6 +51,7 @@ module Pith
       # Render this input using Tilt
       #
       def render(context, locals = {}, &block)
+        return file.read if resource?
         @pipeline.inject(@template_text) do |text, processor|
           template = processor.new(file.to_s, @template_start_line) { text }
           template.render(context, locals, &block)
@@ -116,6 +115,13 @@ module Pith
           end
         end
         @output_path = Pathname(remaining_path)
+        if resource?
+          @dependencies = [file]
+        end
+      end
+
+      def resource?
+        pipeline.empty?
       end
 
       # Read input file, extracting YAML meta-data header, and template content.
@@ -128,7 +134,6 @@ module Pith
       end
 
       def load_meta(input)
-        @meta = {}
         header = input.gets
         if header =~ /^---/
           while line = input.gets
