@@ -1,6 +1,5 @@
 require "fileutils"
 require "pathname"
-require "pith/exception_ext"
 require "pith/input/abstract"
 require "pith/render_context"
 require "tilt"
@@ -43,9 +42,9 @@ module Pith
           begin
             out.puts(render_context.render(self))
           rescue StandardError, SyntaxError => e
-            logger.warn e.summary(:max_backtrace => 5)
+            logger.warn exception_summary(e, :max_backtrace => 5)
             out.puts "<pre>"
-            out.puts e.summary
+            out.puts exception_summary(e)
           end
         end
         @dependencies = render_context.dependencies
@@ -152,6 +151,12 @@ module Pith
       end
 
       attr_accessor :dependencies
+
+      def exception_summary(e, options = {})
+        max_backtrace = options[:max_backtrace] || 999
+        trimmed_backtrace = e.backtrace[0, max_backtrace]
+        (["#{e.class}: #{e.message}"] + trimmed_backtrace).join("\n    ") + "\n"
+      end
 
     end
 
