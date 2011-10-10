@@ -1,8 +1,8 @@
 require 'spec_helper'
-require "pith/input/abstract"
+require "pith/input"
 require "pith/project"
 
-describe Pith::Input::Template do
+describe Pith::Input do
 
   before do
     $input_dir.mkpath

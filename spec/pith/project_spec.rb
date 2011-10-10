@@ -17,9 +17,9 @@ describe Pith::Project do
         @input_file.touch
       end
 
-      it "constructs an Template object" do
+      it "constructs an Input object" do
         @input = @project.input("input.html.haml")
-        @input.should be_kind_of(Pith::Input::Template)
+        @input.should be_kind_of(Pith::Input)
         @input.file.should == @input_file
       end
 
@@ -32,7 +32,7 @@ describe Pith::Project do
         @input_file.touch
       end
 
-      it "can also be used to locate the Template" do
+      it "can also be used to locate the Input" do
         @project.input("input.html").should == @project.input("input.html.haml")
       end
 

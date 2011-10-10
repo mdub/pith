@@ -32,19 +32,7 @@ module Pith
 end
 
 module Pith
-  module Input
-
-    class Abstract
-
-      def published?
-        false
-      end
-
-    end
-
-    class Template
-      include Pith::Plugins::Publication::TemplateMethods
-    end
-    
+  class Input
+    include Pith::Plugins::Publication::TemplateMethods
   end
 end
