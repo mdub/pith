@@ -72,3 +72,7 @@ end
 Then /^output file "([^\"]*)" should contain an error$/ do |path|
   @outputs[path].clean.should == "foo"
 end
+
+Then /^the project should have errors$/ do
+  @project.should have_errors
+end

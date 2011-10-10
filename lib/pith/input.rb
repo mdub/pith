@@ -18,8 +18,9 @@ module Pith
     attr_reader :project, :path
 
     attr_reader :output_path
+    attr_reader :dependencies
     attr_reader :pipeline
-    attr_accessor :dependencies
+    attr_reader :error
 
     # Public: Get the file-system location of this input.
     #
@@ -73,8 +74,10 @@ module Pith
       render_context = RenderContext.new(project)
       output_file.open("w") do |out|
         begin
+          @error = nil
           out.puts(render_context.render(self))
         rescue StandardError, SyntaxError => e
+          @error = e
           logger.warn exception_summary(e, :max_backtrace => 5)
           out.puts "<pre>"
           out.puts exception_summary(e)
