@@ -16,11 +16,11 @@ class PithCommand < Clamp::Command
   option ["-i", "--input"], "INPUT_DIR", "Input directory", :attribute_name => :input_dir, :default => "." do |dir|
     Pathname(dir)
   end
-  
+
   option ["-o", "--output"], "OUTPUT_DIR", "Output directory", :attribute_name => :output_dir, :default => "INPUT_DIR/_out" do |dir|
     Pathname(dir)
   end
-  
+
   option ["-n", "--interval"], "INTERVAL", "Rebuild interval", :default => 2 do |n|
     Integer(n)
   end
@@ -45,7 +45,7 @@ class PithCommand < Clamp::Command
       watch
     end
   end
-  
+
   subcommand "serve", "Serve the generated website" do
     def execute
       build
@@ -63,7 +63,7 @@ class PithCommand < Clamp::Command
   def default_output_dir
     input_dir + "_out"
   end
-  
+
   def project
     unless @project
       pith_dir = input_dir + "_pith"
@@ -79,6 +79,7 @@ class PithCommand < Clamp::Command
 
   def build
     project.build
+    exit(1) if project.has_errors?
   end
 
   def watch
@@ -92,7 +93,7 @@ class PithCommand < Clamp::Command
     puts %{>>> Now taking the Pith at "http://localhost:#{port}"}
     Rack::Handler.get("thin").run(server, :Port => port)
   end
-  
+
 end
 
 PithCommand.run
