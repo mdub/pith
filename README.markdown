@@ -173,10 +173,10 @@ For quick prototyping, use the "`watch`" command, rather than "`build`".  After 
 
     $ pith -i SITE watch
     Generating to "SITE/_out"
-    --(copy)-->   images/logo.png
-    --(haml)-->   index.html
+    --> images/logo.png
+    --> index.html
     # ... edit "index.html.haml" ...
-    --(haml)-->   index.html
+    --> index.html
 
 Built-in web-server
 -------------------
@@ -185,8 +185,8 @@ For even quicker prototyping, Pith includes a simple HTTP server.  Start it by u
 
     $ pith -i SITE serve
     Generating to "SITE/_out"
-    --(copy)-->   images/logo.png
-    --(haml)-->   index.html
+    --> images/logo.png
+    --> index.html
     Taking the Pith at "http://localhost:4321"
     >> Thin web server (v1.2.7 codename No Hup)
     >> Maximum connections set to 1024
