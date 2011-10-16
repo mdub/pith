@@ -17,7 +17,7 @@ Gem::Specification.new do |gem|
   gem.version = Pith::VERSION.dup
   gem.platform = Gem::Platform::RUBY
 
-  gem.add_runtime_dependency("tilt", "~> 1.1")
+  gem.add_runtime_dependency("tilt", ">= 1.3")
   gem.add_runtime_dependency("adsf", "~> 1.0.1")
   gem.add_runtime_dependency("rack", "~> 1.2.1")
   gem.add_runtime_dependency("thin", "~> 1.2.7")
