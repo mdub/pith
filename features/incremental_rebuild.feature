@@ -1,8 +1,8 @@
 Feature: incremental rebuilding
 
   I want to rebuild just the outputs whose inputs have changed
-  So that that I can bring the project up-to-date efficiently
-  
+  So that I can bring the project up-to-date efficiently
+
 Scenario: alter an input, and the output changes
 
   Given input file "page.html.haml" contains "Old content"
@@ -10,7 +10,7 @@ Scenario: alter an input, and the output changes
 
   When I change input file "page.html.haml" to contain "New content"
   And I rebuild the site
-  
+
   Then output file "page.html" should be re-generated
   And output file "page.html" should contain "New content"
 
