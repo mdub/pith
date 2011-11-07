@@ -23,13 +23,6 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency("thin", "~> 1.2.7")
   gem.add_runtime_dependency("clamp", "~> 0.3.0")
 
-  gem.add_development_dependency("rake")
-  gem.add_development_dependency("rspec", "~> 1.2.9")
-  gem.add_development_dependency("cucumber", "~> 0.8.3")
-  gem.add_development_dependency("haml")
-  gem.add_development_dependency("RedCloth")
-  gem.add_development_dependency("rdiscount")
-
   gem.require_path = "lib"
   gem.files = Dir["lib/**/*", "sample/**/*", "README.markdown", "LICENSE"]
   gem.test_files = Dir["Rakefile", "spec/**/*", "features/**/*", "cucumber.yml"]
