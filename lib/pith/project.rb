@@ -8,7 +8,7 @@ module Pith
 
   class Project
 
-    DEFAULT_IGNORE_PATTERNS = ["_*", ".git", ".svn"].freeze
+    DEFAULT_IGNORE_PATTERNS = ["_*", ".git", ".svn", "*~"].freeze
 
     def initialize(attributes = {})
       @ignore_patterns = DEFAULT_IGNORE_PATTERNS.dup
