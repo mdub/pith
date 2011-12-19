@@ -70,7 +70,8 @@ Page metadata
 A YAML header can be provided at the top of any template, defining page metadata.  The header is introduced by a first line containing three dashes, and terminated by a line containing three dots.
 
     ---
-    title: "All about fish"
+    title: "Fish"
+    subtitle: "All about fish"
     ...
 
 Metadata provided in the header can be referenced by template content, via the "`page.meta`" Hash:
@@ -80,9 +81,12 @@ Metadata provided in the header can be referenced by template content, via the "
         %title= page.meta["title"]
       %body
         %h1= page.meta["title"]
+        %h2= page.meta["subtitle"]
 
 This is especially useful in "layout" templates (see below).
-    
+
+Since the page title is such a common thing to want to specify in the header, it's also available as "`page.title`", as a shortcut (if no explicit title was provided, Pith will guess one from the input file name).
+
 Partials and Layouts
 --------------------
 
