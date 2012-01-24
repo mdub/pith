@@ -5,7 +5,19 @@ describe Pith::Project do
 
   before do
     $input_dir.mkpath
-    @project = Pith::Project.new(:input_dir => $input_dir)
+    @project = Pith::Project.new(:input_dir => $input_dir, :output_dir => $output_dir)
+  end
+
+  describe "#build" do
+    
+    before do
+      @project.build
+    end
+    
+    it "creates the output directory" do
+      $output_dir.should be_directory
+    end
+    
   end
 
   describe "#input" do

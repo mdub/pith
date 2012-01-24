@@ -68,6 +68,7 @@ module Pith
       refresh
       load_config
       remove_old_outputs
+      output_dir.mkpath
       generate_outputs
       output_dir.touch
     end
