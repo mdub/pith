@@ -48,7 +48,7 @@ Templates
 
 Files in the input directory are considered to be "templates" if the file name ends with a template format extension recognised as such by [Tilt][tilt], e.g. "`.haml`", or "`.textile`".  These will be evaluated dynamically.  Pith strips the format extension off the file name when generating output.
 
-Formats supported by Tilt include:
+Tilt supports a wide variety of formats, including:
 
 - [Markdown](http://daringfireball.net/projects/markdown/) (`markdown`, `md`)
 - [Textile](http://redcloth.org/hobix.com/textile/) (`textile`)
@@ -56,6 +56,22 @@ Formats supported by Tilt include:
 - [Erb](http://ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html) (`erb`)
 - [Sass][sass] (`sass`)
 - [CoffeeScript](http://jashkenas.github.com/coffee-script/) (`coffee`)
+
+At one end of the spectrum are the "template engines", like ERB/Erubis and Liquid, which allow insertion of dynamic content into a template.  These aren't really HTML-specific; they can be used to generate any output format ... really, they're just string interpolation on steroids.
+
+At the other end of the spectrum are "markup formats" like Markdown, Textile, Creole, which are targeted specifically at HTML output ... but don't support insertion of dynamic content.
+
+In the middle are hybrids like Haml, and Markaby, which are both HTML-focused, but support dynamic content.
+
+Pipelining
+----------
+
+If you want both dynamic content, and simplified markup, in the same template, one option is to use Haml.
+
+The alternative to Haml, if you want both dynamic content, and less angle-bracket, is to combine a template format with a markup format.  For example, you can create a "page.md.liquid" template, which would undergo first Liquid template expansion (for dynamic content), and then Markdown processing (for generation of HTML).
+
+Resources
+---------
 
 Any non-template input files (we call them "resources") are just copied verbatim into the output directory.
 
