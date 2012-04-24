@@ -42,8 +42,7 @@ module Pith
     #
     def inputs
       @inputs ||= input_dir.all_files.map do |input_file|
-        path = input_file.relative_path_from(input_dir)
-        find_or_create_input(path)
+        find_or_create_input(input_file)
       end.compact
     end
 

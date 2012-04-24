@@ -7,15 +7,15 @@ require "yaml"
 module Pith
   class Input
 
-    def initialize(project, path)
+    def initialize(project, file)
       @project = project
-      @path = path
+      @file = file
       @meta = {}
       determine_pipeline
       load unless resource?
     end
 
-    attr_reader :project, :path
+    attr_reader :project
 
     attr_reader :output_path
     attr_reader :dependencies
@@ -27,7 +27,15 @@ module Pith
     # Returns a fully-qualified Pathname.
     #
     def file
-      project.input_dir + path
+      @file
+    end
+
+    # Public: Get the path of this input relative to the project root.
+    #
+    # Returns a fully-qualified Pathname.
+    #
+    def path
+      @path ||= file.relative_path_from(project.input_dir)
     end
 
     # Public: Get the file-system location of the corresponding output file.
