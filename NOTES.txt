@@ -1,0 +1,22 @@
+Start:
+  - load all inputs (implicitly dirty)
+
+Generate:
+  - for each dirty input
+    - generate output
+    - mark clean
+
+Remove input:
+  - unload input
+    - remove corresponding output (if any)
+  - mark dependant outputs dirty?
+
+Add input:
+  - load new input
+
+Modify input
+  - mark dirty
+    - mark dependant inputs dirty
+
+Remove output
+  - mark corresponding input dirty
