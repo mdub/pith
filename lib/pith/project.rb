@@ -56,10 +56,9 @@ module Pith
     #
     def input(path)
       path = Pathname(path)
-      inputs.each do |input|
-        return input if input.path == path || input.output_path == path
+      inputs.find do |input|
+        input.path == path || input.output_path == path
       end
-      nil
     end
 
     # Public: build the project, generating output files.
