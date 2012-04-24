@@ -12,7 +12,7 @@ module Pith
       @file = file
       @meta = {}
       determine_pipeline
-      load unless resource?
+      load
     end
 
     attr_reader :project
@@ -20,6 +20,7 @@ module Pith
     attr_reader :output_path
     attr_reader :dependencies
     attr_reader :pipeline
+    attr_reader :load_time
     attr_reader :error
 
     # Public: Get the file-system location of this input.
@@ -72,6 +73,14 @@ module Pith
     #
     def uptodate?
       dependencies && FileUtils.uptodate?(output_file, dependencies)
+    end
+
+    def exists?
+      file.exist?
+    end
+
+    def refresh
+      load if file.mtime.to_i >= load_time.to_i
     end
 
     # Generate output for this template
@@ -191,9 +200,12 @@ module Pith
     # Read input file, extracting YAML meta-data header, and template content.
     #
     def load
-      file.open do |input|
-        load_meta(input)
-        load_template(input)
+      @load_time = Time.now
+      unless resource?
+        file.open do |input|
+          load_meta(input)
+          load_template(input)
+        end
       end
     end
 

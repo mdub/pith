@@ -15,7 +15,7 @@ describe Pith::Input do
     input_file.open("w") do |io|
       yield io if block_given?
     end
-    @project.input(path)
+    Pith::Input.new(@project, input_file)
   end
 
   describe "#title" do

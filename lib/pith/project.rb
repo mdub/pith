@@ -15,6 +15,7 @@ module Pith
       attributes.each do |k,v|
         send("#{k}=", v)
       end
+      refresh
     end
 
     attr_reader :input_dir
@@ -41,9 +42,7 @@ module Pith
     #   call #refresh to discard the cached data.
     #
     def inputs
-      @inputs ||= input_dir.all_files.map do |input_file|
-        find_or_create_input(input_file)
-      end.compact
+      @inputs
     end
 
     # Public: find an input.
@@ -74,8 +73,21 @@ module Pith
     # Public: discard cached data that is out-of-sync with the file-system.
     #
     def refresh
-      @inputs = nil
       @config_files = nil
+      @inputs ||= []
+      @inputs.select!(&:exists?)
+      input_dir.all_files.map do |input_file|
+        load_input(input_file)
+      end
+    end
+
+    def load_input(input_file)
+      existing_input = @inputs.find { |input| input.file == input_file }
+      if existing_input
+        existing_input.refresh
+      else
+        @inputs << Input.new(self, input_file)
+      end
     end
 
     # Public: check for errors.
@@ -134,18 +146,6 @@ module Pith
       inputs.each do |input|
         input.build
       end
-    end
-
-    def input_cache
-      @input_cache ||= Hash.new do |h, cache_key|
-        h[cache_key] = Input.new(self, cache_key.first)
-      end
-    end
-
-    def find_or_create_input(path)
-      file = input_dir + path
-      cache_key = [path, file.mtime]
-      input_cache[cache_key]
     end
 
   end
