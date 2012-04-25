@@ -12,7 +12,6 @@ module Pith
       @file = file
       @meta = {}
       determine_pipeline
-      load
     end
 
     attr_reader :project
@@ -60,7 +59,7 @@ module Pith
     # Returns true if it can.
     #
     def ignorable?
-      path.each_filename do |path_component|
+      @ignorable ||= path.each_filename do |path_component|
         project.ignore_patterns.each do |pattern|
           return true if File.fnmatch(pattern, path_component)
         end
@@ -80,7 +79,7 @@ module Pith
     end
 
     def refresh
-      load if file.mtime.to_i >= load_time.to_i
+      unload if file.mtime.to_i >= load_time.to_i
     end
 
     # Generate output for this template
@@ -106,6 +105,7 @@ module Pith
     # Render this input using Tilt
     #
     def render(context, locals = {}, &block)
+      ensure_loaded
       return file.read if resource?
       @pipeline.inject(@template_text) do |text, processor|
         template = processor.new(file.to_s, @template_start_line) { text }
@@ -133,6 +133,7 @@ module Pith
     # Returns a Hash.
     #
     def meta
+      ensure_loaded
       @meta
     end
 
@@ -197,6 +198,10 @@ module Pith
       pipeline.empty?
     end
 
+    def ensure_loaded
+      load unless @load_time
+    end
+
     # Read input file, extracting YAML meta-data header, and template content.
     #
     def load
@@ -207,6 +212,11 @@ module Pith
           load_template(input)
         end
       end
+    end
+
+    # Note that the input file has changed, so we'll need to re-load it
+    def unload
+      @load_time = nil
     end
 
     def load_meta(input)
