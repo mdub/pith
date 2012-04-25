@@ -1,6 +1,6 @@
 require "fileutils"
 require "pathname"
-require "pith/render_context"
+require "pith/output"
 require "tilt"
 require "yaml"
 
@@ -17,10 +17,8 @@ module Pith
     attr_reader :project, :path
 
     attr_reader :output_path
-    attr_reader :dependencies
     attr_reader :pipeline
     attr_reader :load_time
-    attr_reader :error
 
     # Public: Get the file-system location of this input.
     #
@@ -38,12 +36,17 @@ module Pith
       @output_file ||= project.output_dir + output_path
     end
 
+    def output
+      unless ignorable?
+        @output ||= Output.for(self)
+      end
+    end
+
     # Public: Generate an output file.
     #
     def build
-      return false if ignorable? || uptodate?
-      logger.info("--> #{output_path}")
-      generate_output
+      return false if ignorable? || output.uptodate?
+      output.generate
     end
 
     # Consider whether this input can be ignored.
@@ -58,36 +61,12 @@ module Pith
       end
     end
 
-    # Check whether output is up-to-date.
-    #
-    # Return true unless output needs to be re-generated.
-    #
-    def uptodate?
-      dependencies && FileUtils.uptodate?(output_file, dependencies)
+    def resource?
+      pipeline.empty?
     end
 
     def refresh
       unload if file.mtime.to_i >= load_time.to_i
-    end
-
-    # Generate output for this template
-    #
-    def generate_output
-      output_file.parent.mkpath
-      return FileUtils.copy(file, output_file) if resource?
-      render_context = RenderContext.new(project)
-      output_file.open("w") do |out|
-        begin
-          @error = nil
-          out.puts(render_context.render(self))
-        rescue StandardError, SyntaxError => e
-          @error = e
-          logger.warn exception_summary(e, :max_backtrace => 5)
-          out.puts "<pre>"
-          out.puts exception_summary(e)
-        end
-      end
-      @dependencies = render_context.dependencies
     end
 
     # Render this input using Tilt
@@ -177,13 +156,6 @@ module Pith
         end
       end
       @output_path = Pathname(remaining_path)
-      if resource?
-        @dependencies = [file]
-      end
-    end
-
-    def resource?
-      pipeline.empty?
     end
 
     def ensure_loaded
@@ -217,7 +189,7 @@ module Pith
         begin
           @meta = YAML.load(header)
         rescue ArgumentError, SyntaxError
-          logger.warn "#{file}:1: badly-formed YAML header"
+          project.logger.warn "#{file}:1: badly-formed YAML header"
         end
       else
         input.rewind
@@ -227,16 +199,6 @@ module Pith
     def load_template(input)
       @template_start_line = input.lineno + 1
       @template_text = input.read
-    end
-
-    def exception_summary(e, options = {})
-      max_backtrace = options[:max_backtrace] || 999
-      trimmed_backtrace = e.backtrace[0, max_backtrace]
-      (["#{e.class}: #{e.message}"] + trimmed_backtrace).join("\n    ") + "\n"
-    end
-
-    def logger
-      project.logger
     end
 
   end

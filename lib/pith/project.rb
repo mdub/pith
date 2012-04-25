@@ -94,7 +94,7 @@ module Pith
     #
     # Returns true if any errors were encountered during the last build.
     def has_errors?
-      inputs.any?(&:error)
+      inputs.map(&:output).compact.any?(&:error)
     end
 
     def last_built_at
