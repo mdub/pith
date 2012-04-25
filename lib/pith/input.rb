@@ -184,7 +184,7 @@ module Pith
         begin
           @meta = YAML.load(header)
         rescue ArgumentError, SyntaxError
-          project.logger.warn "#{file}:1: badly-formed YAML header"
+          logger.warn "#{file}:1: badly-formed YAML header"
         end
       else
         io.rewind
@@ -195,6 +195,10 @@ module Pith
     #
     def unload
       @load_time = nil
+    end
+
+    def logger
+      project.logger
     end
 
   end

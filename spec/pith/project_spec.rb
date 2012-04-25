@@ -72,6 +72,7 @@ describe Pith::Project do
     describe "a second call to #input" do
       it "returns nil" do
 
+        @project.refresh
         first_time = @project.input("input.html.haml")
         first_time.should_not be_nil
 

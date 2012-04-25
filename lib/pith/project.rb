@@ -15,7 +15,6 @@ module Pith
       attributes.each do |k,v|
         send("#{k}=", v)
       end
-      refresh
     end
 
     attr_reader :input_dir
@@ -69,8 +68,8 @@ module Pith
     def build
       refresh
       load_config
-      remove_old_outputs
       output_dir.mkpath
+      remove_invalid_outputs
       outputs.each(&:build)
       output_dir.touch
     end
@@ -80,19 +79,8 @@ module Pith
     def refresh
       @config_files = nil
       @input_map ||= {}
-      @input_map.select! { |input_file, input| input.file.exist? }
-      input_dir.all_files.map do |input_file|
-        load_input(input_file)
-      end
-    end
-
-    def load_input(input_file)
-      path = input_file.relative_path_from(input_dir)
-      if @input_map.has_key?(path)
-        @input_map[path].refresh
-      else
-        @input_map[path] = Input.new(self, path)
-      end
+      validate_known_inputs
+      find_new_inputs
     end
 
     # Public: check for errors.
@@ -136,14 +124,29 @@ module Pith
       end
     end
 
-    def remove_old_outputs
-      valid_output_paths = inputs.map { |i| i.output_path }
-      output_dir.all_files.each do |output_file|
-        output_path = output_file.relative_path_from(output_dir)
-        unless valid_output_paths.member?(output_path)
-          logger.info("removing        #{output_path}")
-          FileUtils.rm(output_file)
+    def validate_known_inputs
+      @input_map.select! { |_, input| input.file.exist? }
+      @input_map.each do |_,input|
+        input.refresh
+      end
+    end
+
+    def find_new_inputs
+      input_dir.all_files.map do |input_file|
+        path = input_file.relative_path_from(input_dir)
+        unless @input_map.has_key?(path)
+          @input_map[path] = Input.new(self, path)
         end
+      end
+    end
+
+    def remove_invalid_outputs
+      valid_output_files = outputs.map(&:file)
+      invalid_output_files = output_dir.all_files - valid_output_files
+      invalid_output_files.each do |file|
+        path = file.relative_path_from(output_dir)
+        logger.info("--X #{path}")
+        FileUtils.rm(file)
       end
     end
 
