@@ -59,7 +59,7 @@ module Pith
     def input(path)
       path = Pathname(path)
       inputs.find do |input|
-        input.path == path || input.output_path == path
+        input.matches_path(path)
       end
     end
 

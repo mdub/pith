@@ -19,39 +19,76 @@ describe Pith::Input do
     Pith::Input.new(@project, path)
   end
 
-  describe "#title" do
+  context "for a template" do
 
-    it "is based on last component of filename" do
-      @input = make_input("dir/some_page.html.haml")
-      @input.title.should == "Some page"
+    subject do
+      make_input("dir/some_page.html.md.erb")
     end
 
-    it "can be over-ridden in metadata" do
-      @input = make_input("dir/some_page.html.haml") do |i|
-        i.puts "---"
-        i.puts "title: Blah blah"
-        i.puts "..."
+    it { should be_template }
+
+    describe "#title" do
+
+      it "is based on last component of filename" do
+        subject.title.should == "Some page"
       end
-      @input.title.should == "Blah blah"
+
+      it "can be over-ridden in metadata" do
+        input = make_input("dir/some_page.html.haml") do |i|
+          i.puts "---"
+          i.puts "title: Blah blah"
+          i.puts "..."
+        end
+        input.title.should == "Blah blah"
+      end
+
+    end
+
+    describe "#output" do
+
+      it "returns an Output" do
+        subject.output.should_not be_nil
+      end
+
+    end
+
+    describe "#output_path" do
+
+      it "excludes the template-type extensions" do
+        subject.output_path.should == Pathname("dir/some_page.html")
+      end
+
+    end
+
+    describe "#pipeline" do
+
+      it "is a list of Tilt processors" do
+        subject.pipeline.should == [Tilt["erb"], Tilt["md"]]
+      end
+
     end
 
   end
 
-  describe "#output_path" do
+  context "for a resource" do
 
-    it "excludes the template-type extension" do
-      @input = make_input("dir/some_page.html.haml")
-      @input.output_path.should == Pathname("dir/some_page.html")
+    subject do
+      make_input("dir/some_image.gif")
     end
+
+    it { should_not be_template }
+
+    its(:pipeline) { should be_empty }
 
   end
 
-  describe "#pipeline" do
+  context "for an ignored file" do
 
-    it "is a list of Tilt processors" do
-      @input = make_input("dir/some_page.html.haml")
-      @input.pipeline.should == [Tilt["haml"]]
+    subject do
+      make_input("_blah/blah.de")
     end
+
+    its(:output) { should be_nil }
 
   end
 

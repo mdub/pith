@@ -17,6 +17,7 @@ module Pith
 
     attr_reader :output_path
     attr_reader :pipeline
+
     attr_reader :load_time
 
     # Public: Get the file-system location of this input.
@@ -27,18 +28,8 @@ module Pith
       @file ||= project.input_dir + path
     end
 
-    # Public: Get the file-system location of the corresponding output file.
-    #
-    # Returns a fully-qualified Pathname.
-    #
-    def output_file
-      @output_file ||= project.output_dir + output_path
-    end
-
-    def output
-      unless ignorable?
-        @output ||= Output.for(self)
-      end
+    def matches_path(path)
+      path == self.path || path == output_path
     end
 
     # Consider whether this input can be ignored.
@@ -59,6 +50,12 @@ module Pith
     #
     def template?
       !pipeline.empty?
+    end
+
+    def output
+      unless ignorable?
+        @output ||= Output.for(self, @output_path)
+      end
     end
 
     def refresh

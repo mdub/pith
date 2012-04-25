@@ -5,24 +5,22 @@ module Pith
 
   class Output
 
-    def self.for(input)
-      new(input)
+    def self.for(input, path)
+      new(input, path)
     end
 
-    def initialize(input)
+    def initialize(input, path)
       @input = input
+      @path = path
     end
 
     attr_reader :input
     attr_reader :dependencies
     attr_reader :error
+    attr_reader :path
 
     def project
       input.project
-    end
-
-    def path
-      input.output_path
     end
 
     def file
