@@ -75,17 +75,18 @@ module Pith
     def refresh
       @config_files = nil
       @input_map ||= {}
-      @input_map.select! { |input_file, input| input_file.exist? }
+      @input_map.select! { |input_file, input| input.file.exist? }
       input_dir.all_files.map do |input_file|
         load_input(input_file)
       end
     end
 
     def load_input(input_file)
-      if @input_map.has_key?(input_file)
-        @input_map[input_file].refresh
+      path = input_file.relative_path_from(input_dir)
+      if @input_map.has_key?(path)
+        @input_map[path].refresh
       else
-        @input_map[input_file] = Input.new(self, input_file)
+        @input_map[path] = Input.new(self, path)
       end
     end
 

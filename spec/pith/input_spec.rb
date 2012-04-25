@@ -10,12 +10,13 @@ describe Pith::Input do
   end
 
   def make_input(path)
+    path = Pathname(path)
     input_file = $input_dir + path
     input_file.parent.mkpath
     input_file.open("w") do |io|
       yield io if block_given?
     end
-    Pith::Input.new(@project, input_file)
+    Pith::Input.new(@project, path)
   end
 
   describe "#title" do
