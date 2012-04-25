@@ -1,11 +1,15 @@
 require "fileutils"
 require "pathname"
+require "pith/observable"
 require "pith/output"
 require "tilt"
 require "yaml"
 
 module Pith
+
   class Input
+
+    include Pith::Observable
 
     def initialize(project, path)
       @project = project
@@ -59,7 +63,10 @@ module Pith
     end
 
     def refresh
-      unload if file.mtime.to_i >= load_time.to_i
+      if file.mtime.to_i >= load_time.to_i
+        unload
+        notify_observers
+      end
     end
 
     # Render this input using Tilt

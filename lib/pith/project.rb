@@ -77,8 +77,8 @@ module Pith
     # Public: discard cached data that is out-of-sync with the file-system.
     #
     def refresh
-      @config_files = nil
       @input_map ||= {}
+      @config_inputs = nil
       validate_known_inputs
       find_new_inputs
     end
@@ -108,10 +108,10 @@ module Pith
       @helper_module ||= Module.new
     end
 
-    def config_files
-      @config_files ||= begin
-        input_dir.all_files("_pith/**")
-      end.to_set
+    def config_inputs
+      @config_inputs ||= inputs.select do |input|
+        input.path.to_s[0,6] == "_pith/"
+      end
     end
 
     private

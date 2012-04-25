@@ -10,13 +10,16 @@ module Pith
 
     include Tilt::CompileSite
 
-    def initialize(project)
-      @project = project
+    def initialize(output)
+      @output = output
+      @page = @output.input
+      @project = @page.project
       @input_stack = []
-      @dependencies = project.config_files.dup
       self.extend(project.helper_module)
     end
 
+    attr_reader :output
+    attr_reader :page
     attr_reader :project
 
     def page
@@ -35,8 +38,6 @@ module Pith
         result
       end
     end
-
-    attr_reader :dependencies
 
     def include(template_ref, locals = {}, &block)
       content_block = if block_given?
@@ -68,7 +69,7 @@ module Pith
       target_path = resolve_reference(target_ref)
       label ||= begin
         target_input = input(target_path)
-        record_dependency_on(target_input.file)
+        record_dependency_on(target_input)
         target_input.title
       rescue ReferenceError
         "???"
@@ -77,8 +78,8 @@ module Pith
       %{<a href="#{url}">#{label}</a>}
     end
 
-    def record_dependency_on(file)
-      @dependencies << file
+    def record_dependency_on(input)
+      output.observe_changes_to(input)
     end
 
     private
@@ -99,7 +100,7 @@ module Pith
     end
 
     def with_input(input)
-      record_dependency_on(input.file)
+      record_dependency_on(input)
       @input_stack.push(input)
       begin
         yield

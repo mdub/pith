@@ -15,7 +15,6 @@ module Pith
     end
 
     attr_reader :input
-    attr_reader :dependencies
     attr_reader :error
     attr_reader :path
 
@@ -30,7 +29,7 @@ module Pith
     # Return true if output needs to be re-generated.
     #
     def uptodate?
-      dependencies && FileUtils.uptodate?(file, dependencies)
+      @uptodate
     end
 
     # Generate output for this template
@@ -43,21 +42,32 @@ module Pith
       else
         copy_resource
       end
+      @uptodate = true
     end
 
     def build
       generate unless uptodate?
     end
 
+    def when_input_modified
+      @uptodate = nil
+    end
+
+    def observe_changes_to(*inputs)
+      inputs.each do |input|
+        input.add_observer(self, :when_input_modified)
+      end
+    end
+
     private
 
     def copy_resource
       FileUtils.copy(input.file, file)
-      @dependencies = [input.file]
+      observe_changes_to(input)
     end
 
     def evaluate_template
-      render_context = RenderContext.new(project)
+      render_context = RenderContext.new(self)
       file.open("w") do |out|
         begin
           @error = nil
@@ -69,7 +79,7 @@ module Pith
           out.puts exception_summary(e)
         end
       end
-      @dependencies = render_context.dependencies
+      observe_changes_to(*project.config_inputs)
     end
 
     def logger
