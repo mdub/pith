@@ -125,8 +125,8 @@ module Pith
     end
 
     def validate_known_inputs
-      @input_map.select! { |_, input| input.file.exist? }
-      @input_map.each do |_,input|
+      @input_map.reject! { |_, input| !input.file.exist? }
+      @input_map.each do |_, input|
         input.refresh
       end
     end
