@@ -40,10 +40,10 @@ module Pith
     def generate
       logger.info("--> #{path}")
       file.parent.mkpath
-      if input.resource?
-        copy_resource
-      else
+      if input.template?
         evaluate_template
+      else
+        copy_resource
       end
     end
 

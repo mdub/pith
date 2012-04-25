@@ -10,7 +10,6 @@ module Pith
     def initialize(project, path)
       @project = project
       @path = path
-      @meta = {}
       determine_pipeline
     end
 
@@ -61,8 +60,12 @@ module Pith
       end
     end
 
-    def resource?
-      pipeline.empty?
+    # Determine whether this input is a template, requiring evaluation.
+    #
+    # Returns true if it is.
+    #
+    def template?
+      !pipeline.empty?
     end
 
     def refresh
@@ -72,8 +75,8 @@ module Pith
     # Render this input using Tilt
     #
     def render(context, locals = {}, &block)
+      return file.read if !template?
       ensure_loaded
-      return file.read if resource?
       @pipeline.inject(@template_text) do |text, processor|
         template = processor.new(file.to_s, @template_start_line) { text }
         template.render(context, locals, &block)
@@ -158,6 +161,8 @@ module Pith
       @output_path = Pathname(remaining_path)
     end
 
+    # Make sure we've loaded the input file.
+    #
     def ensure_loaded
       load unless @load_time
     end
@@ -166,23 +171,20 @@ module Pith
     #
     def load
       @load_time = Time.now
-      unless resource?
-        file.open do |input|
-          load_meta(input)
-          load_template(input)
+      @meta = {}
+      if template?
+       file.open do |io|
+          read_meta(io)
+          @template_start_line = io.lineno + 1
+          @template_text = io.read
         end
       end
     end
 
-    # Note that the input file has changed, so we'll need to re-load it
-    def unload
-      @load_time = nil
-    end
-
-    def load_meta(input)
-      header = input.gets
+    def read_meta(io)
+      header = io.gets
       if header =~ /^---/
-        while line = input.gets
+        while line = io.gets
           break if line =~ /^(---|\.\.\.)/
           header << line
         end
@@ -192,13 +194,14 @@ module Pith
           project.logger.warn "#{file}:1: badly-formed YAML header"
         end
       else
-        input.rewind
+        io.rewind
       end
     end
 
-    def load_template(input)
-      @template_start_line = input.lineno + 1
-      @template_text = input.read
+    # Note that the input file has changed, so we'll need to re-load it.
+    #
+    def unload
+      @load_time = nil
     end
 
   end
