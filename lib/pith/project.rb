@@ -38,11 +38,16 @@ module Pith
     #
     # Returns Pith::Input objects representing the files in the input_dir.
     #
-    # The list of inputs is cached after first load;
-    #   call #refresh to discard the cached data.
-    #
     def inputs
       @input_map.values
+    end
+
+    # Public: get outputs
+    #
+    # Returns Pith::Output objects representing the files in the output_dir.
+    #
+    def outputs
+      inputs.map(&:output).compact
     end
 
     # Public: find an input.
@@ -66,7 +71,7 @@ module Pith
       load_config
       remove_old_outputs
       output_dir.mkpath
-      generate_outputs
+      outputs.each(&:build)
       output_dir.touch
     end
 
@@ -139,12 +144,6 @@ module Pith
           logger.info("removing        #{output_path}")
           FileUtils.rm(output_file)
         end
-      end
-    end
-
-    def generate_outputs
-      inputs.each do |input|
-        input.build
       end
     end
 

@@ -47,6 +47,10 @@ module Pith
       end
     end
 
+    def build
+      generate unless uptodate?
+    end
+
     private
 
     def copy_resource

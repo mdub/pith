@@ -41,13 +41,6 @@ module Pith
       end
     end
 
-    # Public: Generate an output file.
-    #
-    def build
-      return false if ignorable? || output.uptodate?
-      output.generate
-    end
-
     # Consider whether this input can be ignored.
     #
     # Returns true if it can.
