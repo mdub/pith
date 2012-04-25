@@ -42,7 +42,7 @@ module Pith
     #   call #refresh to discard the cached data.
     #
     def inputs
-      @inputs
+      @input_map.values
     end
 
     # Public: find an input.
@@ -74,19 +74,18 @@ module Pith
     #
     def refresh
       @config_files = nil
-      @inputs ||= []
-      @inputs.select!(&:exists?)
+      @input_map ||= {}
+      @input_map.select! { |input_file, input| input_file.exist? }
       input_dir.all_files.map do |input_file|
         load_input(input_file)
       end
     end
 
     def load_input(input_file)
-      existing_input = @inputs.find { |input| input.file == input_file }
-      if existing_input
-        existing_input.refresh
+      if @input_map.has_key?(input_file)
+        @input_map[input_file].refresh
       else
-        @inputs << Input.new(self, input_file)
+        @input_map[input_file] = Input.new(self, input_file)
       end
     end
 
@@ -94,7 +93,7 @@ module Pith
     #
     # Returns true if any errors were encountered during the last build.
     def has_errors?
-      @inputs.any?(&:error)
+      inputs.any?(&:error)
     end
 
     def last_built_at
