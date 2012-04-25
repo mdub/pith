@@ -2,13 +2,14 @@ require "logger"
 require "pith/input"
 require "pith/pathname_ext"
 require "pith/reference_error"
+require "set"
 require "tilt"
 
 module Pith
 
   class Project
 
-    DEFAULT_IGNORE_PATTERNS = ["_*", ".git", ".gitignore", ".svn", ".sass-cache", "*~", "*.sw[op]"].freeze
+    DEFAULT_IGNORE_PATTERNS = ["_*", ".git", ".gitignore", ".svn", ".sass-cache", "*~", "*.sw[op]"].to_set.freeze
 
     def initialize(attributes = {})
       @ignore_patterns = DEFAULT_IGNORE_PATTERNS.dup
@@ -32,6 +33,10 @@ module Pith
 
     attr_accessor :assume_content_negotiation
     attr_accessor :assume_directory_index
+
+    def ignore(pattern)
+      ignore_patterns << pattern
+    end
 
     # Public: get inputs
     #
