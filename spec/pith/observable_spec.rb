@@ -52,7 +52,7 @@ describe Pith::Observable do
 
     before do
       @observer1 = nil
-      ObjectSpace.garbage_collect
+      5.times { GC.start } # try hard to collect garbage
     end
 
     describe "#notify_observers" do
