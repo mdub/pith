@@ -72,16 +72,16 @@ module Pith
     #
     def build
       load_config
-      refresh
+      sync
       output_dir.mkpath
       remove_invalid_outputs
       outputs.each(&:build)
       output_dir.touch
     end
 
-    # Public: discard cached data that is out-of-sync with the file-system.
+    # Public: re-sync with the file-system.
     #
-    def refresh
+    def sync
       @input_map ||= {}
       @config_inputs = nil
       validate_known_inputs
@@ -130,7 +130,7 @@ module Pith
     end
 
     def validate_known_inputs
-      @input_map.reject! { |_, input| !input.refresh }
+      @input_map.reject! { |_, input| !input.sync }
     end
 
     def find_new_inputs

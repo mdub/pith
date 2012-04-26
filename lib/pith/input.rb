@@ -23,8 +23,6 @@ module Pith
     attr_reader :output_path
     attr_reader :pipeline
 
-    attr_reader :load_time
-
     # Public: Get the file-system location of this input.
     #
     # Returns a fully-qualified Pathname.
@@ -132,17 +130,20 @@ module Pith
       end
     end
 
-    def refresh
-      unless file.exist?
-        when_deleted
-        return false
-      end
+    # Synchronise the state of the Input with the filesystem
+    #
+    # Returns true if the file still exists.
+    #
+    def sync
       mtime = file.mtime
       if mtime.to_i > @last_mtime.to_i
         @last_mtime = mtime
         when_changed
       end
       true
+    rescue Errno::ENOENT => e
+      when_deleted
+      nil
     end
 
     def when_created
@@ -186,7 +187,7 @@ module Pith
     end
 
     def loaded?
-      !!load_time
+      @load_time
     end
 
     # Make sure we've loaded the input file.

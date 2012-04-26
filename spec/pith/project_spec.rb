@@ -25,7 +25,7 @@ describe Pith::Project do
     before do
       @input_file = $input_dir + "input.html.haml"
       @input_file.touch
-      @project.refresh
+      @project.sync
     end
 
     describe "(with a template input path)" do
@@ -72,13 +72,13 @@ describe Pith::Project do
     describe "a second call to #input" do
       it "returns nil" do
 
-        @project.refresh
+        @project.sync
         first_time = @project.input("input.html.haml")
         first_time.should_not be_nil
 
         FileUtils.rm(@input_file)
 
-        @project.refresh
+        @project.sync
         second_time = @project.input("input.html.haml")
         second_time.should be_nil
 
