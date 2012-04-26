@@ -1,5 +1,6 @@
 require "fileutils"
 require "pith/render_context"
+require "set"
 
 module Pith
 
@@ -12,6 +13,7 @@ module Pith
     def initialize(input, path)
       @input = input
       @path = path
+      @dependencies = Set.new
     end
 
     attr_reader :input
@@ -42,13 +44,16 @@ module Pith
 
     def observe_changes_to(*dependencies)
       dependencies.each do |d|
-        d.add_observer(self, :when_dependency_modified)
+        @dependencies << d
+        d.add_observer(self)
       end
     end
 
-    def when_dependency_modified
-      @input.when_output_invalidated if @input
-      @input = nil
+    def update # called by dependencies that change
+      @dependencies.each do |d|
+        d.delete_observer(self)
+      end
+      input.when_output_invalidated
     end
 
     private
