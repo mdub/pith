@@ -13,7 +13,6 @@ module Pith
     def initialize(input, path)
       @input = input
       @path = path
-      @dependencies = Set.new
     end
 
     attr_reader :input
@@ -33,6 +32,7 @@ module Pith
     def build
       return false if @generated
       logger.info("--> #{path}")
+      @dependencies = Set.new
       file.parent.mkpath
       if input.template?
         evaluate_template
@@ -42,25 +42,28 @@ module Pith
       @generated = true
     end
 
-    def observe_changes_to(*dependencies)
-      dependencies.each do |d|
-        @dependencies << d
-        d.add_observer(self)
+    def record_dependency_on(*inputs)
+      inputs.each do |input|
+        @dependencies << input
+        input.add_observer(self)
       end
     end
 
     def update # called by dependencies that change
-      @dependencies.each do |d|
-        d.delete_observer(self)
+      if @generated
+        @dependencies.each do |d|
+          d.delete_observer(self)
+        end
+        @dependencies = nil
+        @generated = nil
       end
-      input.when_output_invalidated
     end
 
     private
 
     def copy_resource
       FileUtils.copy(input.file, file)
-      observe_changes_to(input)
+      record_dependency_on(input)
     end
 
     def evaluate_template
@@ -76,7 +79,7 @@ module Pith
           out.puts exception_summary(e)
         end
       end
-      observe_changes_to(*project.config_inputs)
+      record_dependency_on(*project.config_inputs)
     end
 
     def logger

@@ -69,17 +69,13 @@ module Pith
       target_path = resolve_reference(target_ref)
       label ||= begin
         target_input = input(target_path)
-        record_dependency_on(target_input)
+        output.record_dependency_on(target_input)
         target_input.title
       rescue ReferenceError
         "???"
       end
       url = relative_url_to(target_path)
       %{<a href="#{url}">#{label}</a>}
-    end
-
-    def record_dependency_on(input)
-      output.observe_changes_to(input)
     end
 
     private
@@ -100,7 +96,7 @@ module Pith
     end
 
     def with_input(input)
-      record_dependency_on(input)
+      output.record_dependency_on(input)
       @input_stack.push(input)
       begin
         yield

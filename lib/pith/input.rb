@@ -162,10 +162,6 @@ module Pith
       log_lifecycle "X"
     end
 
-    def when_output_invalidated
-      @output = nil
-    end
-
     private
 
     def default_title
