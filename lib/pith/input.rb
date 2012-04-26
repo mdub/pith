@@ -15,6 +15,8 @@ module Pith
       @project = project
       @path = path
       determine_pipeline
+      log_lifecycle "+"
+      @last_mtime = file.mtime
     end
 
     attr_reader :project, :path
@@ -63,10 +65,16 @@ module Pith
     end
 
     def refresh
-      if file.mtime.to_i >= load_time.to_i
-        unload
-        notify_observers
+      unless file.exist?
+        when_deleted
+        return false
       end
+      mtime = file.mtime
+      if mtime.to_i > @last_mtime.to_i
+        @last_mtime = mtime
+        when_changed
+      end
+      true
     end
 
     # Render this input using Tilt
@@ -158,15 +166,20 @@ module Pith
       @output_path = Pathname(remaining_path)
     end
 
+    def loaded?
+      !!load_time
+    end
+
     # Make sure we've loaded the input file.
     #
     def ensure_loaded
-      load unless @load_time
+      load unless loaded?
     end
 
     # Read input file, extracting YAML meta-data header, and template content.
     #
     def load
+      logger.debug "loading #{path}"
       @load_time = Time.now
       @meta = {}
       if template?
@@ -195,14 +208,29 @@ module Pith
       end
     end
 
+    def when_changed
+      log_lifecycle "~"
+      unload if loaded?
+      notify_observers
+    end
+
+    def when_deleted
+      log_lifecycle "X"
+    end
+
     # Note that the input file has changed, so we'll need to re-load it.
     #
     def unload
+      logger.debug "unloading #{path}"
       @load_time = nil
     end
 
     def logger
       project.logger
+    end
+
+    def log_lifecycle(state)
+      logger.info("#{state} #{path}")
     end
 
   end

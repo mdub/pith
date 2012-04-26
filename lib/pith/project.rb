@@ -130,14 +130,12 @@ module Pith
     end
 
     def validate_known_inputs
-      @input_map.reject! { |_, input| !input.file.exist? }
-      @input_map.each do |_, input|
-        input.refresh
-      end
+      @input_map.reject! { |_, input| !input.refresh }
     end
 
     def find_new_inputs
       input_dir.all_files.map do |input_file|
+        next if input_file.in?(output_dir)
         path = input_file.relative_path_from(input_dir)
         unless @input_map.has_key?(path)
           @input_map[path] = Input.new(self, path)

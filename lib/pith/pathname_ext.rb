@@ -12,5 +12,10 @@ class Pathname
       path.file?
     end
   end
-  
+
+  def in?(dir)
+    prefix = "#{dir}/"
+    self.to_s[0,prefix.length] == prefix
+  end
+
 end
