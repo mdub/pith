@@ -2,4 +2,5 @@ rerun.txt
 tmp
 *.gem
 .bundle
+.sass-cache
 Gemfile.lock
