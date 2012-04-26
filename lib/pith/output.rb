@@ -26,15 +26,10 @@ module Pith
       @file ||= project.output_dir + path
     end
 
-    # Return true if output needs to be re-generated.
-    #
-    def uptodate?
-      @uptodate
-    end
-
     # Generate output for this template
     #
-    def generate
+    def build
+      return false if @generated
       logger.info("--> #{path}")
       file.parent.mkpath
       if input.template?
@@ -42,21 +37,18 @@ module Pith
       else
         copy_resource
       end
-      @uptodate = true
+      @generated = true
     end
 
-    def build
-      generate unless uptodate?
-    end
-
-    def when_input_modified
-      @uptodate = nil
-    end
-
-    def observe_changes_to(*inputs)
-      inputs.each do |input|
-        input.add_observer(self, :when_input_modified)
+    def observe_changes_to(*dependencies)
+      dependencies.each do |d|
+        d.add_observer(self, :when_dependency_modified)
       end
+    end
+
+    def when_dependency_modified
+      @input.when_output_invalidated if @input
+      @input = nil
     end
 
     private

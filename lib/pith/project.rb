@@ -71,8 +71,8 @@ module Pith
     # Public: build the project, generating output files.
     #
     def build
-      refresh
       load_config
+      refresh
       output_dir.mkpath
       remove_invalid_outputs
       outputs.each(&:build)

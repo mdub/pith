@@ -15,8 +15,7 @@ module Pith
       @project = project
       @path = path
       determine_pipeline
-      log_lifecycle "+"
-      @last_mtime = file.mtime
+      when_created
     end
 
     attr_reader :project, :path
@@ -62,19 +61,6 @@ module Pith
       unless ignorable?
         @output ||= Output.for(self, @output_path)
       end
-    end
-
-    def refresh
-      unless file.exist?
-        when_deleted
-        return false
-      end
-      mtime = file.mtime
-      if mtime.to_i > @last_mtime.to_i
-        @last_mtime = mtime
-        when_changed
-      end
-      true
     end
 
     # Render this input using Tilt
@@ -146,6 +132,38 @@ module Pith
       end
     end
 
+    def refresh
+      unless file.exist?
+        when_deleted
+        return false
+      end
+      mtime = file.mtime
+      if mtime.to_i > @last_mtime.to_i
+        @last_mtime = mtime
+        when_changed
+      end
+      true
+    end
+
+    def when_created
+      log_lifecycle "+"
+      @last_mtime = file.mtime
+    end
+
+    def when_changed
+      log_lifecycle "~"
+      unload if loaded?
+      notify_observers
+    end
+
+    def when_deleted
+      log_lifecycle "X"
+    end
+
+    def when_output_invalidated
+      @output = nil
+    end
+
     private
 
     def default_title
@@ -156,9 +174,9 @@ module Pith
       @pipeline = []
       remaining_path = path.to_s
       while remaining_path =~ /^(.+)\.(.+)$/
-        if Tilt[$2]
+        if handler = Tilt[$2]
           remaining_path = $1
-          @pipeline << Tilt[$2]
+          @pipeline << handler
         else
           break
         end
@@ -179,11 +197,11 @@ module Pith
     # Read input file, extracting YAML meta-data header, and template content.
     #
     def load
-      logger.debug "loading #{path}"
       @load_time = Time.now
       @meta = {}
       if template?
-       file.open do |io|
+        logger.debug "loading #{path}"
+        file.open do |io|
           read_meta(io)
           @template_start_line = io.lineno + 1
           @template_text = io.read
@@ -206,16 +224,6 @@ module Pith
       else
         io.rewind
       end
-    end
-
-    def when_changed
-      log_lifecycle "~"
-      unload if loaded?
-      notify_observers
-    end
-
-    def when_deleted
-      log_lifecycle "X"
     end
 
     # Note that the input file has changed, so we'll need to re-load it.
