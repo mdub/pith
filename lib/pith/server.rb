@@ -27,27 +27,30 @@ module Pith
       def call(env)
 
         path_info = ::Rack::Utils.unescape(env["PATH_INFO"])
+        ends_with_slash = (path_info[-1] == '/')
 
-        output_map = {}
-        @project.outputs.each do |output|
-          output_map["/#{output.path}"] = output
-        end
+        outputs = @project.outputs.sort_by { |output| output.path }
+        outputs.each do |output|
 
-        ["", ".html", "index.html"].each do |ext|
-          output = output_map[path_info + ext]
-          if output
-            env["PATH_INFO"] += ext
-            output.build
-            break
+          output_path = "/" + output.path.to_s
+
+          if !ends_with_slash && output_path =~ %r{^#{path_info}/}
+            return [
+              302,
+              { "Location" => path_info + "/" },
+              []
+            ]
           end
-        end
 
-        # file = "#{@root}#{path_info}"
-        # unless File.exist?(file)
-        #   if File.exist?("#{file}.html")
-        #     env["PATH_INFO"] += ".html"
-        #   end
-        # end
+          ["", ".html", "index.html"].map do |ext|
+            if output_path == (path_info + ext)
+              output.build
+              env["PATH_INFO"] += ext
+              return @app.call(env)
+            end
+          end
+
+        end
 
         @app.call(env)
 
