@@ -1,5 +1,6 @@
 require "rack"
 require "pathname"
+require "thread"
 
 module Pith
 
@@ -26,7 +27,7 @@ module Pith
 
       def call(env)
 
-        @project.sync
+        @project.sync_every(1)
 
         path_info = ::Rack::Utils.unescape(env["PATH_INFO"])
         ends_with_slash = (path_info[-1] == '/')
