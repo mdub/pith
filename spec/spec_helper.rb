@@ -13,6 +13,7 @@ RSpec.configure do |config|
     [$input_dir, $output_dir].each do |dir|
       dir.rmtree if dir.exist?
     end
+    $input_dir.mkpath
   end
 
 end

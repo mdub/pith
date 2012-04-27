@@ -5,7 +5,6 @@ require "pith/project"
 describe Pith::Input do
 
   before do
-    $input_dir.mkpath
     @project = Pith::Project.new(:input_dir => $input_dir)
   end
 
