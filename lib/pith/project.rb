@@ -71,7 +71,6 @@ module Pith
     # Public: build the project, generating output files.
     #
     def build
-      load_config
       sync
       output_dir.mkpath
       remove_invalid_outputs
@@ -84,6 +83,7 @@ module Pith
     def sync
       @input_map ||= {}
       @config_inputs = nil
+      load_config
       validate_known_inputs
       find_new_inputs
     end

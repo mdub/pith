@@ -26,6 +26,8 @@ module Pith
 
       def call(env)
 
+        @project.sync
+
         path_info = ::Rack::Utils.unescape(env["PATH_INFO"])
         ends_with_slash = (path_info[-1] == '/')
 

@@ -48,8 +48,6 @@ class PithCommand < Clamp::Command
 
   subcommand "serve", "Serve the generated website" do
     def execute
-      build
-      Thread.new { watch }
       serve
     end
   end
