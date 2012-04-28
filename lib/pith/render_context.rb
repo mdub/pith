@@ -90,9 +90,14 @@ module Pith
     end
 
     def input(path)
-      input = project.input(path)
-      raise(ReferenceError, %{Can't find "#{path}"}) if input.nil?
-      input
+      project.input(path) ||
+      input_with_output_path(path) ||
+      raise(ReferenceError, %{Can't find "#{path}"})
+    end
+
+    def input_with_output_path(path)
+      o = project.output(path)
+      o ? o.input : nil
     end
 
     def with_input(input)

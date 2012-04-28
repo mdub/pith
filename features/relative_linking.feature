@@ -10,12 +10,12 @@ Background:
 
 Scenario: link from one top-level page to another
 
-  Given input file "index.html.haml" contains 
+  Given input file "index.html.haml" contains
     """
     = link("page.html", "Page")
     """
   And input file "page.html" exists
-   
+
   When I build the site
   Then output file "index.html" should contain
     """
@@ -93,7 +93,7 @@ Scenario: links included from a partial
 
 Scenario: use "title" meta-data attribute in link
 
-  Given input file "index.html.haml" contains 
+  Given input file "index.html.haml" contains
     """
     = link("page.html")
     """
@@ -117,7 +117,7 @@ Scenario: link to an Input object
 
   Given input file "subdir/page.html.haml" contains
     """
-    = link(project.input("help.html"))
+    = link(project.input("help.html.haml"))
     """
 
   And input file "help.html.haml" contains
@@ -135,11 +135,11 @@ Scenario: link to an Input object
 
 Scenario: link to a missing resource
 
-  Given input file "index.html.haml" contains 
+  Given input file "index.html.haml" contains
     """
     = link("missing_page.html")
     """
-   
+
   When I build the site
   Then output file "index.html" should contain
     """
@@ -149,11 +149,11 @@ Scenario: link to a missing resource
 Scenario: assume content negotiation
 
   Given the "assume_content_negotiation" flag is enabled
-  And input file "index.html.haml" contains 
+  And input file "index.html.haml" contains
     """
     = link("page.html", "Page")
     """
-   
+
   When I build the site
   Then output file "index.html" should contain
     """
@@ -164,11 +164,11 @@ Scenario: link to an index page
 
   Given the "assume_directory_index" flag is enabled
 
-  And input file "page.html.haml" contains 
+  And input file "page.html.haml" contains
     """
     = link("stuff/index.html", "Stuff")
     """
-   
+
   When I build the site
   Then output file "page.html" should contain
     """
@@ -179,11 +179,11 @@ Scenario: link to an index page in the same directory
 
   Given the "assume_directory_index" flag is enabled
 
-  And input file "page.html.haml" contains 
+  And input file "page.html.haml" contains
     """
     = link("index.html", "Index")
     """
-   
+
   When I build the site
   Then output file "page.html" should contain
     """

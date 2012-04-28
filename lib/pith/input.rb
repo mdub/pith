@@ -31,10 +31,6 @@ module Pith
       @file ||= project.input_dir + path
     end
 
-    def matches_path(path)
-      path == self.path || path == output_path
-    end
-
     # Consider whether this input can be ignored.
     #
     # Returns true if it can.

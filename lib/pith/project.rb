@@ -56,16 +56,24 @@ module Pith
 
     # Public: find an input.
     #
-    # path - an path relative to either input_dir or output_dir
+    # path - an path relative to input_dir
     #
-    # Returns the first input whose input_path or output_path matches.
+    # Returns the first input whose path matches.
     # Returns nil if no match is found.
     #
     def input(path)
-      path = Pathname(path)
-      inputs.find do |input|
-        input.matches_path(path)
-      end
+      @input_map[Pathname(path)]
+    end
+
+    # Public: find an output.
+    #
+    # path - an path relative to output_dir
+    #
+    # Returns the first output whose path matches.
+    # Returns nil if no match is found.
+    #
+    def output(path)
+      @output_map[Pathname(path)]
     end
 
     # Public: build the project, generating output files.
@@ -82,6 +90,7 @@ module Pith
     #
     def sync
       @input_map ||= {}
+      @output_map ||= {}
       @config_inputs = nil
       load_config
       validate_known_inputs
@@ -138,17 +147,30 @@ module Pith
       end
     end
 
+    def load_input(path)
+      i = Input.new(self, path)
+      @input_map[path] = i
+      if o = i.output
+        @output_map[o.path] = o
+      end
+      i
+    end
+
     def validate_known_inputs
-      @input_map.reject! { |_, input| !input.sync }
+      invalid_inputs = inputs.select { |i| !i.sync }
+      invalid_inputs.each do |i|
+        @input_map.delete(i.path)
+        if o = i.output
+          @output_map.delete(o.path)
+        end
+      end
     end
 
     def find_new_inputs
       input_dir.all_files.map do |input_file|
         next if input_file.in?(output_dir)
         path = input_file.relative_path_from(input_dir)
-        unless @input_map.has_key?(path)
-          @input_map[path] = Input.new(self, path)
-        end
+        input(path) || load_input(path)
       end
     end
 
