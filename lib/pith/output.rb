@@ -49,7 +49,19 @@ module Pith
       end
     end
 
+    def delete
+      invalidate
+      logger.info("--X #{path}")
+      FileUtils.rm_f(file)
+    end
+
     def update # called by dependencies that change
+      invalidate
+    end
+
+    private
+
+    def invalidate
       if @generated
         @dependencies.each do |d|
           d.delete_observer(self)
@@ -58,8 +70,6 @@ module Pith
         @generated = nil
       end
     end
-
-    private
 
     def copy_resource
       FileUtils.copy(input.file, file)

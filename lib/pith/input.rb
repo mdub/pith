@@ -156,6 +156,7 @@ module Pith
 
     def when_deleted
       log_lifecycle "X"
+      output.delete if output
     end
 
     private

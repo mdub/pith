@@ -81,7 +81,6 @@ module Pith
     def build
       sync
       output_dir.mkpath
-      remove_invalid_outputs
       outputs.each(&:build)
       output_dir.touch
     end
@@ -171,16 +170,6 @@ module Pith
         next if input_file.in?(output_dir)
         path = input_file.relative_path_from(input_dir)
         input(path) || load_input(path)
-      end
-    end
-
-    def remove_invalid_outputs
-      valid_output_files = outputs.map(&:file)
-      invalid_output_files = output_dir.all_files - valid_output_files
-      invalid_output_files.each do |file|
-        path = file.relative_path_from(output_dir)
-        logger.info("--X #{path}")
-        FileUtils.rm(file)
       end
     end
 
