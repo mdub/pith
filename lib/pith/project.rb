@@ -29,6 +29,8 @@ module Pith
 
     def output_dir=(dir)
       @output_dir = Pathname(dir)
+      FileUtils.rm_rf(@output_dir)
+      @output_dir.mkpath
     end
 
     attr_accessor :assume_content_negotiation
