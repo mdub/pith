@@ -3,11 +3,6 @@ Feature: linking between files
   I want to be able to generate relative reference to other pages
   So that the generated site is re-locateable
 
-Background:
-
-  Given the "assume_content_negotiation" flag is disabled
-  And   the "assume_directory_index" flag is disabled
-
 Scenario: link from one top-level page to another
 
   Given input file "index.html.haml" contains
@@ -148,7 +143,11 @@ Scenario: link to a missing resource
 
 Scenario: assume content negotiation
 
-  Given the "assume_content_negotiation" flag is enabled
+  Given the config file contains
+    """
+    project.assume_content_negotiation = true
+    """
+
   And input file "index.html.haml" contains
     """
     = link("page.html", "Page")
@@ -162,7 +161,10 @@ Scenario: assume content negotiation
 
 Scenario: link to an index page
 
-  Given the "assume_directory_index" flag is enabled
+  Given the config file contains
+    """
+    project.assume_directory_index = true
+    """
 
   And input file "page.html.haml" contains
     """
@@ -177,7 +179,10 @@ Scenario: link to an index page
 
 Scenario: link to an index page in the same directory
 
-  Given the "assume_directory_index" flag is enabled
+  Given the config file contains
+    """
+    project.assume_directory_index = true
+    """
 
   And input file "page.html.haml" contains
     """

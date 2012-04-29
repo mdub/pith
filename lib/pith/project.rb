@@ -13,6 +13,8 @@ module Pith
 
     def initialize(attributes = {})
       @ignore_patterns = DEFAULT_IGNORE_PATTERNS.dup
+      @input_map = {}
+      @output_map = {}
       attributes.each do |k,v|
         send("#{k}=", v)
       end
@@ -90,8 +92,6 @@ module Pith
     # Public: re-sync with the file-system.
     #
     def sync
-      @input_map ||= {}
-      @output_map ||= {}
       @config_inputs = nil
       load_config
       validate_known_inputs

@@ -14,12 +14,8 @@ Given "the site is up-to-date" do
   When "I build the site"
 end
 
-Given /^the "([^\"]*)" flag is enabled$/ do |flag|
-  @project.send("#{flag}=", true)
-end
-
-Given /^the "([^\"]*)" flag is disabled$/ do |flag|
-  @project.send("#{flag}=", false)
+Given /^the config file contains$/ do |content|
+  @inputs.write("_pith/config.rb", content, :mtime => (Time.now - 5))
 end
 
 When /^I change input file "([^\"]*)" to contain "([^\"]*)"$/ do |path, content|
