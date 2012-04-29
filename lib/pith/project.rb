@@ -92,7 +92,6 @@ module Pith
     # Public: re-sync with the file-system.
     #
     def sync
-      @config_inputs = nil
       load_config
       validate_known_inputs
       find_new_inputs
@@ -133,9 +132,7 @@ module Pith
     end
 
     def config_inputs
-      @config_inputs ||= inputs.select do |input|
-        input.path.to_s[0,6] == "_pith/"
-      end
+      [input("_pith/config.rb")].compact
     end
 
     private
