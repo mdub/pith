@@ -1,7 +1,7 @@
 require "pathname"
 
 class DirHash
-  
+
   def initialize(dir)
     @dir = Pathname(dir)
   end
@@ -34,7 +34,7 @@ class DirHash
       file_path.utime(timestamp, timestamp)
     end
   end
-  
+
 end
 
 class InternalLogger
@@ -42,13 +42,13 @@ class InternalLogger
   def initialize
     @messages = []
   end
-  
+
   attr_reader :messages
-  
+
   def clear
     @messages.clear
   end
-  
+
   def info(message, &block)
     message ||= block.call
     write(message)
@@ -56,11 +56,11 @@ class InternalLogger
 
   alias :warn :info
   alias :debug :info
-  
+
   def write(message)
     @messages << message
   end
-    
+
 end
 
 $project_dir = Pathname(__FILE__).expand_path.parent.parent.parent
@@ -79,7 +79,7 @@ Before do
     dir.rmtree if dir.exist?
     dir.mkpath
   end
-  @project = Pith::Project.new(:input_dir => $input_dir, :output_dir => $output_dir)
+  @project = Pith::Project.new($input_dir, $output_dir)
   @project.logger = InternalLogger.new
   @inputs = DirHash.new($input_dir)
   @outputs = DirHash.new($output_dir)

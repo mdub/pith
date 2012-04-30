@@ -69,10 +69,7 @@ class PithCommand < Clamp::Command
         signal_usage_error %(No "#{pith_dir}" directory ... this doesn't look right!)
       end
       puts %{Generating to "#{output_dir}"}
-      @project = Pith::Project.new(
-        :input_dir => input_dir, :output_dir => output_dir,
-        :logger => Pith::ConsoleLogger.new
-      )
+      @project = Pith::Project.new(input_dir, output_dir, :logger => Pith::ConsoleLogger.new)
     end
   end
 

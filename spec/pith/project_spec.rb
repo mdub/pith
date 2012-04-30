@@ -4,7 +4,7 @@ require 'pith/project'
 describe Pith::Project do
 
   before do
-    @project = Pith::Project.new(:input_dir => $input_dir, :output_dir => $output_dir)
+    @project = Pith::Project.new($input_dir, $output_dir)
   end
 
   describe "#build" do

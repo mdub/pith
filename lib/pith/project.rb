@@ -11,30 +11,22 @@ module Pith
 
     DEFAULT_IGNORE_PATTERNS = ["_*", ".git", ".gitignore", ".svn", ".sass-cache", "*~", "*.sw[op]"].to_set.freeze
 
-    def initialize(attributes = {})
+    def initialize(input_dir, output_dir = nil, attributes = {})
+      @input_dir = Pathname(input_dir)
+      @output_dir = output_dir ? Pathname(output_dir) : (input_dir + "_out")
       @ignore_patterns = DEFAULT_IGNORE_PATTERNS.dup
       @input_map = {}
       @output_map = {}
       attributes.each do |k,v|
         send("#{k}=", v)
       end
+      FileUtils.rm_rf(output_dir.to_s)
     end
 
     attr_reader :input_dir
-    attr_reader :ignore_patterns
-
-    def input_dir=(dir)
-      @input_dir = Pathname(dir)
-    end
-
     attr_reader :output_dir
 
-    def output_dir=(dir)
-      @output_dir = Pathname(dir)
-      FileUtils.rm_rf(@output_dir)
-      @output_dir.mkpath
-    end
-
+    attr_reader :ignore_patterns
     attr_accessor :assume_content_negotiation
     attr_accessor :assume_directory_index
 
