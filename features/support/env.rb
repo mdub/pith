@@ -79,8 +79,7 @@ Before do
     dir.rmtree if dir.exist?
     dir.mkpath
   end
-  @project = Pith::Project.new($input_dir, $output_dir)
-  @project.logger = InternalLogger.new
+  @project = Pith::Project.new($input_dir, $output_dir, :logger => InternalLogger.new)
   @inputs = DirHash.new($input_dir)
   @outputs = DirHash.new($output_dir)
 end

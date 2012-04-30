@@ -113,8 +113,6 @@ module Pith
       @logger ||= Logger.new(nil)
     end
 
-    attr_writer :logger
-
     def helpers(&block)
       helper_module.module_eval(&block)
     end
@@ -128,6 +126,8 @@ module Pith
     end
 
     private
+
+    attr_writer :logger
 
     def load_config
       config_file = input_dir + "_pith/config.rb"
