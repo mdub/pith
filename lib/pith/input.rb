@@ -1,6 +1,6 @@
 require "fileutils"
 require "pathname"
-require "observer"
+require "pith/observable"
 require "pith/output"
 require "tilt"
 require "yaml"
@@ -9,7 +9,7 @@ module Pith
 
   class Input
 
-    include Observable
+    include Pith::Observable
 
     def initialize(project, path)
       @project = project
@@ -150,7 +150,6 @@ module Pith
     def when_changed
       log_lifecycle "~"
       unload if loaded?
-      changed(true)
       notify_observers
     end
 

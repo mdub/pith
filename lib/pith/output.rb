@@ -45,7 +45,7 @@ module Pith
     def record_dependency_on(*inputs)
       inputs.each do |input|
         @dependencies << input
-        input.add_observer(self)
+        input.add_observer(self, :invalidate)
       end
     end
 
@@ -55,21 +55,17 @@ module Pith
       FileUtils.rm_f(file)
     end
 
-    def update # called by dependencies that change
-      invalidate
-    end
-
-    private
-
     def invalidate
       if @generated
         @dependencies.each do |d|
-          d.delete_observer(self)
+          d.remove_observer(self)
         end
         @dependencies = nil
         @generated = nil
       end
     end
+
+    private
 
     def copy_resource
       FileUtils.copy(input.file, file)
