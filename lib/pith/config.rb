@@ -24,6 +24,19 @@ module Pith
       helper_module.module_eval(&block)
     end
 
+    class << self
+
+      def load(config_file)
+        config = self.new
+        if config_file.exist?
+          project = config # for backward compatibility
+          eval(config_file.read, binding, config_file.to_s, 1)
+        end
+        config
+      end
+
+    end
+
   end
 
 end

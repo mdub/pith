@@ -104,15 +104,7 @@ module Pith
     end
 
     def config
-      unless @config
-        @config = Config.new
-        config_file = input_dir + "_pith/config.rb"
-        if config_file.exist?
-          project = @config
-          eval(config_file.read, binding, config_file.to_s, 1)
-        end
-      end
-      @config
+      @config ||= Config.load(input_dir + "_pith/config.rb")
     end
 
     def config_inputs
