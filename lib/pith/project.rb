@@ -1,4 +1,5 @@
 require "logger"
+require "pith/config"
 require "pith/input"
 require "pith/pathname_ext"
 require "pith/reference_error"
@@ -9,12 +10,9 @@ module Pith
 
   class Project
 
-    DEFAULT_IGNORE_PATTERNS = ["_*", ".git", ".gitignore", ".svn", ".sass-cache", "*~", "*.sw[op]"].to_set.freeze
-
     def initialize(input_dir, output_dir = nil, attributes = {})
       @input_dir = Pathname(input_dir)
       @output_dir = output_dir ? Pathname(output_dir) : (input_dir + "_out")
-      @ignore_patterns = DEFAULT_IGNORE_PATTERNS.dup
       @input_map = {}
       @output_map = {}
       attributes.each do |k,v|
@@ -25,14 +23,6 @@ module Pith
 
     attr_reader :input_dir
     attr_reader :output_dir
-
-    attr_reader :ignore_patterns
-    attr_accessor :assume_content_negotiation
-    attr_accessor :assume_directory_index
-
-    def ignore(pattern)
-      ignore_patterns << pattern
-    end
 
     # Public: get inputs
     #
@@ -84,7 +74,7 @@ module Pith
     # Public: re-sync with the file-system.
     #
     def sync
-      load_config
+      @config = nil
       validate_known_inputs
       find_new_inputs
     end
@@ -113,12 +103,16 @@ module Pith
       @logger ||= Logger.new(nil)
     end
 
-    def helpers(&block)
-      helper_module.module_eval(&block)
-    end
-
-    def helper_module
-      @helper_module ||= Module.new
+    def config
+      unless @config
+        @config = Config.new
+        config_file = input_dir + "_pith/config.rb"
+        if config_file.exist?
+          project = @config
+          eval(config_file.read, binding, config_file.to_s, 1)
+        end
+      end
+      @config
     end
 
     def config_inputs
@@ -128,14 +122,6 @@ module Pith
     private
 
     attr_writer :logger
-
-    def load_config
-      config_file = input_dir + "_pith/config.rb"
-      project = self
-      if config_file.exist?
-        eval(config_file.read, binding, config_file.to_s, 1)
-      end
-    end
 
     def load_input(path)
       i = Input.new(self, path)

@@ -37,7 +37,7 @@ module Pith
     #
     def ignorable?
       @ignorable ||= path.each_filename do |path_component|
-        project.ignore_patterns.each do |pattern|
+        project.config.ignore_patterns.each do |pattern|
           return true if File.fnmatch(pattern, path_component)
         end
       end

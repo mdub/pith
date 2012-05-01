@@ -15,7 +15,7 @@ module Pith
       @page = @output.input
       @project = @page.project
       @input_stack = []
-      self.extend(project.helper_module)
+      self.extend(project.config.helper_module)
     end
 
     attr_reader :output
@@ -55,8 +55,8 @@ module Pith
 
     def relative_url_to(target_path)
       url = target_path.relative_path_from(page.path.parent).to_s
-      url = url.sub(/index\.html$/, "") if project.assume_directory_index
-      url = url.sub(/\.html$/, "") if project.assume_content_negotiation
+      url = url.sub(/index\.html$/, "") if project.config.assume_directory_index
+      url = url.sub(/\.html$/, "") if project.config.assume_content_negotiation
       url = "./" if url.empty?
       Pathname(url)
     end
