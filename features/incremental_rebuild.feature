@@ -39,7 +39,7 @@ Scenario: delete a dependency
 
   Given input file "fruits.html.haml" contains
     """
-    - project.inputs.map(&:path).map(&:to_s).grep(/^_fruit/).each do |input_name|
+    - project.inputs.map(&:path).map(&:to_s).grep(/^_fruit/).sort.each do |input_name|
       %p= include(input_name)
     """
 
