@@ -31,6 +31,7 @@ module Pith
     end
 
     def load_config
+      @project.logger.debug "loading config"
       Pith::Config.load(config_file)
     end
 
