@@ -9,17 +9,17 @@ module Pith
 
     def initialize(project)
       @project = project
+      @last_load_mtime = :never
     end
 
-    def config
-      @config ||= load_config
-    end
+    attr_reader :config
 
     def sync
       config_mtime = config_file.mtime rescue nil
-      unless config_mtime == @last_mtime
-        @config = nil
-        @last_mtime = config_mtime
+      unless config_mtime == @last_load_mtime
+        @last_load_mtime = config_mtime
+        @project.logger.debug "loading config"
+        @config = Pith::Config.load(config_file)
         notify_observers
       end
     end
@@ -28,11 +28,6 @@ module Pith
 
     def config_file
       @project.input_dir + "_pith/config.rb"
-    end
-
-    def load_config
-      @project.logger.debug "loading config"
-      Pith::Config.load(config_file)
     end
 
   end
