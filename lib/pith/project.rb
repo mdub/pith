@@ -1,5 +1,5 @@
 require "logger"
-require "pith/config"
+require "pith/config_provider"
 require "pith/input"
 require "pith/pathname_ext"
 require "pith/reference_error"
@@ -74,7 +74,7 @@ module Pith
     # Public: re-sync with the file-system.
     #
     def sync
-      @config = nil
+      config_provider.sync
       validate_known_inputs
       find_new_inputs
     end
@@ -103,12 +103,12 @@ module Pith
       @logger ||= Logger.new(nil)
     end
 
-    def config
-      @config ||= Config.load(input_dir + "_pith/config.rb")
+    def config_provider
+      @config_provider ||= Pith::ConfigProvider.new(self)
     end
 
-    def config_inputs
-      [input("_pith/config.rb")].compact
+    def config
+      config_provider.config
     end
 
     private

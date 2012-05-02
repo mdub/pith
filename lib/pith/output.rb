@@ -85,7 +85,7 @@ module Pith
           out.puts exception_summary(e)
         end
       end
-      record_dependency_on(*project.config_inputs)
+      record_dependency_on(project.config_provider)
     end
 
     def logger
