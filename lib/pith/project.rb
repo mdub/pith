@@ -12,7 +12,7 @@ module Pith
 
     def initialize(input_dir, output_dir = nil, attributes = {})
       @input_dir = Pathname(input_dir)
-      @output_dir = output_dir ? Pathname(output_dir) : (input_dir + "_out")
+      @output_dir = output_dir ? Pathname(output_dir) : (@input_dir + "_out")
       @input_map = {}
       @output_map = {}
       attributes.each do |k,v|
