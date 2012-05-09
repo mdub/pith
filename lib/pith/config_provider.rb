@@ -10,6 +10,7 @@ module Pith
     def initialize(project)
       @project = project
       @last_load_mtime = :never
+      sync
     end
 
     attr_reader :config
