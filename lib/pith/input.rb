@@ -15,7 +15,6 @@ module Pith
       @project = project
       @path = path
       determine_pipeline
-      when_created
     end
 
     attr_reader :project, :path
@@ -126,34 +125,17 @@ module Pith
       end
     end
 
-    # Synchronise the state of the Input with the filesystem
-    #
-    # Returns true if the file still exists.
-    #
-    def sync
-      mtime = file.mtime
-      if mtime.to_i > @last_mtime.to_i
-        @last_mtime = mtime
-        when_changed
-      end
-      true
-    rescue Errno::ENOENT => e
-      when_deleted
-      nil
-    end
-
-    def when_created
+    def when_added
       log_lifecycle "+"
-      @last_mtime = file.mtime
     end
 
-    def when_changed
+    def when_modified
       log_lifecycle "~"
       unload if loaded?
       notify_observers
     end
 
-    def when_deleted
+    def when_removed
       log_lifecycle "X"
       output.delete if output
       notify_observers

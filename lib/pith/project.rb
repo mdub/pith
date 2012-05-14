@@ -75,8 +75,7 @@ module Pith
     #
     def sync
       config_provider.sync
-      validate_known_inputs
-      find_new_inputs
+      sync_input_files
     end
 
     def sync_every(period)
@@ -115,30 +114,47 @@ module Pith
 
     attr_writer :logger
 
-    def load_input(path)
+    def sync_input_files
+      @mtimes ||= {}
+      removed_file_paths = @mtimes.keys
+      Pathname.glob(input_dir + "**/*", File::FNM_DOTMATCH) do |file|
+        next unless file.file?
+        next if file.in?(output_dir)
+        mtime = file.mtime
+        path = file.relative_path_from(input_dir)
+        if @mtimes.has_key?(path)
+          if @mtimes[path] < mtime
+            when_file_modified(path)
+          end
+        else
+          when_file_added(path)
+        end
+        @mtimes[path] = mtime
+        removed_file_paths.delete(path)
+      end
+      removed_file_paths.each do |path|
+        when_file_removed(path)
+      end
+    end
+
+    def when_file_added(path)
       i = Input.new(self, path)
+      i.when_added
       @input_map[path] = i
       if o = i.output
         @output_map[o.path] = o
       end
-      i
     end
 
-    def validate_known_inputs
-      invalid_inputs = inputs.select { |i| !i.sync }
-      invalid_inputs.each do |i|
-        @input_map.delete(i.path)
-        if o = i.output
-          @output_map.delete(o.path)
-        end
-      end
+    def when_file_modified(path)
+      @input_map[path].when_modified
     end
 
-    def find_new_inputs
-      input_dir.all_files.map do |input_file|
-        next if input_file.in?(output_dir)
-        path = input_file.relative_path_from(input_dir)
-        input(path) || load_input(path)
+    def when_file_removed(path)
+      i = @input_map.delete(path)
+      i.when_removed
+      if o = i.output
+        @output_map.delete(o.path)
       end
     end
 

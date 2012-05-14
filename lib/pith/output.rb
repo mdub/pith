@@ -51,8 +51,10 @@ module Pith
 
     def delete
       invalidate
-      logger.info("--X #{path}")
-      FileUtils.rm_f(file)
+      if file.exist?
+        logger.info("--X #{path}")
+        FileUtils.rm_f(file)
+      end
     end
 
     def invalidate
