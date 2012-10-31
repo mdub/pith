@@ -7,11 +7,11 @@ Given /^input file "([^\"]*)" contains$/ do |path, content|
 end
 
 Given /^input file "([^\"]*)" exists$/ do |path|
-  Given %{input file "#{path}" contains "something"}
+  step %{input file "#{path}" contains "something"}
 end
 
 Given "the site is up-to-date" do
-  When "I build the site"
+  step "I build the site"
 end
 
 Given /^the config file contains$/ do |content|
