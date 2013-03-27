@@ -150,8 +150,10 @@ module Pith
     def determine_pipeline
       @pipeline = []
       remaining_path = path.to_s
-      while remaining_path =~ /^(.+)\.(.+)$/
-        if handler = Tilt[$2]
+      while remaining_path =~ /^(.+)(\..+)$/
+        extension = $2
+        break if extension == ".html" # ignore Tilt::PlainTemplate
+        if handler = Tilt[extension]
           remaining_path = $1
           @pipeline << handler
         else
