@@ -188,6 +188,8 @@ module Pith
       end
     end
 
+    YamlParseError = defined?(Psych) ? Psych::SyntaxError : ArgumentError
+
     def read_meta(io)
       header = io.gets
       if header =~ /^---/
@@ -197,7 +199,7 @@ module Pith
         end
         begin
           @meta = YAML.load(header)
-        rescue ArgumentError, SyntaxError
+        rescue YamlParseError
           logger.warn "#{file}:1: badly-formed YAML header"
         end
       else
