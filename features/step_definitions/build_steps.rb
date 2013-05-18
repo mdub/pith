@@ -10,6 +10,10 @@ Given /^input file "([^\"]*)" exists$/ do |path|
   step %{input file "#{path}" contains "something"}
 end
 
+Given /^output file "([^\"]*)" exists$/ do |path|
+  @outputs.write(path, "something", :mtime => (Time.now - 4))
+end
+
 Given "the site is up-to-date" do
   step "I build the site"
 end

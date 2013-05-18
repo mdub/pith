@@ -18,7 +18,6 @@ module Pith
       attributes.each do |k,v|
         send("#{k}=", v)
       end
-      FileUtils.rm_rf(output_dir.to_s)
     end
 
     attr_reader :input_dir
@@ -76,6 +75,7 @@ module Pith
     def sync
       config_provider.sync
       sync_input_files
+      cleanup_output_files
     end
 
     def sync_every(period)
@@ -135,6 +135,17 @@ module Pith
       removed_paths.each do |path|
         @mtimes.delete(path)
         file_removed(path)
+      end
+    end
+
+    def cleanup_output_files
+      Pathname.glob(output_dir + "**/*", File::FNM_DOTMATCH) do |file|
+        next unless file.file?
+        path = file.relative_path_from(output_dir)
+        unless output(path)
+          logger.info "XXX #{path}"
+          FileUtils.rm_f(file)
+        end
       end
     end
 
