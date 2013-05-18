@@ -124,21 +124,21 @@ module Pith
         path = file.relative_path_from(input_dir)
         if @mtimes.has_key?(path)
           if @mtimes[path] < mtime
-            when_file_modified(path)
+            file_modified(path)
           end
         else
-          when_file_added(path)
+          file_added(path)
         end
         @mtimes[path] = mtime
         removed_paths.delete(path)
       end
       removed_paths.each do |path|
         @mtimes.delete(path)
-        when_file_removed(path)
+        file_removed(path)
       end
     end
 
-    def when_file_added(path)
+    def file_added(path)
       i = Input.new(self, path)
       i.when_added
       @input_map[path] = i
@@ -147,11 +147,11 @@ module Pith
       end
     end
 
-    def when_file_modified(path)
+    def file_modified(path)
       @input_map[path].when_modified
     end
 
-    def when_file_removed(path)
+    def file_removed(path)
       i = @input_map.delete(path)
       i.when_removed
       if o = i.output
