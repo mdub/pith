@@ -1,16 +1,18 @@
-require "rack"
 require "pathname"
+require "rack"
+require "rack-livereload"
 require "thread"
 
 module Pith
 
   module Server
 
-    def new(project)
+    def new(project, options = {})
       Rack::Builder.new do
         use Rack::CommonLogger
         use Rack::ShowExceptions
         use Rack::Lint
+        use Rack::LiveReload if options[:live_reload]
         use Pith::Server::OutputFinder, project
         run Rack::Directory.new(project.output_dir)
       end

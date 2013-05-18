@@ -47,9 +47,13 @@ class PithCommand < Clamp::Command
   end
 
   subcommand "serve", "Serve the generated website" do
+
+    option ["-L", "--live-reload"], :flag, "integrate LiveReload"
+
     def execute
-      serve
+      serve(:live_reload => live_reload?)
     end
+
   end
 
   protected
@@ -83,9 +87,9 @@ class PithCommand < Clamp::Command
     Pith::Watcher.new(project, :interval => interval).call
   end
 
-  def serve
+  def serve(options = {})
     require "pith/server"
-    server = Pith::Server.new(project)
+    server = Pith::Server.new(project, options)
     puts %{>>> Now taking the Pith at "http://localhost:#{port}"}
     Rack::Handler.get("thin").run(server, :Port => port)
   end

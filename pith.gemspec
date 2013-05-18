@@ -21,6 +21,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency("rack", ">= 1.2.1")
   gem.add_runtime_dependency("thin", ">= 1.2.7")
   gem.add_runtime_dependency("clamp", ">= 0.3.0")
+  gem.add_runtime_dependency("rack-livereload", ">= 0.3.14")
 
   gem.require_path = "lib"
   gem.files = Dir["lib/**/*", "sample/**/*", "README.markdown", "LICENSE"]
