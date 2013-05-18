@@ -108,6 +108,10 @@ describe Pith::Project do
       end
     end
 
+    it "doesn't confuse subsequent calls to #sync" do
+      proc { @project.sync }.should_not raise_error
+    end
+
   end
 
 end

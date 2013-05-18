@@ -116,7 +116,7 @@ module Pith
 
     def sync_input_files
       @mtimes ||= {}
-      removed_file_paths = @mtimes.keys
+      removed_paths = @mtimes.keys
       Pathname.glob(input_dir + "**/*", File::FNM_DOTMATCH) do |file|
         next unless file.file?
         next if file.in?(output_dir)
@@ -130,9 +130,10 @@ module Pith
           when_file_added(path)
         end
         @mtimes[path] = mtime
-        removed_file_paths.delete(path)
+        removed_paths.delete(path)
       end
-      removed_file_paths.each do |path|
+      removed_paths.each do |path|
+        @mtimes.delete(path)
         when_file_removed(path)
       end
     end
