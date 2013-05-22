@@ -212,6 +212,7 @@ module Pith
     def unload
       logger.debug "unloading #{path}"
       @load_time = nil
+      @meta = nil
     end
 
     def logger

@@ -70,3 +70,34 @@ Scenario: delete a dependency
     <p>banana</p>
     """
 
+Scenario: alter meta-data
+
+  Given input file "index.html.haml" contains
+    """
+    - project.inputs.select do |input|
+      - output.record_dependency_on(input)
+      - if input.meta["flavour"]
+        %p= input.meta["flavour"]
+    """
+
+  And input file "page.html.haml" contains
+    """
+    ---
+    flavour: Chocolate
+    ---
+    """
+
+  When I build the site
+  Then output file "index.html" should contain "<p>Chocolate</p>"
+
+  When I change input file "page.html.haml" to contain
+    """
+    ---
+    flavour: Strawberry
+    ---
+    """
+
+  And I rebuild the site
+
+  Then output file "index.html" should be re-generated
+  Then output file "index.html" should contain "<p>Strawberry</p>"
