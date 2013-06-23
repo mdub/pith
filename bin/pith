@@ -48,10 +48,10 @@ class PithCommand < Clamp::Command
 
   subcommand "serve", "Serve the generated website" do
 
-    option ["-L", "--live-reload"], :flag, "integrate LiveReload"
+    option ["-L", "--live"], :flag, "automatically reload changes"
 
     def execute
-      serve(:live_reload => live_reload?)
+      serve(:auto_reload => live?)
     end
 
   end
