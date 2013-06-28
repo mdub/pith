@@ -87,15 +87,6 @@ module Pith
       end
     end
 
-    def sync_every(period)
-      @next_sync ||= 0
-      now = Time.now.to_i
-      if now >= @next_sync
-        sync
-        @next_sync = now + period
-      end
-    end
-
     # Public: check for errors.
     #
     # Returns true if any errors were encountered during the last build.

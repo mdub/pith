@@ -8,7 +8,7 @@ describe Pith::Server::OutputFinder do
   let(:output) { stub(:path => Pathname(output_path), :build => true) }
 
   let(:project) do
-    stub(:outputs => [output], :sync_every => nil)
+    stub(:outputs => [output])
   end
 
   let(:app) do
