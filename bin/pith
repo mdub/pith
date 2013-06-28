@@ -89,6 +89,8 @@ class PithCommand < Clamp::Command
 
   def serve(options = {})
     require "pith/server"
+    project.sync
+    project.listen_for_changes
     server = Pith::Server.new(project, options)
     puts %{>>> Now taking the Pith at "http://localhost:#{port}"}
     Rack::Handler.get("thin").run(server, :Port => port)

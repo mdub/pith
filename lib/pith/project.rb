@@ -1,3 +1,4 @@
+require "listen"
 require "logger"
 require "pith/config_provider"
 require "pith/input"
@@ -76,6 +77,14 @@ module Pith
       config_provider.sync
       sync_input_files
       cleanup_output_files
+    end
+
+    # Public: start a Thread to automatically sync when inputs change.
+    #
+    def listen_for_changes
+      Listen.to(input_dir.to_s) do
+        sync
+      end
     end
 
     def sync_every(period)
