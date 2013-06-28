@@ -6,6 +6,7 @@ require "pith/pathname_ext"
 require "pith/reference_error"
 require "set"
 require "tilt"
+require "thread"
 
 module Pith
 
@@ -14,11 +15,15 @@ module Pith
     def initialize(input_dir, output_dir = nil, attributes = {})
       @input_dir = Pathname(input_dir)
       @output_dir = output_dir ? Pathname(output_dir) : (@input_dir + "_out")
-      @input_map = {}
-      @output_map = {}
+      @logger = Logger.new(nil)
       attributes.each do |k,v|
         send("#{k}=", v)
       end
+      @input_map = {}
+      @output_map = {}
+      @mtimes ||= {}
+      @config_provider ||= Pith::ConfigProvider.new(self)
+      @mutex = Mutex.new
     end
 
     attr_reader :input_dir
@@ -74,9 +79,11 @@ module Pith
     # Public: re-sync with the file-system.
     #
     def sync
-      config_provider.sync
-      sync_input_files
-      cleanup_output_files
+      @mutex.synchronize do
+        config_provider.sync
+        sync_input_files
+        cleanup_output_files
+      end
     end
 
     # Public: start a Thread to automatically sync when inputs change.
@@ -98,13 +105,8 @@ module Pith
       output_dir.mtime
     end
 
-    def logger
-      @logger ||= Logger.new(nil)
-    end
-
-    def config_provider
-      @config_provider ||= Pith::ConfigProvider.new(self)
-    end
+    attr_reader :logger
+    attr_reader :config_provider
 
     def config
       config_provider.config
@@ -115,7 +117,6 @@ module Pith
     attr_writer :logger
 
     def sync_input_files
-      @mtimes ||= {}
       removed_paths = @mtimes.keys
       Pathname.glob(input_dir + "**/*", File::FNM_DOTMATCH) do |file|
         next unless file.file?
