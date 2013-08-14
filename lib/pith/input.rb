@@ -188,7 +188,7 @@ module Pith
       end
     end
 
-    YamlParseError = defined?(Psych) ? Psych::SyntaxError : ArgumentError
+    YamlParseError = defined?(Psych::SyntaxError) ? Psych::SyntaxError : ArgumentError
 
     def read_meta(io)
       header = io.gets
