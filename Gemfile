@@ -9,7 +9,7 @@ group :test do
   gem "haml", "~> 3.1.7"
   gem "sass"
   gem "RedCloth"
-  gem "rdiscount"
+  gem "kramdown"
   gem "compass"
   if tilt_version = ENV["TILT_VERSION"]
     gem "tilt", tilt_version
