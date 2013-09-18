@@ -32,9 +32,9 @@ module Pith
 
     def render(input, locals = {}, &block)
       with_input(input) do
-        result = input.render(self, locals, &block)
+        result     = input.render(self, locals, &block)
         layout_ref = input.meta["layout"]
-        result = render_ref(layout_ref) { result } if layout_ref
+        result     = render_ref(layout_ref) { result } if layout_ref
         result
       end
     end
@@ -65,8 +65,15 @@ module Pith
       relative_url_to(resolve_reference(target_ref))
     end
 
-    def link(target_ref, label = nil)
-      target_path = resolve_reference(target_ref)
+    def link(target_ref, label = nil, attrs={})
+
+      if absolute_url? target_ref
+        attrs['href'] = target_ref
+      else
+        target_path = resolve_reference(target_ref)
+        attrs['href'] = relative_url_to(target_path)
+      end
+
       label ||= begin
         target_input = input(target_path)
         output.record_dependency_on(target_input)
@@ -74,11 +81,30 @@ module Pith
       rescue ReferenceError
         "???"
       end
-      url = relative_url_to(target_path)
-      %{<a href="#{url}">#{label}</a>}
+      
+      # Loop through attrs hash, flatten the key, value
+      # pairs for appending to the dom element/link
+      attrs_flatten = attrs.each_pair.collect do |key, value|
+                        %Q{#{key}="#{value}"}
+                      end.join(' ')
+      
+      "<a #{attrs_flatten}>#{label}</a>"
     end
 
     private
+    
+    def absolute_url?(ref)
+      
+      # Need host and absolute as the ruby URI library will say that 
+      # http:/example.com is absolute, but don't have a domain
+      
+      begin
+        url = URI.parse(ref.to_s)
+        url.absolute? and !url.host.nil?
+      rescue URI::InvalidURIError
+        false
+      end
+    end
 
     def resolve_reference(ref)
       if ref.kind_of?(Pith::Input)
