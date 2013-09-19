@@ -30,7 +30,9 @@ module Pith
           return date_string if date_string.instance_of? Time
           return date_string.to_time if date_string.respond_to?('to_time')
 
-          Time.parse(date_string)
+          # cast to a string prior to casting
+          # as ruby 1.8.7 Date doesn't respond to 'to_time'
+          Time.parse(date_string.to_s)
           
         end
 

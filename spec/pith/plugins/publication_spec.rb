@@ -19,12 +19,12 @@ describe Pith::Plugins::Publication::TemplateMethods do
       @template.published_at.should == Time.local(1999, 12, 25, 22, 30)
     end
 
-    it "honours any parsing of time that yaml may do on the 'published' meta-field" do
-      @template.meta["published"] = Time.new(1999, 12, 25, 22, 30)
+    it "honours any parsing (of Time) that yaml may do on the 'published' meta-field" do
+      @template.meta["published"] = Time.local(1999, 12, 25, 22, 30)
       @template.published_at.should == Time.local(1999, 12, 25, 22, 30)
     end
 
-    it "honours any parsing of time that yaml may do on the 'published' meta-field" do
+    it "honours any parsing (to Date) of time that yaml may do on the 'published' meta-field" do
       @template.meta["published"] = Date.new(1999, 12, 25)
       @template.published_at.should == Time.local(1999, 12, 25)
     end
