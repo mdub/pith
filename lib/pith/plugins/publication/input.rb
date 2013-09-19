@@ -22,7 +22,16 @@ module Pith
         private
 
         def parse_date(date_string)
-          Time.parse(date_string) if date_string
+          
+          return unless date_string
+          
+          # yaml may parse the date for us, in which case
+          # we will be passed a Time or Date object
+          return date_string if date_string.instance_of? Time
+          return date_string.to_time if date_string.respond_to?('to_time')
+
+          Time.parse(date_string)
+          
         end
 
       end
