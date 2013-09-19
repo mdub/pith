@@ -12,10 +12,7 @@ Scenario: link with class attribute
   And input file "page.html" exists
 
   When I build the site
-  Then output file "index.html" should contain
-    """
-    <a class="active" href="page.html">Page</a>
-    """
+  Then output file "index.html" should contain /<a [class="active", href="page.html"]/
 
 Scenario: link with title attribute
 
@@ -26,10 +23,7 @@ Scenario: link with title attribute
   And input file "page.html" exists
 
   When I build the site
-  Then output file "index.html" should contain
-    """
-    <a title="click me" href="page.html">Page</a>
-    """
+  Then output file "index.html" should contain /<a [title="click me", href="page.html"]/
 
 Scenario: link with title and class attributes
 
