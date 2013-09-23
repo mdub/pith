@@ -16,8 +16,8 @@ module Pith
 
     attr_reader :ignore_patterns
 
-    def ignore(pattern)
-      ignore_patterns << pattern
+    def ignore(*pattern)
+      pattern.flatten.each {|p| ignore_patterns << p }
     end
 
     attr_reader :helper_module

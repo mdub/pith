@@ -23,7 +23,19 @@ describe Pith::Config do
 
     it "adds to ignore_patterns" do
       config.ignore("foo")
-      config.ignore_patterns
+      config.ignore_patterns.should be_member('foo')
+    end
+
+    it "adds multiple patterns to ignore_patterns (when passed multiple arguments)" do
+      config.ignore("foo", "bar")
+      config.ignore_patterns.should be_member('foo')
+      config.ignore_patterns.should be_member('bar')
+    end
+
+    it "adds multiple patterns to ignore_patterns (when passed an array)" do
+      config.ignore(["foo", "bar"])
+      config.ignore_patterns.should be_member('foo')
+      config.ignore_patterns.should be_member('bar')
     end
 
   end
