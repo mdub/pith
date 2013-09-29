@@ -31,6 +31,32 @@ Scenario: link from a sub-directory to a root-level page
     <a href="../help.html">Help</a>
     """
 
+Scenario: link to an absolute url
+
+  Given input file "index.html.haml" contains
+    """
+    = link("http://example.com", "Go to example.com")
+    """
+
+  When I build the site
+  Then output file "index.html" should contain
+    """
+    <a href="http://example.com">Go to example.com</a>
+    """
+
+Scenario: link to a (secure) absolute url
+
+  Given input file "index.html.haml" contains
+    """
+    = link("https://example.com", "Securely go to example.com")
+    """
+
+  When I build the site
+  Then output file "index.html" should contain
+    """
+    <a href="https://example.com">Securely go to example.com</a>
+    """
+
 Scenario: link to an image
 
   Given input file "subdir/page.html.haml" contains
