@@ -1,4 +1,4 @@
-Pith
+Pith [![Build Status](https://secure.travis-ci.org/mdub/pith.png?branch=master)](http://travis-ci.org/mdub/pith)
 ====
 
 Pith is a static website generator, written in Ruby.
@@ -159,7 +159,7 @@ Any path beginning with a slash ("/") is resolved relative to the root of the si
 There's also a "`link`" function, for even easier hyper-linking:
 
     link("other.html", "Other page")
-    
+
 Configuring Pith
 ----------------
 
@@ -221,7 +221,7 @@ Pith includes a couple of optional "plugins".  Actually, "plugin" is a bit stron
 
 ### Publication plugin
 
-The 'publication' plugin makes it easier to build a weblog using Pith.  
+The 'publication' plugin makes it easier to build a weblog using Pith.
 
 Enable it by requiring it in your "`config.rb`", like so:
 
@@ -229,12 +229,12 @@ Enable it by requiring it in your "`config.rb`", like so:
 
 Now you can specify a "published" date/time in the metadata of any pages you consider to be "articles", e.g.
 
-    --- 
+    ---
     title: Introducing ShamRack
     published: 3-July-2009, 15:50
     ...
 
-This exposes "`page.published_at`" for use in your templates.  
+This exposes "`page.published_at`" for use in your templates.
 
 In addition, "`project.published_inputs`" lists all the pages that have such a timestamp, in order of publication, making it easy to build index pages and XML feeds.  Here's a example, used to build the article index for [dogbiscuit.org](http://dogbiscuit.org/mdub/weblog):
 
@@ -255,7 +255,7 @@ The Compass plugin gives you the full power of [Compass][compass] in your Sass s
     require "pith/plugins/compass"
 
 Note that if you're using Bundler, you'll also need to include the Compass gem in your `Gemfile`.
-    
+
     gem "compass"
 
 [tilt]: http://github.com/rtomayko/tilt/
