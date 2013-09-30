@@ -66,44 +66,33 @@ module Pith
     end
 
     def link(target_ref, label = nil, attrs={})
-
-      if absolute_url? target_ref
+      if absolute_url?(target_ref)
         attrs['href'] = target_ref
       else
         target_path = resolve_reference(target_ref)
         attrs['href'] = relative_url_to(target_path)
+        label ||= begin
+          target_input = input(target_path)
+          output.record_dependency_on(target_input)
+          target_input.title
+        rescue ReferenceError
+          "???"
+        end
       end
 
-      label ||= begin
-        target_input = input(target_path)
-        output.record_dependency_on(target_input)
-        target_input.title
-      rescue ReferenceError
-        "???"
-      end
-      
       # Loop through attrs hash, flatten the key, value
       # pairs for appending to the dom element/link
       attrs_flatten = attrs.each_pair.collect do |key, value|
                         %Q{#{key}="#{value}"}
                       end.join(' ')
-      
+
       "<a #{attrs_flatten}>#{label}</a>"
     end
 
     private
-    
+
     def absolute_url?(ref)
-      
-      # Need host and absolute as the ruby URI library will say that 
-      # http:/example.com is absolute, but don't have a domain
-      
-      begin
-        url = URI.parse(ref.to_s)
-        url.absolute? and !url.host.nil?
-      rescue URI::InvalidURIError
-        false
-      end
+      ref.respond_to?(:to_str) && ref.to_str =~ %r{^\w+:/}
     end
 
     def resolve_reference(ref)
