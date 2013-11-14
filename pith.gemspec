@@ -14,6 +14,8 @@ Gem::Specification.new do |gem|
   gem.authors = ["Mike Williams"]
   gem.email = "mdub@dogbiscuit.org"
 
+  gem.license = "MIT"
+
   gem.version = Pith::VERSION.dup
   gem.platform = Gem::Platform::RUBY
 
