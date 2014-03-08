@@ -24,7 +24,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency("thin", ">= 1.2.7")
   gem.add_runtime_dependency("clamp", ">= 0.3.0")
   gem.add_runtime_dependency("listen", ">= 1.2.0")
-  gem.add_runtime_dependency("rack-livejs", ">= 0.2.0")
+  gem.add_runtime_dependency("rack-livejs", ">= 0.2.1")
 
   gem.require_path = "lib"
   gem.files = Dir["lib/**/*", "sample/**/*", "README.markdown", "LICENSE"]
