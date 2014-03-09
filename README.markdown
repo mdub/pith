@@ -214,7 +214,7 @@ For even quicker prototyping, Pith includes a simple HTTP server.  Start it by u
 
 Pith will incrementally re-build the site as you browse -- that is, if you alter any input files, Pith will regenerate the affected outputs.
 
-Add the "`--live`" option to "`serve`" to enable [Live.js][livejs]), for live-reloading of HTML, CSS and Javascript.
+Add the "`--live`" option to "`serve`" to enable [Live.js][livejs], for live-reloading of HTML, CSS and Javascript.
 
 Plugins
 -------
