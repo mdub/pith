@@ -214,6 +214,8 @@ For even quicker prototyping, Pith includes a simple HTTP server.  Start it by u
 
 Pith will incrementally re-build the site as you browse -- that is, if you alter any input files, Pith will regenerate the affected outputs.
 
+Add the "`--live`" option to "`serve`" to enable [Live.js][livejs]), for live-reloading of HTML, CSS and Javascript.
+
 Plugins
 -------
 
@@ -262,4 +264,4 @@ Note that if you're using Bundler, you'll also need to include the Compass gem i
 [haml]: http://haml-lang.com
 [sass]: http://sass-lang.com
 [compass]: http://compass-style.org
-
+[livejs]: http://livejs.com
