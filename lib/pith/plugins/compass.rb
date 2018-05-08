@@ -1,5 +1,5 @@
 require "compass"
-require "tilt/css"
+require "tilt/sass"
 
 module Pith
   module Compass
