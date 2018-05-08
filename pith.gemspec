@@ -19,11 +19,11 @@ Gem::Specification.new do |gem|
   gem.version = Pith::VERSION.dup
   gem.platform = Gem::Platform::RUBY
 
-  gem.add_runtime_dependency("tilt", "~> 1.3")
-  gem.add_runtime_dependency("rack", ">= 1.2.1")
-  gem.add_runtime_dependency("thin", ">= 1.2.7")
-  gem.add_runtime_dependency("clamp", ">= 0.3.0")
-  gem.add_runtime_dependency("listen", "~> 1.2")
+  gem.add_runtime_dependency("tilt", "~> 2.0")
+  gem.add_runtime_dependency("rack", ">= 2.0")
+  gem.add_runtime_dependency("thin", ">= 1.7.0")
+  gem.add_runtime_dependency("clamp", ">= 1.2.1")
+  gem.add_runtime_dependency("listen", ">= 3.1")
   gem.add_runtime_dependency("rack-livejs", ">= 0.2.1")
 
   gem.require_path = "lib"

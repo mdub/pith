@@ -4,14 +4,14 @@ gemspec
 
 group :test do
   gem "rake", "~> 10.0.0"
-  gem "rspec", "~> 2.11.0"
-  gem "cucumber", "~> 1.2.0"
-  gem "haml", "~> 3.1.7"
+  gem "rspec", "~> 3.7.0"
+  gem "cucumber", "~> 3.1.0"
+  gem "haml"
   gem "sass"
   gem "RedCloth"
   gem "kramdown"
   gem "compass"
-  gem "listen", "~> 1.3.1"
+  gem "listen", "~> 3.1.5"
   if tilt_version = ENV["TILT_VERSION"]
     gem "tilt", tilt_version
   end

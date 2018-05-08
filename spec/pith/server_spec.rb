@@ -5,10 +5,10 @@ require 'rack/mock'
 describe Pith::Server::OutputFinder do
 
   let(:output_path) { "dir/index.html" }
-  let(:output) { stub(:path => Pathname(output_path), :build => true) }
+  let(:output) { double(:path => Pathname(output_path), :build => true) }
 
   let(:project) do
-    stub(:outputs => [output])
+    double(:outputs => [output])
   end
 
   let(:app) do
@@ -98,4 +98,3 @@ describe Pith::Server::OutputFinder do
   end
 
 end
-

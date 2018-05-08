@@ -77,7 +77,11 @@ describe Pith::Input do
 
     it { should_not be_template }
 
-    its(:pipeline) { should be_empty }
+    describe "pipeline" do
+      it "should be empty" do
+        subject.pipeline.should be_empty
+      end
+    end
 
   end
 
@@ -87,7 +91,11 @@ describe Pith::Input do
       make_input("_blah/blah.de")
     end
 
-    its(:output) { should be_nil }
+    describe "output" do
+      it "should be nil" do
+        subject.output.should be_nil
+      end
+    end
 
   end
 
