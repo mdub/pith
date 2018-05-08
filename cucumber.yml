@@ -1,2 +1,2 @@
-default: --tags ~@wip features
+default: --tags 'not @wip' features
 wip: --tags @wip:3 --wip features
