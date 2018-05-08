@@ -153,6 +153,7 @@ module Pith
       while remaining_path =~ /^(.+)(\..+)$/
         extension = $2
         break if extension == ".html" # ignore Tilt::PlainTemplate
+        break if extension == ".rb" # ignore Opal::Processor
         if handler = Tilt[extension]
           remaining_path = $1
           @pipeline << handler
