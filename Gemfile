@@ -7,6 +7,7 @@ group :test do
   gem "rspec", "~> 3.7.0"
   gem "cucumber", "~> 3.1.0"
   gem "haml"
+  gem "haml-contrib"
   gem "sass"
   gem "RedCloth"
   gem "kramdown"
