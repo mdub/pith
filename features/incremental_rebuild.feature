@@ -57,8 +57,8 @@ Scenario: delete a dependency
 
   Then output file "fruits.html" should contain
     """
-    <p>apple</p>
-    <p>banana</p>
+    <p>apple </p>
+    <p>banana </p>
     """
 
   When I remove input file "_fruit/a.html.haml"
@@ -67,7 +67,7 @@ Scenario: delete a dependency
   Then output file "fruits.html" should be re-generated
   And output file "fruits.html" should contain
     """
-    <p>banana</p>
+    <p>banana </p>
     """
 
 Scenario: alter meta-data

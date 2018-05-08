@@ -68,7 +68,7 @@ Scenario: link to an image
   When I build the site
   Then output file "subdir/page.html" should contain
     """
-    <img src='../logo.png' />
+    <img src='../logo.png'>
     """
 
 Scenario: links within a layout block
@@ -109,7 +109,7 @@ Scenario: links included from a partial
   When I build the site
   Then output file "subdir/page.html" should contain
     """
-    <link href='../stylesheets/app.css' rel='stylesheet' type='text/css' />
+    <link href='../stylesheets/app.css' rel='stylesheet' type='text/css'>
     """
 
 Scenario: use "title" meta-data attribute in link

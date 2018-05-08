@@ -10,15 +10,15 @@ Scenario: Haml template with a layout
     = inside "layouts/_simple.haml" do
       blah blah
     """
-  And input file "layouts/_simple.haml" contains 
+  And input file "layouts/_simple.haml" contains
     """
     %p= yield
     """
-   
+
   When I build the site
-  Then output file "index.html" should contain 
+  Then output file "index.html" should contain
     """
-    <p>blah blah</p>
+    <p>blah blah </p>
     """
 
 Scenario: instance variable assigned within the layed-out block
@@ -34,7 +34,7 @@ Scenario: instance variable assigned within the layed-out block
     %h1= @title
     = yield
     """
-   
+
   When I build the site
   Then output file "index.html" should contain
     """
@@ -51,13 +51,13 @@ Scenario: Layout specified in meta-data
     ...
     blah blah
     """
-  And input file "layouts/_simple.haml" contains 
+  And input file "layouts/_simple.haml" contains
     """
     %p= yield
     """
-   
+
   When I build the site
-  Then output file "index.html" should contain 
+  Then output file "index.html" should contain
     """
-    <p>blah blah</p>
+    <p>blah blah </p>
     """
