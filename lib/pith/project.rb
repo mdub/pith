@@ -91,7 +91,7 @@ module Pith
     def listen_for_changes
       Listen.to(input_dir.to_s) do
         sync
-      end
+      end.start
     end
 
     # Public: check for errors.
