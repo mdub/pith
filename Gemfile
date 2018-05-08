@@ -11,7 +11,7 @@ group :test do
   gem "sass"
   gem "RedCloth"
   gem "kramdown"
-  gem "compass"
+  gem "compass", ">= 1.0.3"
   gem "listen", "~> 3.1.5"
   if tilt_version = ENV["TILT_VERSION"]
     gem "tilt", tilt_version
