@@ -41,7 +41,7 @@ end
 
 class String
   def clean
-    strip.gsub(/\s+/, ' ')
+    strip.gsub(/\s+/, ' ').gsub(' <', '<')
   end
 end
 

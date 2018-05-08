@@ -18,7 +18,7 @@ Scenario: Haml template with a layout
   When I build the site
   Then output file "index.html" should contain
     """
-    <p>blah blah </p>
+    <p>blah blah</p>
     """
 
 Scenario: instance variable assigned within the layed-out block
@@ -59,5 +59,5 @@ Scenario: Layout specified in meta-data
   When I build the site
   Then output file "index.html" should contain
     """
-    <p>blah blah </p>
+    <p>blah blah</p>
     """
