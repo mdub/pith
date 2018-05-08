@@ -51,12 +51,12 @@ describe Pith::Server::OutputFinder do
     let(:request_uri) { "/bogus.html" }
 
     it "does not build the output" do
-      output.should_not_receive(:build)
+      expect(output).not_to receive(:build)
       result_path
     end
 
     it "passes on the env unchanged" do
-      result_path.should == "/bogus.html"
+      expect(result_path).to eq("/bogus.html")
     end
 
   end
@@ -68,12 +68,12 @@ describe Pith::Server::OutputFinder do
       let(:request_uri) { uri }
 
       it "builds the output" do
-        output.should_receive(:build)
+        expect(output).to receive(:build)
         result_path
       end
 
       it "passes on request" do
-        result_path.should == "/dir/index.html"
+        expect(result_path).to eq("/dir/index.html")
       end
 
     end
@@ -91,8 +91,8 @@ describe Pith::Server::OutputFinder do
     let(:request_uri) { "/dir" }
 
     it "redirects" do
-      result_status.should == 302
-      result_headers["Location"].should == "/dir/"
+      expect(result_status).to eq(302)
+      expect(result_headers["Location"]).to eq("/dir/")
     end
 
   end

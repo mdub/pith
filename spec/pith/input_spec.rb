@@ -24,12 +24,12 @@ describe Pith::Input do
       make_input("dir/some_page.html.md.erb")
     end
 
-    it { should be_template }
+    it { is_expected.to be_template }
 
     describe "#title" do
 
       it "is based on last component of filename" do
-        subject.title.should == "Some page"
+        expect(subject.title).to eq("Some page")
       end
 
       it "can be over-ridden in metadata" do
@@ -38,7 +38,7 @@ describe Pith::Input do
           i.puts "title: Blah blah"
           i.puts "..."
         end
-        input.title.should == "Blah blah"
+        expect(input.title).to eq("Blah blah")
       end
 
     end
@@ -46,7 +46,7 @@ describe Pith::Input do
     describe "#output" do
 
       it "returns an Output" do
-        subject.output.should_not be_nil
+        expect(subject.output).not_to be_nil
       end
 
     end
@@ -54,7 +54,7 @@ describe Pith::Input do
     describe "#output_path" do
 
       it "excludes the template-type extensions" do
-        subject.output_path.should == Pathname("dir/some_page.html")
+        expect(subject.output_path).to eq(Pathname("dir/some_page.html"))
       end
 
     end
@@ -62,7 +62,7 @@ describe Pith::Input do
     describe "#pipeline" do
 
       it "is a list of Tilt processors" do
-        subject.pipeline.should == [Tilt["erb"], Tilt["md"]]
+        expect(subject.pipeline).to eq([Tilt["erb"], Tilt["md"]])
       end
 
     end
@@ -75,11 +75,11 @@ describe Pith::Input do
       make_input("dir/some_image.gif")
     end
 
-    it { should_not be_template }
+    it { is_expected.not_to be_template }
 
     describe "pipeline" do
       it "should be empty" do
-        subject.pipeline.should be_empty
+        expect(subject.pipeline).to be_empty
       end
     end
 
@@ -93,7 +93,7 @@ describe Pith::Input do
 
     describe "output" do
       it "should be nil" do
-        subject.output.should be_nil
+        expect(subject.output).to be_nil
       end
     end
 

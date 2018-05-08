@@ -9,6 +9,8 @@ $output_dir = $tmp_dir + "output"
 
 RSpec.configure do |config|
 
+  config.raise_errors_for_deprecations!
+
   config.before(:suite) do
     [$input_dir, $output_dir].each do |dir|
       dir.rmtree if dir.exist?

@@ -8,20 +8,20 @@ describe Pathname do
   describe "#in?" do
 
     it "returns false for siblings" do
-      pathname.in?("foo/baz").should == false
+      expect(pathname.in?("foo/baz")).to eq(false)
     end
 
     it "returns true for ancestors" do
-      pathname.in?("foo").should == true
+      expect(pathname.in?("foo")).to eq(true)
     end
 
     it "returns false for other prefixes" do
-      pathname.in?("fo").should == false
-      pathname.in?("foo/b").should == false
+      expect(pathname.in?("fo")).to eq(false)
+      expect(pathname.in?("foo/b")).to eq(false)
     end
 
     it "returns false for itself" do
-      pathname.in?("foo/bar").should == false
+      expect(pathname.in?("foo/bar")).to eq(false)
     end
 
   end
