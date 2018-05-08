@@ -14,13 +14,9 @@ module Pith
     def initialize(project, path)
       @project = project
       @path = path
-      determine_pipeline
     end
 
     attr_reader :project, :path
-
-    attr_reader :output_path
-    attr_reader :pipeline
 
     # Public: Get the file-system location of this input.
     #
@@ -42,6 +38,20 @@ module Pith
       end
     end
 
+    # Return the processing steps for this input.
+    #
+    def pipeline
+      determine_pipeline
+      @pipeline
+    end
+
+    # Return the output file path.
+    #
+    def output_path
+      determine_pipeline
+      @output_path
+    end
+
     # Determine whether this input is a template, requiring evaluation.
     #
     # Returns true if it is.
@@ -52,7 +62,7 @@ module Pith
 
     def output
       unless ignorable?
-        @output ||= Output.for(self, @output_path)
+        @output ||= Output.for(self, output_path)
       end
     end
 
@@ -61,7 +71,7 @@ module Pith
     def render(context, locals = {}, &block)
       return file.read if !template?
       ensure_loaded
-      @pipeline.inject(@template_text) do |text, processor|
+      pipeline.inject(@template_text) do |text, processor|
         template = processor.new(file.to_s, @template_start_line) { text }
         template.render(context, locals, &block)
       end
@@ -153,7 +163,6 @@ module Pith
       while remaining_path =~ /^(.+)(\..+)$/
         extension = $2
         break if extension == ".html" # ignore Tilt::PlainTemplate
-        break if extension == ".rb" # ignore Opal::Processor
         if handler = Tilt[extension]
           remaining_path = $1
           @pipeline << handler
